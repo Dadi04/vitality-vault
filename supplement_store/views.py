@@ -19,6 +19,9 @@ def logout(request):
 def account(request):
     return render(request, "supplement_store/account.html")
 
+def reset_password(request):
+    return render(request, "supplement_store/reset_password.html")
+
 def wishlist(request):
     return render(request, "supplement_store/wishlist.html")
 

@@ -6,5 +6,26 @@
 {% endblock %}
 
 {% block body %}
-    TO DO Login
+    <div id="login">
+        <h1>Sign in</h1>
+        <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div id="first_div"><i class="fa fa-user"></i>&#124;<input type="text" name="first" id="first" placeholder="Username / Email"></div>
+            <div id="password_div"><i class="fa fa-lock"></i>&#124;<input type="text" name="password" id="password" placeholder="Password"></div>
+            <div id="reset">
+                <input type="submit" value="Sign in" id="submit">
+                <a id="reset_button" href="{% url 'reset_password' %}">Forgot your password?</a><br>
+            </div>
+        </form>
+        <a id="register" href="{% url 'register' %}">New user? Join now!</a><br>
+    </div>
+    <hr id="login-hr">
+    <div id="google-apple">
+        <button class="google-button">
+            <i class="fa fa-google"></i>Sign In with Google
+        </button>
+        <button class="apple-button">
+            <i class="fa fa-apple"></i>Sign In with Apple
+        </button>
+    </div>
 {% endblock %}

@@ -1,5 +1,9 @@
+body {
+    background-color: #fff;
+}
+
 nav {
-    margin: 0 auto;
+    margin: 0 auto 60px auto;
     width: 100%;
     max-width: 1600px;
 
@@ -80,6 +84,126 @@ nav {
         #brands:hover .second, #categories:hover .second, #clothing:hover .second, .second:hover{
             display: block;
         }
+    }
+}
+
+#login {
+    width: 600px;
+    margin: 0 auto;
+
+    input, button {
+        padding: 5px;
+        margin: 5px;
+    }
+
+    a {
+        text-decoration: none;
+    }
+
+    #first_div, #password_div {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.1);
+
+        input {
+            padding: 5px;
+            border: none;
+            outline: none;
+            width: 100%;
+        }
         
+        .fa {
+            margin-right: 10px;
+        }
+    }
+
+    #submit {
+        width: 150px;
+        height: 40px;
+        border: none;
+        outline: none;
+        background: #2f2f2f;
+        color: #fff;
+        font-size: 15px;
+        border-radius: 40px;
+        text-align: center;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.3s ease;
+        margin-bottom: 10px;
+    }
+    
+    #submit:hover {
+        background-color: #444;
+    }
+
+    #reset_button {
+        margin-top: 15px;
+        display: inline;
+        float: right;
+        color: #333;
+    }
+
+    #register {
+        color: #333;
+    }
+}
+
+#login-hr {
+    width: 1000px;
+    margin: 20px auto;
+}
+
+#google-apple {
+    width: 800px;
+    text-align: center;
+    margin: 0 auto;
+
+    .google-button {
+        background-color: white;
+        color: #333;
+        border: 2px solid #ccc;
+        border-radius: 5px;
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .google-button i {
+        margin-right: 10px;
+        font-size: 20px;
+        color: #4285F4;
+    }
+
+    .google-button:hover {
+        background-color: #f4f4f4;
+    }
+
+    .apple-button {
+        color: #fff;
+        background-color: #000;
+        border: 2px solid #000;
+        border-radius: 5px;
+        padding: 10px 20px;
+        margin: 10px;
+        font-size: 16px;
+        transition: background-color 0.3s ease;
+    }
+
+    .apple-button i {
+        margin-right: 10px;
+        font-size: 20px;
+        color: #ccc;
+    }
+
+    .apple-button:hover {
+        background-color: #333;
     }
 }
