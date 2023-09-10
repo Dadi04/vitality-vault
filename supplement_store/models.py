@@ -4,7 +4,7 @@ from django.contrib.auth.models import AbstractUser
 # Create your models here.
 
 def item_image_upload_path(instance):
-    return f'static/supplement_store/product_images/{instance.name}/'
+    return f'static/supplement_store/images/product_images/{instance.name}/'
 
 class User(AbstractUser):
     address = models.CharField(default=None)
@@ -17,9 +17,13 @@ class Item(models.Model):
         ('Pre-Workouts','Pre-Workouts'),
         ('Post-Workouts','Post-Workouts'),
         ('Test Boosters','Test Boosters'),
+        ('Mass Gainers', 'Mass Gainers'),
+        ('Weight Loss', 'Weight Loss'),
         ('Vitamins and Minerals','Vitamins and Minerals'),
+        ('Meal Replacements','Meal Replacements'),
         ('Clothing','Clothing'),
         ('Workout Accessories','Workout Accessories'),
+        
     )
 
     name = models.CharField(max_length=20)
@@ -29,21 +33,21 @@ class Item(models.Model):
     brand = models.CharField(max_length=30)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    weight = models.PositiveIntegerField()
-    flavor = models.CharField(max_length=20)
-    is_new = models.BooleanField()
-    popularity = models.IntegerField()
+    is_on_sale = models.BooleanField(default=False)
+    sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    sale_start_date = models.DateTimeField(null=True, blank=True)
+    sale_end_date = models.DateTimeField(null=True, blank=True)
+    weight = models.PositiveIntegerField(null=True, blank=True)
+    flavor = models.CharField(max_length=20, null=True, blank=True)
+    gender = models.CharField(max_length=5, null=True, blank=True)
+    size = models.CharField(max_length=3, null=True, blank=True)
+    color = models.CharField(max_length=10, null=True, blank=True)
+    is_new = models.BooleanField(default=False)
+    popularity = models.IntegerField(default=0)
     main_image = models.ImageField(upload_to=item_image_upload_path)
     image1 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True)
     image2 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True)
     image3 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True)
-
-class OnSale(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    on_sale = models.BooleanField(default=False)
-    new_price = models.DecimalField(max_digits=10, decimal_places=2)
-    start_date = models.DateField()
-    end_date = models.DateField()
 
 class InStock(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -74,3 +78,10 @@ class Transaction(models.Model):
     date = models.DateTimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_purchased = models.BooleanField(default=False)
+
+class Coupon(models.Model):
+    code = models.CharField(max_length=50, unique=True)
+    discount = models.PositiveIntegerField()
+    usage_limit = models.PositiveIntegerField()
+    valid_from = models.DateTimeField()
+    valid_to = models.DateTimeField()

@@ -5,9 +5,90 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="icon" type="image/png" href="{% static 'supplement_store/images/icon.png' %}"/>
+        <link rel="stylesheet" href="{% static 'supplement_store/style.css' %}">
+        <script src="https://kit.fontawesome.com/cef40b906e.js" crossorigin="anonymous"></script>
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
+        <nav>
+            <div id="top">
+                <a href=""><img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px"></a>
+                <div id="search">
+                    <i class="fa fa-search fa-solid"></i>
+                    <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search" autocomplete="off">
+                </div>
+                <div class="right">
+                    <img src="{% static 'supplement_store/images/account.png' %}" alt="sign-in" width="32px">
+                    <p>Sign In</p>
+                </div>
+                {% if user.is_authenticated  %}
+                    <div class="right">
+                        <img src="{% static 'supplement_store/images/account.png' %}" alt="account" width="32px">
+                        <p>Account</p>
+                    </div>
+                {% endif %}
+                <div class="right">
+                    <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px">
+                    <p>Cart</p>
+                </div>
+                <div class="right">
+                    <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
+                    <p>Wishlist</p>
+                </div>
+                {% if user.is_authenticated  %}
+                    <div class="right">
+                        <img src="{% static 'supplement_store/images/logout.png' %}" alt="logout" width="32px">
+                        <p>Log out</p>
+                    </div>
+                {% endif %}
+            </div>
+            <div id="bottom">
+                <ul id="first">
+                    <li><a href="">Home</a></li>
+                    <li id="brands"><a href="">Brands</a>
+                        <ul class="second">
+                            <li><a href="">IronMaxx</a></li>
+                            <li><a href="">OstroVit</a></li>
+                            <li><a href="">BioTechUSA</a></li>
+                            <li><a href="">AmiX</a></li>
+                            <li><a href="">ActivLab</a></li>
+                            <li><a href="">isostar</a></li>
+                            <li><a href="">Optimum Nutrition</a></li>
+                            <hr>
+                        </ul>
+                    </li>
+                    <li id="categories"><a href="">Categories</a>
+                        <ul class="second">
+                            <li><a href="">Protein powders</a></li>
+                            <li><a href="">Creatine</a></li>
+                            <li><a href="">Pre-Workouts</a></li>
+                            <li><a href="">Post-Workouts</a></li>
+                            <li><a href="">Test Boosters</a></li>
+                            <li><a href="">Mass Gainers</a></li>                            
+                            <li><a href="">Weight Loss</a></li>
+                            <li><a href="">Vitamins and Minerals</a></li>
+                            <li><a href="">Meal Replacements</a></li>
+                            <hr>
+                        </ul>
+                    </li>
+                    <li id="clothing"><a href="">Clothing & Accessories</a>
+                        <ul class="second">
+                            <li><a href="">Tanks, T-Shirts & Shirts</a></li>
+                            <li><a href="">Hoodies & Sweatshirts</a></li>
+                            <li><a href="">Pants & Shorts</a></li>
+                            <li><a href="">Hats & Headbands</a></li>
+                            <li><a href="">Belts, Straps, Wraps & Grips</a></li>
+                            <li><a href="">Bags & Shakers</a></li>
+                            <li><a href="">Other Gym Equipment</a></li>
+                            <hr>
+                        </ul>
+                    </li>
+                    <li><a href="">About</a></li>
+                    <li><a href="">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
         {% block body %}{% endblock %}
     </body>
 </html>

@@ -1,0 +1,70 @@
+nav {
+  margin: 0 auto;
+  width: 100%;
+  max-width: 1600px;
+}
+nav #top {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 100px;
+  gap: 20px;
+}
+nav #top #search {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+nav #top #search .fa-search {
+  margin-right: 5px;
+}
+nav #top #search input {
+  padding: 5px;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+nav #top .right {
+  display: inline-block;
+  margin-left: 25px;
+  text-align: center;
+}
+nav #top .right p {
+  margin: 0;
+  text-align: center;
+  font-size: 13px;
+}
+nav #bottom {
+  width: 100%;
+  text-align: center;
+}
+nav #bottom #first {
+  display: inline-block;
+}
+nav #bottom #first li {
+  list-style: none;
+  display: inline;
+  padding-right: 20px;
+  padding: 10px;
+}
+nav #bottom #first a {
+  padding: 10px;
+  text-decoration: none;
+  color: #333;
+}
+nav #bottom .second {
+  width: 100%;
+  display: none;
+  position: absolute;
+  top: 161px;
+  z-index: 1;
+  right: 0;
+}
+nav #bottom #brands:hover .second, nav #bottom #categories:hover .second, nav #bottom #clothing:hover .second, nav #bottom .second:hover {
+  display: block;
+}
+
+/*# sourceMappingURL=style.css.map */
