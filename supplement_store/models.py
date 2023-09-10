@@ -23,7 +23,6 @@ class Item(models.Model):
         ('Meal Replacements','Meal Replacements'),
         ('Clothing','Clothing'),
         ('Workout Accessories','Workout Accessories'),
-        
     )
 
     name = models.CharField(max_length=20)

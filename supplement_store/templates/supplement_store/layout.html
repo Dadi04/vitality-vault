@@ -13,39 +13,51 @@
     <body>
         <nav>
             <div id="top">
-                <a href=""><img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px"></a>
+                <a href="{% url 'index' %}"><img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px"></a>
                 <div id="search">
                     <i class="fa fa-search fa-solid"></i>
                     <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search" autocomplete="off">
                 </div>
+                {% if not user.is_authenticated %}
                 <div class="right">
-                    <img src="{% static 'supplement_store/images/account.png' %}" alt="sign-in" width="32px">
-                    <p>Sign In</p>
+                    <a href="{% url 'login' %}">
+                        <img src="{% static 'supplement_store/images/account.png' %}" alt="sign-in" width="32px">
+                        <p>Sign In</p>
+                    </a>
                 </div>
+                {% endif %}
                 {% if user.is_authenticated  %}
                     <div class="right">
-                        <img src="{% static 'supplement_store/images/account.png' %}" alt="account" width="32px">
-                        <p>Account</p>
+                        <a href="{% url 'account' %}">
+                            <img src="{% static 'supplement_store/images/account.png' %}" alt="account" width="32px">
+                            <p>Account</p>
+                        </a>
                     </div>
                 {% endif %}
                 <div class="right">
-                    <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px">
-                    <p>Cart</p>
+                    <a href="{% url 'shopping_cart' %}">   
+                        <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px">
+                        <p>Cart</p>
+                    </a> 
                 </div>
                 <div class="right">
-                    <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
-                    <p>Wishlist</p>
+                    <a href="{% url 'wishlist' %}">
+                        <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
+                        <p>Wishlist</p>
+                    </a>
                 </div>
                 {% if user.is_authenticated  %}
                     <div class="right">
-                        <img src="{% static 'supplement_store/images/logout.png' %}" alt="logout" width="32px">
-                        <p>Log out</p>
+                        <a href="{% url 'logout' %}">
+                            <img src="{% static 'supplement_store/images/logout.png' %}" alt="logout" width="32px">
+                            <p>Log out</p>
+                        </a>
                     </div>
                 {% endif %}
             </div>
             <div id="bottom">
                 <ul id="first">
-                    <li><a href="">Home</a></li>
+                    <li><a href="{% url 'index' %}">Home</a></li>
                     <li id="brands"><a href="">Brands</a>
                         <ul class="second">
                             <li><a href="">IronMaxx</a></li>

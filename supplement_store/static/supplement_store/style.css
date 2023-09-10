@@ -37,6 +37,10 @@ nav #top .right p {
   text-align: center;
   font-size: 13px;
 }
+nav #top .right a {
+  text-decoration: none;
+  color: #333;
+}
 nav #bottom {
   width: 100%;
   text-align: center;
