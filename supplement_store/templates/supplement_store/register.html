@@ -6,5 +6,36 @@
 {% endblock %}
 
 {% block body %}
-    TO DO Register
+    <div id="register">
+        <h1>Register</h1>
+        <form action="{% url 'register' %}" method="post">
+            <input type="email" name="email" placeholder="Email" class="register-input width100" required>
+            <label for="email" class="required">*</label><br>
+            <input type="text" name="username" placeholder="Username" class="register-input width100" required>
+            <label for="username" class="required">*</label><br>
+            <input type="text" placeholder="First Name" name="first" class="register-input" required>
+            <label for="first" class="required">*</label>
+            <input type="text" placeholder="Last Name" name="last" class="register-input" required>
+            <label for="last" class="required">*</label>
+            <input type="text" name="phone" placeholder="Phone Number" class="register-input" required>
+            <label for="phone" class="required">*</label>
+            <input type="date" name="birthday" placeholder="Birthday" class="register-input">
+            <label for="birthday" class="required">*</label>
+            <input type="text" name="address" placeholder="Address" class="register-input" required>
+            <label for="address" class="required">*</label>
+            <input type="text" name="city" placeholder="Suburb/City" class="register-input" required>
+            <label for="city" class="required">*</label>
+            <input type="text" name="state" placeholder="State/Province" class="register-input">
+            <input type="text" name="country" placeholder="Country" class="register-input" required>
+            <label for="country" class="required">*</label>
+            <input type="text" name="zipcode" placeholder="Zip/Postcode" class="register-input width100" required>
+            <label for="zipcode" class="required">*</label><br>
+            <input type="password" name="password" placeholder="Password" class="register-input" required>
+            <label for="password" class="required">*</label>
+            <input type="password" name="confirm-password" placeholder="Confirm Password" class="register-input" required>
+            <label for="confirm-password" class="required">*</label><br>
+            TO DO Captcha
+            <input type="submit" id="submit-register">
+        </form>
+    </div>
 {% endblock %}

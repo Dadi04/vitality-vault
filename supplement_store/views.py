@@ -30,3 +30,12 @@ def shopping_cart(request):
 
 def newsletter(request):
     return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+def about(request):
+    return render(request, "supplement_store/about.html")
+
+def brands(request):
+    return render(request, "supplement_store/brands.html")
+
+def contact(request):
+    return render(request, "supplement_store/contact.html")

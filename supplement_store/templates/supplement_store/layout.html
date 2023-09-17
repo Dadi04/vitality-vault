@@ -8,6 +8,7 @@
         <link rel="icon" type="image/png" href="{% static 'supplement_store/images/icon.png' %}"/>
         <link rel="stylesheet" href="{% static 'supplement_store/style.css' %}">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Montserrat:wght@300&family=Lato:wght@300&display=swap" rel="stylesheet">
+        <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdqozAoAAAAAFvqg7aKWiKPaUZ1PsJX5PBrL3GB"></script>
         <script src="https://kit.fontawesome.com/cef40b906e.js" crossorigin="anonymous"></script>
         <title>{% block title %}{% endblock %}</title>
     </head>
@@ -47,6 +48,14 @@
                         <p>Wishlist</p>
                     </a>
                 </div>
+                {% if user.is_staff %}
+                <div class="right">
+                    <a href="{% url 'admin:index' %}">
+                        <img src="{% static 'supplement_store/images/admin.png' %}" alt="admin" width="32px">
+                        <p>Admin Page</p>
+                    </a>
+                </div>
+                {% endif %}
                 {% if user.is_authenticated  %}
                     <div class="right">
                         <a href="{% url 'logout' %}">
@@ -59,7 +68,7 @@
             <div id="bottom">
                 <ul id="first">
                     <li><a href="{% url 'index' %}">Home</a></li>
-                    <li id="brands"><a href="">Brands</a>
+                    <li id="brands"><a href="{% url 'brands' %}">Brands</a>
                         <ul class="second">
                             <li><a href="">IronMaxx</a></li>
                             <li><a href="">OstroVit</a></li>
@@ -71,7 +80,7 @@
                             <hr>
                         </ul>
                     </li>
-                    <li id="categories"><a href="">Categories</a>
+                    <li id="categories"><a href="">Supplements</a>
                         <ul class="second">
                             <li><a href="">Protein powders</a></li>
                             <li><a href="">Creatine</a></li>
@@ -97,8 +106,8 @@
                             <hr>
                         </ul>
                     </li>
-                    <li><a href="">About</a></li>
-                    <li><a href="">Contact</a></li>
+                    <li><a href="{% url 'about' %}">About</a></li>
+                    <li><a href="{% url 'contact' %}">Contact</a></li>
                 </ul>
             </div>
         </nav>
@@ -153,6 +162,7 @@
                 <div id="third-second">
                     <div>
                         <h4>Connect with Us</h4>
+                        <a href=""><img src="{% static 'supplement_store/images/tiktok.webp' %}" alt="tiktok" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/instagram.png' %}" alt="instagram" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/facebook.png' %}" alt="facebook" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/twitter.webp' %}" alt="twitter" width="35px"></a>

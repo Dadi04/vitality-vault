@@ -11,5 +11,8 @@ urlpatterns = [
     path('account', views.account, name="account"),
     path('wishlist', views.wishlist, name="wishlist"),
     path('shopping_cart', views.shopping_cart, name="shopping_cart"),
-    path('newsletter', views.newsletter, name="newsletter")
+    path('newsletter', views.newsletter, name="newsletter"),
+    path('brands', views.brands, name="brands"),
+    path('about', views.about, name="about"),
+    path('contact', views.contact, name="contact"),
 ]
