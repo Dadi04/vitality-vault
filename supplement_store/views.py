@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import redirect, render
 
 from .models import User
 
@@ -27,3 +27,6 @@ def wishlist(request):
 
 def shopping_cart(request):
     return render(request, "supplement_store/cart.html")
+
+def newsletter(request):
+    return redirect(request.META.get('HTTP_REFERER', 'index'))

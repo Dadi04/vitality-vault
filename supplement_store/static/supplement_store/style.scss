@@ -1,11 +1,12 @@
 body {
     background-color: #fff;
+    margin: 0;
 }
 
 nav {
+    font-family: 'Roboto', sans-serif;
     margin: 0 auto 60px auto;
     width: 100%;
-    max-width: 1600px;
 
     #top {
         display: flex;
@@ -13,7 +14,10 @@ nav {
         justify-content: center;
         align-items: center;
         height: 100px;
-        gap: 20px;
+        background-color: #111;
+        width: 100%;
+        gap: 35px;
+        color: white;
 
         #search {
             display: flex;
@@ -30,6 +34,8 @@ nav {
                 border: none;
                 outline: none;
                 width: 100%;
+                color: white;
+                background-color: #111;
             }
         }
 
@@ -37,11 +43,13 @@ nav {
             display: inline-block;
             margin-left: 25px;
             text-align: center;
-
+            
+            
             p {
                 margin: 0;
                 text-align: center;
                 font-size: 13px;
+                color: white;
             }
 
             a {
@@ -76,7 +84,7 @@ nav {
             width: 100%;
             display: none;
             position: absolute;
-            top: 161px;
+            top: 153px;
             z-index: 1;
             right: 0;
         }
@@ -90,6 +98,7 @@ nav {
 #login {
     width: 600px;
     margin: 0 auto;
+    
 
     input, button {
         padding: 5px;
@@ -205,5 +214,115 @@ nav {
 
     .apple-button:hover {
         background-color: #333;
+    }
+}
+
+footer {
+    bottom: 0;
+    left: 0;
+    background-color: #f2f2f2;
+    color: #333;
+    width: 100%;
+    padding: 20px 0;
+    margin-top: 10px;
+    font-family: 'Lato', sans-serif;
+
+    #first {
+        width: 90%;
+        margin: 0 auto;
+        padding: 10px;
+
+        table {
+            width: 100%;
+            th, td {
+                padding: 10px 0;
+                text-align: left;
+            }
+            th {
+                width: 25%;
+            }
+            td {
+                width: 25%;
+                a {
+                    color: #333;
+                    text-decoration: none;
+                    &:hover {
+                        text-decoration: underline;
+                    }
+                }
+            }
+        }
+
+    }
+
+    hr {
+        border-top: 1px solid #666;
+        margin: 20px 0;
+    }
+
+    #second {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    #third {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: row;
+        gap: 15%;
+        p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }        
+
+        #third-first {
+            p {
+                margin: 0;
+            }
+            a {
+                text-decoration: none;
+                color: #333;
+            }
+        }
+
+        #third-second {
+            div {
+                padding: 5px 10px;
+
+                img {
+                    margin-right: 10px;
+                }
+                #email {
+                    width: 250px;
+                    padding: 10px;
+                    font-size: 16px;
+                    border: 1px solid #ccc;
+                    border-radius: 5px;
+                    margin-right: 10px;
+                }
+                #submit {
+                    background-color: #666;
+                    color: #fff;
+                    padding: 10px 20px;
+                    font-size: 16px;
+                    border: none;
+                    border-radius: 5px;
+                    transition: background-color 0.2s;
+                    &:hover {
+                        background-color: #555;
+                    }
+                }
+            }
+        }
+
+        #third-third {
+            p {
+                margin: 0;
+            }
+            img {
+                margin: 0 2px 5px 10px;
+            }
+        }
     }
 }

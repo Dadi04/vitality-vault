@@ -7,13 +7,14 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="icon" type="image/png" href="{% static 'supplement_store/images/icon.png' %}"/>
         <link rel="stylesheet" href="{% static 'supplement_store/style.css' %}">
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Montserrat:wght@300&family=Lato:wght@300&display=swap" rel="stylesheet">
         <script src="https://kit.fontawesome.com/cef40b906e.js" crossorigin="anonymous"></script>
         <title>{% block title %}{% endblock %}</title>
     </head>
     <body>
         <nav>
             <div id="top">
-                <a href="{% url 'index' %}"><img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px"></a>
+                <a href="{% url 'index' %}"><img src="{% static 'supplement_store/images/logo-main.png' %}" alt="logo" width="150px"></a>
                 <div id="search">
                     <i class="fa fa-search fa-solid"></i>
                     <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search" autocomplete="off">
@@ -104,12 +105,80 @@
         {% block body %}{% endblock %}
 
         <footer>
-            <div>
-                <img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px">
+            <div id="first">
+                <h3>SITE LINKS</h3>
+                <table>
+                    <tr>
+                        <th>Information</th>
+                        <th>Useful links</th>
+                        <th>Help with shopping</th>
+                        <th>User account</th>
+                    </tr>
+                    <tr>
+                        <td><a href="">About</a></td>
+                        <td><a href="">Contact</a></td>
+                        <td><a href="">How to register?</a></td>
+                        <td><a href="">Register/Sign in</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="">Terms of purchase</a></td>
+                        <td><a href="">Site map</a></td>
+                        <td><a href="">How to sign in?</a></td>
+                        <td><a href="">Purchase history</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="">Payment of delivery and shipment of goods</a></td>
+                        <td><a href="">Brands</a></td>
+                        <td><a href="">How to order a product?</a></td>
+                        <td><a href="">Shopping cart</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="">Complaints</a></td>
+                        <td><a href="">Great Deals</a></td>
+                        <td><a href="">Payment methods</a></td>
+                        <td><a href="">Wishlist</a></td>
+                    </tr>
+                </table>
             </div>
             <hr>
-            <div>
-                &#169; 2023 Vitality Vault
+            <div id="second">
+                TO DO Brand Images
+            </div>
+            <div id="third">
+                <div id="third-first">
+                    <img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px">
+                    <p>&#169; 2023 Vitality Vault</p>
+                    <p><a href="">Terms of Use</a> | <a href="">Privacy Policy</a></p>
+                </div>
+                <div id="third-second">
+                    <div>
+                        <h4>Connect with Us</h4>
+                        <a href=""><img src="{% static 'supplement_store/images/instagram.png' %}" alt="instagram" width="35px"></a>
+                        <a href=""><img src="{% static 'supplement_store/images/facebook.png' %}" alt="facebook" width="35px"></a>
+                        <a href=""><img src="{% static 'supplement_store/images/twitter.webp' %}" alt="twitter" width="35px"></a>
+                        <a href=""><img src="{% static 'supplement_store/images/youtube.png' %}" alt="youtube" width="35px"></a>
+                    </div>
+                    <hr>
+                    <div>
+                        <p>Receive the Latest News and Exclusive Offers:</p>
+                        <form action="{% url 'newsletter' %}" method="post">
+                            {% csrf_token %}
+                            <input type="email" name="email" id="email" placeholder="Email">
+                            <input type="submit" id="submit">
+                        </form>
+                    </div>
+                </div>
+                <div id="third-third">
+                    <h4>We Accept</h4>
+                    <img src="{% static 'supplement_store/images/paypal.webp' %}" alt="paypal" width="60px">
+                    <img src="{% static 'supplement_store/images/stripe.png' %}" alt="stripe" width="60px">
+                    <img src="{% static 'supplement_store/images/visa.png' %}" alt="visa" width="60px">
+                    <img src="{% static 'supplement_store/images/mastercard.png' %}" alt="mastercard" width="60px"><br>
+                    <img src="{% static 'supplement_store/images/american-express.webp' %}" alt="american-express" width="60px">
+                    <img src="{% static 'supplement_store/images/discover.png' %}" alt="discover" width="60px">
+                    <img src="{% static 'supplement_store/images/google-pay.png' %}" alt="google-pay" width="60px">
+                    <img src="{% static 'supplement_store/images/apple-pay.png' %}" alt="apple-pay" width="60px">
+                </div>
             </div>
         </footer>
     </body>
