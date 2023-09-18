@@ -103,7 +103,6 @@ def logout_view(request):
 def account(request):
     return render(request, "supplement_store/account.html")
 
-@login_required
 def reset_password(request):
     return render(request, "supplement_store/reset_password.html")
 

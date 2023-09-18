@@ -250,9 +250,8 @@ footer {
             background-color: white;
             border: none;
             outline: none;
-            margin: 5px;
+            margin: 5px 10px 5px 5px;
             padding: 6px;
-            width: 30px;
         }
     }
 
@@ -378,6 +377,15 @@ footer {
         width: 90%;
     }
     
+    #show_password {
+        background-color: white;
+        border: none;
+        outline: none;
+        margin: 5px 5px 5px 0;
+        padding: 6px;
+        width: 30px;
+    }
+
     #submit-register {
         font-family: 'Montserrat' sans-serif;
         display: inline-block;

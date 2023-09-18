@@ -215,9 +215,8 @@ footer #third #third-third img {
   background-color: white;
   border: none;
   outline: none;
-  margin: 5px;
+  margin: 5px 10px 5px 5px;
   padding: 6px;
-  width: 30px;
 }
 #login #submit-login {
   width: 150px;
@@ -325,6 +324,14 @@ footer #third #third-third img {
 }
 #register .width100 {
   width: 90%;
+}
+#register #show_password {
+  background-color: white;
+  border: none;
+  outline: none;
+  margin: 5px 5px 5px 0;
+  padding: 6px;
+  width: 30px;
 }
 #register #submit-register {
   font-family: "Montserrat" sans-serif;

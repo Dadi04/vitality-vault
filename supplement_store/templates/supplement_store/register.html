@@ -31,12 +31,33 @@
             <label for="country" class="required">*</label>
             <input type="text" name="zipcode" placeholder="Zip/Postcode" class="register-input width100" required>
             <label for="zipcode" class="required">*</label><br>
-            <input type="password" name="password" placeholder="Password" class="register-input" required>
+            <input type="password" name="password" placeholder="Password" class="register-input" id="password" required>
             <label for="password" class="required">*</label>
-            <input type="password" name="confirm-password" placeholder="Confirm Password" class="register-input" required>
-            <label for="confirm-password" class="required">*</label><br>
+            <input type="password" name="confirm-password" placeholder="Confirm Password" class="register-input" id="confirm_password" required>
+            <label for="confirm-password" class="required">*</label><button type="button" class="fa fa-eye" id="show_password"></button><br>
             TO DO Captcha
             <input type="submit" id="submit-register">
         </form>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        const showPassword = document.getElementById('show_password')
+        const passwordInput = document.getElementById('password')
+        const confirmPasswordInput = document.getElementById('confirm_password')
+        showPassword.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                confirmPasswordInput.type = 'text';
+                showPassword.classList.remove('fa-eye');
+                showPassword.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                confirmPasswordInput.type = 'password';
+                showPassword.classList.add('fa-eye');
+                showPassword.classList.remove('fa-eye-slash');
+            }
+        })
+    </script>
 {% endblock %}
