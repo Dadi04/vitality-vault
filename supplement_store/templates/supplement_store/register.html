@@ -8,7 +8,8 @@
 {% block body %}
     <div id="register">
         <h1>Register</h1>
-        <form action="{% url 'register' %}" method="post">
+        <form action="{% url 'register_view' %}" method="post">
+            {% csrf_token %}
             <input type="email" name="email" placeholder="Email" class="register-input width100" required>
             <label for="email" class="required">*</label><br>
             <input type="text" name="username" placeholder="Username" class="register-input width100" required>

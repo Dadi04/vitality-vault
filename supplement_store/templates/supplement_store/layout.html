@@ -22,7 +22,7 @@
                 </div>
                 {% if not user.is_authenticated %}
                 <div class="right">
-                    <a href="{% url 'login' %}">
+                    <a href="{% url 'login_view' %}">
                         <img src="{% static 'supplement_store/images/account.png' %}" alt="sign-in" width="32px">
                         <p>Sign In</p>
                     </a>
@@ -58,7 +58,7 @@
                 {% endif %}
                 {% if user.is_authenticated  %}
                     <div class="right">
-                        <a href="{% url 'logout' %}">
+                        <a href="{% url 'logout_view' %}">
                             <img src="{% static 'supplement_store/images/logout.png' %}" alt="logout" width="32px">
                             <p>Log out</p>
                         </a>
@@ -191,5 +191,8 @@
                 </div>
             </div>
         </footer>
+        
+        {% block script %}
+        {% endblock %}
     </body>
 </html>

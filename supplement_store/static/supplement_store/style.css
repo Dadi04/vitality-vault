@@ -2,6 +2,10 @@ body {
   background-color: #fff;
   margin: 0;
 }
+body input::-ms-reveal,
+body input::-ms-clear {
+  display: none;
+}
 
 nav {
   font-family: "Roboto", sans-serif;
@@ -206,6 +210,14 @@ footer #third #third-third img {
 }
 #login #first_div .fa, #login #password_div .fa {
   margin-right: 10px;
+}
+#login #first_div #show_password, #login #password_div #show_password {
+  background-color: white;
+  border: none;
+  outline: none;
+  margin: 5px;
+  padding: 6px;
+  width: 30px;
 }
 #login #submit-login {
   width: 150px;

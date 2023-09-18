@@ -8,6 +8,11 @@ def item_image_upload_path(instance):
 
 class User(AbstractUser):
     address = models.CharField(default=None)
+    city = models.CharField(default=None)
+    state = models.CharField(null=True, blank=True, default=None)
+    country = models.CharField(default=None)
+    zipcode = models.CharField(default=None)
+    phone = models.CharField(default=None)
     birth = models.DateField(default='1900-01-01')
 
 class Item(models.Model):

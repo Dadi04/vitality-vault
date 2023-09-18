@@ -4,9 +4,9 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name="index"),
-    path('login', views.login, name="login"),
-    path('register', views.register, name="register"),
-    path('logout', views.logout, name="logout"),
+    path('login', views.login_view, name="login_view"),
+    path('register', views.register_view, name="register_view"),
+    path('logout', views.logout_view, name="logout_view"),
     path('reset_password', views.reset_password, name="reset_password"),
     path('account', views.account, name="account"),
     path('wishlist', views.wishlist, name="wishlist"),
@@ -15,4 +15,5 @@ urlpatterns = [
     path('brands', views.brands, name="brands"),
     path('about', views.about, name="about"),
     path('contact', views.contact, name="contact"),
+    path("activate/<str:uidb64>/<str:token>/", views.activate_email, name='activate_email'),
 ]
