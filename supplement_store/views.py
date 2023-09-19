@@ -9,6 +9,7 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
 
+from .countries import COUNTRIES
 from .models import User
 
 # Create your views here.
@@ -20,23 +21,31 @@ def login_view(request):
     if request.method == 'POST':
         first = request.POST["first"]
         password = request.POST["password"]
+        remember = request.POST["remember"]
 
         if '@' in first:
             user = authenticate(request, email=first, password=password)
         else:
             user = authenticate(request, username=first, password=password)
 
+        # TO DO
+        if remember:
+            pass
+        else:
+            pass
+
         if user is not None:
             login(request, user)
             return redirect('index')
         else:
             messages.error(request, "Invalid login credentials. Please try again.")
-            return redirect('login')
+            return redirect('login_view')
         
     return render(request, "supplement_store/login.html")
 
 def register_view(request):
     if request.method == 'POST':
+        # get the info from the user
         email = request.POST["email"]
         username = request.POST["username"]
         first = request.POST["first"]
@@ -50,21 +59,24 @@ def register_view(request):
         zipcode = request.POST["zipcode"]
         password = request.POST["password"]
         confirm_password = request.POST["confirm-password"]
+
+        # check for the errors
         if password != confirm_password:
             messages.error(request, "Passwords do not match. Please try again.")
-
+            return redirect("register_view")
         if User.objects.filter(email=email).exists():
             messages.error(request, "Email address already taken.")
-            return redirect("register")
+            return redirect("register_view")
         elif User.objects.filter(username=username).exists():
             messages.error(request, "Username already taken.")
-            return redirect("register")
+            return redirect("register_view")
         
+        # create the user
         user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last, phone=phone, birth=birthday, address=address, city=city, state=state, country=country, zipcode=zipcode)
         user.is_active = False
         user.save()
 
-        #emailing logic
+        # emailing logic
         mail_subject = "Activate your user account."
         message = render_to_string("supplement_store/confirmation_email.html", {
             "user": user.username,
@@ -77,7 +89,9 @@ def register_view(request):
         email.send()
 
         return HttpResponse("Your account is being activated. Please wait... <br> Check your email inbox and spam folder.")
-    return render(request, "supplement_store/register.html")
+    return render(request, "supplement_store/register.html", {
+        "countries": [(code, name) for code, name in COUNTRIES.items()],
+    })
 
 def activate_email(request, uidb64, token):
     try:
@@ -87,12 +101,11 @@ def activate_email(request, uidb64, token):
         user = None
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
-        print(user)
         user.save()
         
         login(request, user)
         return redirect('index')
-    return redirect('register')
+    return redirect('register_view')
 
 @login_required
 def logout_view(request):

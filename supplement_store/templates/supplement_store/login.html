@@ -7,7 +7,10 @@
 
 {% block body %}
     <div id="login">
-        <h1>Sign in</h1>
+        <header>
+            <h1>Sign in</h1>
+            <p><a id="register" href="{% url 'register_view' %}">New user? Join now!</a></p>
+        </header>
         <form action="{% url 'login_view' %}" method="post">
             {% csrf_token %}
             <div id="first_div"><i class="fa fa-user"></i>&#124;<input type="text" name="first" id="first" placeholder="Username / Email"></div>
@@ -24,11 +27,15 @@
                 </div>
             {% endif %}
             <div id="reset">
-                <input type="submit" value="Sign in" id="submit-login">
+                <div id="remember">
+                    <input type="checkbox" name="remember" checked>
+                    <label for="remember">Remember me</label>
+                </div>
                 <a id="reset_button" href="{% url 'reset_password' %}">Forgot your password?</a><br>
+                <input type="submit" value="Sign in" id="submit-login">
             </div>
         </form>
-        <a id="register" href="{% url 'register_view' %}">New user? Join now!</a><br>
+        <br>
     </div>
     <hr id="login-hr">
     <div id="google-apple">

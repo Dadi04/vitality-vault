@@ -6,6 +6,12 @@ body {
     input::-ms-clear {
         display: none;
     }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 }
 
 nav {
@@ -215,6 +221,21 @@ footer {
     width: 600px;
     margin: 0 auto;
 
+    header {
+        h1 {
+            text-align: left;
+            margin-bottom: 10px;
+            width: fit-content;
+        }
+        p {
+            text-align: right;
+            margin: 0 0 10px 0;
+        }
+        a {
+            color: #333;;
+        }
+    }
+
     input, button {
         font-family: 'Lato' sans-serif;
         padding: 5px;
@@ -255,36 +276,45 @@ footer {
         }
     }
 
-    #submit-login {
-        width: 150px;
-        height: 40px;
-        border: none;
-        outline: none;
-        background: #2f2f2f;
-        color: #fff;
-        font-size: 15px;
-        border-radius: 40px;
-        text-align: center;
-        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
-        position: relative;
-        overflow: hidden;
-        transition: background-color 0.3s ease;
-        margin-bottom: 10px;
-
-        &:hover {
-            background-color: #444;
-        }
-    }
-
-    #reset_button {
+    #reset {
         margin-top: 15px;
-        display: inline;
-        float: right;
-        color: #333;
-    }
 
-    #register {
-        color: #333;
+        #remember {
+            display: inline;
+            
+            input[type="checkbox"] {
+                transform: scale(1.5);
+            }
+        }
+
+        #submit-login {
+            width: 150px;
+            height: 40px;
+            border: none;
+            outline: none;
+            background: #2f2f2f;
+            color: #fff;
+            font-size: 15px;
+            border-radius: 40px;
+            text-align: center;
+            box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+            position: relative;
+            overflow: hidden;
+            transition: background-color 0.3s ease;
+            margin-bottom: 10px;
+            margin-top: 15px;
+            display: block;
+    
+            &:hover {
+                background-color: #444;
+            }
+        }
+    
+        #reset_button {
+            display: inline;
+            float: right;
+            color: #333;
+        }
     }
 }
 
@@ -347,9 +377,20 @@ footer {
     margin: 0 auto;
     padding: 0 20px;
   
-    h1 {
-        text-align: left;
-        margin-bottom: 20px;
+    header {
+        h1 {
+            text-align: left;
+            margin-bottom: 10px;
+            width: fit-content;
+        }
+        p {
+            text-align: right;
+            margin: 0 40px 10px 0;
+        }
+        a {
+            text-decoration: none;
+            color: #333;
+        }
     }
 
     .required {
@@ -365,7 +406,7 @@ footer {
         border-radius: 4px;
         font-size: 16px;
         font-family: 'Montserrat' sans-serif;
-        margin-bottom: 10px;
+        margin-bottom: 25px;
     
         &:focus {
             outline: none;
@@ -403,7 +444,7 @@ footer {
         position: relative;
         overflow: hidden;
         transition: background-color 0.3s ease;
-        margin: 10px 20px 10px 120px;
+        margin: 0 20px 10px 120px;
     
         &:hover {
             background-color: #444;
