@@ -1,12 +1,17 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 from .countries import COUNTRIES
 
 # Create your models here.
 
 def item_image_upload_path(instance):
-    return f'static/supplement_store/images/product_images/{instance.name}/'
+    return f'supplement_store/static/supplement_store/images/product_images/{instance.name}/'
+
+def slide_show_upload_path(instance, filename):
+    return f'supplement_store/static/supplement_store/images/slide_show_images/{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}_{filename}'
+
 
 class User(AbstractUser):
     address = models.CharField(default=None)
@@ -59,6 +64,14 @@ class InStock(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     is_available = models.BooleanField()
     quantity = models.PositiveIntegerField()
+
+class SlideShowImage(models.Model):
+    title = models.CharField(max_length=20)
+    image = models.ImageField(upload_to=slide_show_upload_path)
+    order = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.title
 
 class Review(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

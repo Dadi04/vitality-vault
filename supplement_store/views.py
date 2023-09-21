@@ -10,12 +10,14 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
 
 from .countries import COUNTRIES
-from .models import User
+from .models import User, SlideShowImage
 
 # Create your views here.
 
 def index(request):
-    return render(request, "supplement_store/index.html")
+    return render(request, "supplement_store/index.html", {
+        "images": SlideShowImage.objects.all().order_by('order'),
+    })
 
 def login_view(request):
     if request.method == 'POST':

@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.urls import path
 
 from . import views
@@ -17,3 +19,6 @@ urlpatterns = [
     path('contact', views.contact, name="contact"),
     path("activate/<str:uidb64>/<str:token>/", views.activate_email, name='activate_email'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

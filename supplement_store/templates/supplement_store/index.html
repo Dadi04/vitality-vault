@@ -1,10 +1,84 @@
 {% extends 'supplement_store/layout.html' %}
 {% load static %}
+{% load filename %}
 
 {% block title %}
     Vitality Vault
 {% endblock %}
 
 {% block body %}
-    TO DO Homepage
+    <div id="slide-show">
+        {% for image in images %}
+            <div class="slides">
+                <img src="{% static '/supplement_store/images/slide_show_images/' %}{{image.image.name|filename}}" class="slide-show-images" data-id="{{image.id}}" id="image-{{image.title}}" alt="{{image.title}}">
+            </div>
+        {% endfor %}
+        <img src="{% static '/supplement_store/images/left-arrow.svg' %}" alt="left-arrow" width="50px" id="left-arrow">
+        <img src="{% static '/supplement_store/images/right-arrow.svg' %}" alt="right-arrow" width="50px" id="right-arrow">
+        <ul>
+            {% for image in images %}
+                <li class="dot" data-id="{{image.id}}">kita</li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        const slides = document.querySelectorAll('.slides');
+        const allImages = document.querySelectorAll('.slide-show-images');
+        const allDots = document.querySelectorAll('.dot');
+        const leftArrow = document.getElementById('left-arrow');
+        const rightArrow = document.getElementById('right-arrow');
+        let currentImageIndex = 0;
+        let intervalId;
+
+        // change the image to the index its on
+        function showImage(index) {
+            allImages.forEach(eachImage => {
+                eachImage.style.display = 'none';
+            });
+            allDots.forEach(dot => {
+                dot.classList.remove('is_active');
+            });
+            allImages[index].style.display = 'block';
+            allDots[index].classList.add('is_active');
+            currentImageIndex = index;
+        }
+        showImage(currentImageIndex);
+
+        // function to automatically change image to the right
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % allImages.length;
+            showImage(currentImageIndex);
+        }
+
+        // when you click left arrow change the image to the left
+        leftArrow.addEventListener('click', () => {
+            currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
+            showImage(currentImageIndex);
+            clearInterval(intervalId);
+            intervalId = setInterval(showNextImage, 5000);
+        });
+        // when you click right arrow change the image to the right
+        rightArrow.addEventListener('click', () => {
+            showNextImage();
+            clearInterval(intervalId);
+            intervalId = setInterval(showNextImage, 5000);
+        });
+        // when you click the dot change the image
+        allDots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                const id = dot.getAttribute('data-id');
+                const index = Array.from(allImages).findIndex(image => image.getAttribute('data-id') === id);
+                if (index !== -1) {
+                    showImage(index);
+                }
+                clearInterval(intervalId); 
+                intervalId = setInterval(showNextImage, 5000);
+            });
+        });
+        // change the image automatically every 5 seconds
+        intervalId = setInterval(showNextImage, 5000);
+    </script>
 {% endblock %}

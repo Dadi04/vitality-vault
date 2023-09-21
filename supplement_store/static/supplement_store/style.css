@@ -242,7 +242,7 @@ footer #third #third-third img {
   display: inline;
 }
 #login #reset #remember input[type=checkbox] {
-  transform: scale(1.5); /* Adjust the scale factor as needed */
+  transform: scale(1.5);
 }
 #login #reset #submit-login {
   width: 150px;
@@ -387,6 +387,40 @@ footer #third #third-third img {
 }
 #register #submit-register:hover {
   background-color: #444;
+}
+
+#slide-show .slides {
+  width: 100%;
+}
+#slide-show .slides .slide-show-images {
+  width: 100%;
+}
+#slide-show #left-arrow {
+  position: absolute;
+  top: 50%;
+  left: 1%;
+  outline: 0;
+  border: 0;
+  opacity: 0.5;
+}
+#slide-show #right-arrow {
+  position: absolute;
+  top: 50%;
+  right: 1%;
+  outline: 0;
+  border: 0;
+  opacity: 0.5;
+}
+#slide-show ul {
+  margin: 0 auto;
+  width: 200px;
+  list-style: circle;
+}
+#slide-show ul .dot {
+  margin-right: 10px;
+  padding: 0 20px;
+  display: inline-block;
+  width: fit-content;
 }
 
 /*# sourceMappingURL=style.css.map */
