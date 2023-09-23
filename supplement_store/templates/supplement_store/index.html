@@ -8,90 +8,183 @@
 
 {% block body %}
     <div id="slide-show">
-        {% for image in images %}
-            <div class="slides fade">
-                <img src="{% static '/supplement_store/images/slide_show_images/' %}{{image.image.name|filename}}" class="slide-show-images" data-id="{{image.id}}" id="image-{{image.title}}" alt="{{image.title}}">
-            </div>
-        {% endfor %}
+        <div id="image-slider">
+            {% for image in images %}
+                <div class="slides" style="z-index: {{ image.order }};">
+                    <img src="{% static '/supplement_store/images/slide_show_images/' %}{{image.image.name|filename}}" class="slide-show-images" data-id="{{image.id}}" id="image-{{image.title}}" alt="{{image.title}}">
+                </div>
+            {% endfor %}
+        </div>
         <img src="{% static '/supplement_store/images/left-arrow.svg' %}" alt="left-arrow" width="50px" id="left-arrow">
         <img src="{% static '/supplement_store/images/right-arrow.svg' %}" alt="right-arrow" width="50px" id="right-arrow">
-        <ul>
-            {% for image in images %}
-                <li class="dot" data-id="{{image.id}}"><i class="fa fa-circle"></i></li>
-            {% endfor %}
-        </ul>
+        <div id="under-slide-show">
+            <ul>
+                {% for image in images %}
+                    <li class="dot" data-id="{{image.id}}"><i class="fa fa-circle"></i></li>
+                {% endfor %}
+            </ul>
+        </div>
     </div>
 {% endblock %}
 
 {% block script %}
     <script>
-        const slides = document.querySelectorAll('.slides');
-        const allImages = document.querySelectorAll('.slide-show-images');
-        const allDots = document.querySelectorAll('.dot');
-        const leftArrow = document.getElementById('left-arrow');
-        const rightArrow = document.getElementById('right-arrow');
-        let currentImageIndex = 0;
-        let intervalId;
+        document.addEventListener('DOMContentLoaded', () => {
+            const images = document.querySelectorAll(".slides");
+            const rightBtn = document.querySelector("#right-arrow");
+            const leftBtn = document.querySelector("#left-arrow");
+            const dots = document.querySelectorAll(".dot");
+            let index = 0;
+            let intervalId;
 
-        // change the image to the index its on
-        function showImage(index) {
-            allImages.forEach(eachImage => {
-                eachImage.style.display = 'none';
-            });
-            allDots.forEach(dot => {
-                dot.classList.remove('is_active');
-            });
-            allImages[index].style.display = 'block';
-            allDots[index].classList.add('is_active');
-            currentImageIndex = index;
-        }
-        showImage(currentImageIndex);
-
-        // function to change image to the right
-        function showNextImage() {
-            currentImageIndex = (currentImageIndex + 1) % allImages.length;
-            showImage(currentImageIndex);
-        }
-
-        // when you click left arrow change the image to the left
-        leftArrow.addEventListener('click', () => {
-            currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
-            slides[currentImageIndex].classList.add('fade-in');
-            showImage(currentImageIndex);
-            setTimeout(() => {
-                slides.forEach(slide => {
-                    slide.classList.remove('fade-in');
-                });
-            }, 500);
-            clearInterval(intervalId);
-            intervalId = setInterval(showNextImage, 3000);
-        });
-        // when you click right arrow change the image to the right
-        rightArrow.addEventListener('click', () => {
-            currentImageIndex = (currentImageIndex + 1) % allImages.length;
-            slides[currentImageIndex].classList.add('fade-in');
-            showImage(currentImageIndex);
-            setTimeout(() => {
-                slides.forEach(slide => {
-                    slide.classList.remove('fade-in');
-                });
-            }, 500);
-            clearInterval(intervalId);
-            intervalId = setInterval(showNextImage, 3000);
-        });
-        // when you click the dot change the image
-        allDots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const id = dot.getAttribute('data-id');
-                const index = Array.from(allImages).findIndex(image => image.getAttribute('data-id') === id);
-                if (index !== -1) {
-                    showImage(index);
+            rightBtn.addEventListener("click", () => {
+                if (index >= images.length - 1) {
+                    index = 0;
+                    images.forEach((image) => {
+                        image.style.left = "0";
+                    });
+                } else {
+                    images[index].style.left = "-100%";
+                    index += 1;
                 }
-                clearInterval(intervalId); 
-                intervalId = setInterval(showNextImage, 3000);
+                updateDotStyles();
             });
+
+            leftBtn.addEventListener("click", () => {
+                if (index <= 0) {
+                    index = images.length - 1;
+                    for (let i = 0; i < images.length - 1; i++) {
+                        images[i].style.left = "-100%";
+                    }
+                } else {
+                    index -= 1;
+                    images[index].style.left = "0";
+                }
+                updateDotStyles();
+            });
+
+            dots.forEach((dot, dotIndex) => {
+                dot.addEventListener("click", () => {
+                    index = dotIndex;
+
+                    dots.forEach((eachDot) => {
+                        eachDot.classList.remove("is_active");
+                    });
+
+                    images.forEach(image => {
+                        if (index <= 0) {
+                            dot.classList.add("is_active");
+                            index = images.length - 1;
+                            for (let i = 0; i < images.length - 1; i++) {
+                                images[i].style.left = "-100%";
+                            }
+                        } else {
+                            dot.classList.add("is_active");
+                            index -= 1;
+                            images[index].style.left = "0";
+                        }
+                        updateDotStyles();
+                    });
+                });
+            });
+
+            intervalId = setInterval(() => {
+                if (index >= images.length - 1) {
+                    index = 0;
+                    images.forEach((image) => {
+                        image.style.left = "0";
+                    });
+                } else {
+                    images[index].style.left = "-100%";
+                    index += 1;
+                }
+                updateDotStyles();
+            }, 3000);
+
+            function updateDotStyles() {
+                dots.forEach((dot, dotIndex) => {
+                    if (dotIndex === index) {
+                        dot.classList.add("is_active");
+                    } else {
+                        dot.classList.remove("is_active");
+                    }
+                });
+            }
+            updateDotStyles();
+
+            const navigationElements = [...dots, leftBtn, rightBtn];
+            navigationElements.forEach((element) => {
+                element.addEventListener("click", () => {
+                    clearInterval(intervalId);
+                });
+            });
+
         });
-        // change the image automatically every 5 seconds
-        intervalId = setInterval(showNextImage, 3000);
+        
+
+        //// change the image to the index its on
+        //function showImage(index) {
+        //    allImages.forEach(eachImage => {
+        //        eachImage.style.display = 'none';
+        //    });
+        //    allDots.forEach(dot => {
+        //        dot.classList.remove('is_active');
+        //    });
+        //    slides.forEach(slide => {
+        //        slide.classList.remove('right');
+        //    });
+        //    allImages[index].style.display = 'block';
+        //    allDots[index].classList.add('is_active');
+        //    currentImageIndex = index;
+        //}
+        //showImage(currentImageIndex);
+//
+        //// function to change image to the right
+        //function showNextImage() {
+        //    currentImageIndex = (currentImageIndex + 1) % allImages.length;
+        //    showImage(currentImageIndex);
+        //    slides[currentImageIndex].classList.add('right');
+        //}
+//
+        //// when you click left arrow change the image to the left
+        //leftArrow.addEventListener('click', () => {
+        //    currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
+        //    slides[currentImageIndex].classList.add('left');
+        //    showImage(currentImageIndex);
+        //    setTimeout(() => {
+        //        slides.forEach(slide => {
+        //            slide.classList.remove('left');
+        //        });
+        //    }, 500);
+        //    clearInterval(intervalId);
+        //    intervalId = setInterval(showNextImage, 3000);
+        //});
+        //// when you click right arrow change the image to the right
+        //rightArrow.addEventListener('click', () => {
+        //    currentImageIndex = (currentImageIndex + 1) % allImages.length;
+        //    showImage(currentImageIndex);
+        //    slides[currentImageIndex].classList.add('right');
+        //    setTimeout(() => {
+        //        slides.forEach(slide => {
+        //            slide.classList.remove('right');
+        //        });
+        //    }, 500);
+        //    clearInterval(intervalId);
+        //    intervalId = setInterval(showNextImage, 3000);
+        //});
+        //// when you click the dot change the image
+        //allDots.forEach(dot => {
+        //    dot.addEventListener('click', () => {
+        //        const id = dot.getAttribute('data-id');
+        //        const index = Array.from(allImages).findIndex(image => image.getAttribute('data-id') === id);
+        //        if (index !== -1) {
+        //            showImage(index);
+        //        }
+        //        clearInterval(intervalId); 
+        //        intervalId = setInterval(showNextImage, 3000);
+        //    });
+        //});
+        //// change the image automatically every 5 seconds
+        //intervalId = setInterval(showNextImage, 3000);
     </script>
 {% endblock %}

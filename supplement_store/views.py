@@ -16,7 +16,7 @@ from .models import User, SlideShowImage
 
 def index(request):
     return render(request, "supplement_store/index.html", {
-        "images": SlideShowImage.objects.all().order_by('order'),
+        "images": SlideShowImage.objects.all().order_by('-order'),
     })
 
 def login_view(request):
