@@ -21,22 +21,26 @@ def index(request):
 
 def login_view(request):
     if request.method == 'POST':
-        first = request.POST["first"]
-        password = request.POST["password"]
-        remember = request.POST["remember"]
+        first = request.POST.get("first")
+        password = request.POST.get("password")
+        remember = request.POST.get("remember")
 
         if '@' in first:
             user = authenticate(request, email=first, password=password)
         else:
             user = authenticate(request, username=first, password=password)
 
-        # TO DO
-        if remember:
-            pass
-        else:
-            pass
-
         if user is not None:
+            if remember:
+                user.remember_me = True
+                user.save()
+                request.session.set_expiry(1209600)
+                request.session.modified = True
+            else:
+                user.remember_me = False
+                user.save()
+                request.session.set_expiry(0)
+                request.session.modified = True
             login(request, user)
             return redirect('index')
         else:

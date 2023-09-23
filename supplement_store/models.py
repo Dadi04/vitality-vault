@@ -14,6 +14,7 @@ def slide_show_upload_path(instance, filename):
 
 
 class User(AbstractUser):
+    remember_me = models.BooleanField(default=True)
     address = models.CharField(default=None)
     city = models.CharField(default=None)
     state = models.CharField(null=True, blank=True, default=None)
