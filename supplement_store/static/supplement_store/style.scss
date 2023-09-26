@@ -454,6 +454,20 @@ footer {
     
 }
   
+#loading {
+    width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+
+    #sent-email {
+        text-decoration: underline;
+    }
+
+    p {
+        font-size: 20px;
+    }
+}
+
 #slide-show {
 	width: fit-content;
 	display: flex;

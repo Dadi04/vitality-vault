@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
+from captcha.fields import ReCaptchaField
 from .countries import COUNTRIES
 
 # Create your models here.
@@ -22,6 +23,7 @@ class User(AbstractUser):
     zipcode = models.CharField(default=None)
     phone = models.CharField(default=None)
     birth = models.DateField(default='1900-01-01')
+    captcha = ReCaptchaField()
 
 class Item(models.Model):
     CATEGORIES = (

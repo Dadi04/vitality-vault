@@ -43,7 +43,18 @@
             <label for="password" class="required">*</label>
             <input type="password" name="confirm-password" placeholder="Confirm Password" class="register-input" id="confirm_password" size="24" required :last-child>
             <label for="confirm-password" class="required">*</label><button type="button" class="fa fa-eye" id="show_password"></button><br>
-            TO DO Captcha
+            <script>
+                function onClick(e) {
+                  e.preventDefault();
+                  grecaptcha.enterprise.ready(async () => {
+                    const token = await grecaptcha.enterprise.execute('6LdqozAoAAAAAFvqg7aKWiKPaUZ1PsJX5PBrL3GB', {action: 'LOGIN'});
+                    // IMPORTANT: The 'token' that results from execute is an encrypted response sent by
+                    // reCAPTCHA Enterprise to the end user's browser.
+                    // This token must be validated by creating an assessment.
+                    // See https://cloud.google.com/recaptcha-enterprise/docs/create-assessment
+                  });
+                }
+            </script>
             <input type="submit" id="submit-register">
         </form>
         <div>

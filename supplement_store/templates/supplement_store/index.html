@@ -36,8 +36,25 @@
             const dots = document.querySelectorAll(".dot");
             let index = 0;
             let intervalId;
+            
+            function startSlideShow() {
+                intervalId = setInterval(() => {
+                    if (index >= images.length - 1) {
+                        index = 0;
+                        images.forEach((image) => {
+                            image.style.left = "0";
+                        });
+                    } else {
+                        images[index].style.left = "-100%";
+                        index += 1;
+                    }
+                    updateDotStyles();
+                }, 3000);
+            }
+            startSlideShow();
 
             rightBtn.addEventListener("click", () => {
+                clearInterval(intervalId);
                 if (index >= images.length - 1) {
                     index = 0;
                     images.forEach((image) => {
@@ -48,9 +65,11 @@
                     index += 1;
                 }
                 updateDotStyles();
+                startSlideShow();
             });
 
             leftBtn.addEventListener("click", () => {
+                clearInterval(intervalId);
                 if (index <= 0) {
                     index = images.length - 1;
                     for (let i = 0; i < images.length - 1; i++) {
@@ -61,10 +80,12 @@
                     images[index].style.left = "0";
                 }
                 updateDotStyles();
+                startSlideShow();
             });
 
             dots.forEach((dot, dotIndex) => {
                 dot.addEventListener("click", () => {
+                    clearInterval(intervalId);
                     index = dotIndex;
 
                     dots.forEach((eachDot) => {
@@ -85,21 +106,9 @@
                         }
                         updateDotStyles();
                     });
+                    startSlideShow();
                 });
             });
-
-            intervalId = setInterval(() => {
-                if (index >= images.length - 1) {
-                    index = 0;
-                    images.forEach((image) => {
-                        image.style.left = "0";
-                    });
-                } else {
-                    images[index].style.left = "-100%";
-                    index += 1;
-                }
-                updateDotStyles();
-            }, 3000);
 
             function updateDotStyles() {
                 dots.forEach((dot, dotIndex) => {
@@ -111,80 +120,6 @@
                 });
             }
             updateDotStyles();
-
-            const navigationElements = [...dots, leftBtn, rightBtn];
-            navigationElements.forEach((element) => {
-                element.addEventListener("click", () => {
-                    clearInterval(intervalId);
-                });
-            });
-
         });
-        
-
-        //// change the image to the index its on
-        //function showImage(index) {
-        //    allImages.forEach(eachImage => {
-        //        eachImage.style.display = 'none';
-        //    });
-        //    allDots.forEach(dot => {
-        //        dot.classList.remove('is_active');
-        //    });
-        //    slides.forEach(slide => {
-        //        slide.classList.remove('right');
-        //    });
-        //    allImages[index].style.display = 'block';
-        //    allDots[index].classList.add('is_active');
-        //    currentImageIndex = index;
-        //}
-        //showImage(currentImageIndex);
-//
-        //// function to change image to the right
-        //function showNextImage() {
-        //    currentImageIndex = (currentImageIndex + 1) % allImages.length;
-        //    showImage(currentImageIndex);
-        //    slides[currentImageIndex].classList.add('right');
-        //}
-//
-        //// when you click left arrow change the image to the left
-        //leftArrow.addEventListener('click', () => {
-        //    currentImageIndex = (currentImageIndex - 1 + allImages.length) % allImages.length;
-        //    slides[currentImageIndex].classList.add('left');
-        //    showImage(currentImageIndex);
-        //    setTimeout(() => {
-        //        slides.forEach(slide => {
-        //            slide.classList.remove('left');
-        //        });
-        //    }, 500);
-        //    clearInterval(intervalId);
-        //    intervalId = setInterval(showNextImage, 3000);
-        //});
-        //// when you click right arrow change the image to the right
-        //rightArrow.addEventListener('click', () => {
-        //    currentImageIndex = (currentImageIndex + 1) % allImages.length;
-        //    showImage(currentImageIndex);
-        //    slides[currentImageIndex].classList.add('right');
-        //    setTimeout(() => {
-        //        slides.forEach(slide => {
-        //            slide.classList.remove('right');
-        //        });
-        //    }, 500);
-        //    clearInterval(intervalId);
-        //    intervalId = setInterval(showNextImage, 3000);
-        //});
-        //// when you click the dot change the image
-        //allDots.forEach(dot => {
-        //    dot.addEventListener('click', () => {
-        //        const id = dot.getAttribute('data-id');
-        //        const index = Array.from(allImages).findIndex(image => image.getAttribute('data-id') === id);
-        //        if (index !== -1) {
-        //            showImage(index);
-        //        }
-        //        clearInterval(intervalId); 
-        //        intervalId = setInterval(showNextImage, 3000);
-        //    });
-        //});
-        //// change the image automatically every 5 seconds
-        //intervalId = setInterval(showNextImage, 3000);
     </script>
 {% endblock %}

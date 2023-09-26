@@ -65,6 +65,27 @@ def register_view(request):
         zipcode = request.POST["zipcode"]
         password = request.POST["password"]
         confirm_password = request.POST["confirm-password"]
+        captcha = request.POST.get('g-recaptcha-response')
+
+        if captcha: 
+            recaptcha_secret_key = 'key'
+            verification_url = 'https://www.google.com/recaptcha/api/siteverify'
+
+            data = {
+                'secret': recaptcha_secret_key,
+                'response': captcha
+            }
+
+            response = request.post(verification_url, data=data)
+            result = response.json()
+            if result.get('success'):
+                pass
+            else:
+                messages.error(request, "reCAPTCHA verification failed. Please try again.")
+                return redirect("register_view")
+        else:
+            messages.error(request, "reCAPTCHA not submitted or manipulated.")
+            return redirect("register_view")
 
         # check for the errors
         if password != confirm_password:
@@ -94,7 +115,7 @@ def register_view(request):
         email = EmailMessage(mail_subject, message, to=[email])
         email.send()
 
-        return HttpResponse("Your account is being activated. Please wait... <br> Check your email inbox and spam folder.")
+        return render(request, "supplement_store/loading.html")
     return render(request, "supplement_store/register.html", {
         "countries": [(code, name) for code, name in COUNTRIES.items()],
     })
