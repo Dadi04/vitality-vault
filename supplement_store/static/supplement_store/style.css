@@ -367,7 +367,18 @@ footer #third #third-third img {
   padding: 6px;
   width: 30px;
 }
-#register #submit-register {
+#register #bottom-register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+  gap: 10px;
+}
+#register #bottom-register .g-recaptcha {
+  width: fit-content;
+  display: inline-block;
+}
+#register #bottom-register #submit-register {
   font-family: "Montserrat" sans-serif;
   display: inline-block;
   width: 100%;
@@ -384,9 +395,9 @@ footer #third #third-third img {
   position: relative;
   overflow: hidden;
   transition: background-color 0.3s ease;
-  margin: 0 20px 10px 120px;
+  margin-left: 40px;
 }
-#register #submit-register:hover {
+#register #bottom-register #submit-register:hover {
   background-color: #444;
 }
 

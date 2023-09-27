@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render, HttpResponse
+from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -9,8 +9,11 @@ from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
 
+import requests
+from .forms import RegistrationForm
 from .countries import COUNTRIES
 from .models import User, SlideShowImage
+from supplements.settings import RECAPTCHA_PRIVATE_KEY
 
 # Create your views here.
 
@@ -51,73 +54,67 @@ def login_view(request):
 
 def register_view(request):
     if request.method == 'POST':
+        form = RegistrationForm(request.POST)
+
+        if form.is_valid():
         # get the info from the user
-        email = request.POST["email"]
-        username = request.POST["username"]
-        first = request.POST["first"]
-        last = request.POST["last"]
-        phone = request.POST["phone"]
-        birthday = request.POST["birthday"]
-        address = request.POST["address"]
-        city = request.POST["city"]
-        state = request.POST["state"]
-        country = request.POST["country"]
-        zipcode = request.POST["zipcode"]
-        password = request.POST["password"]
-        confirm_password = request.POST["confirm-password"]
-        captcha = request.POST.get('g-recaptcha-response')
+            email = form.cleaned_data["email"]
+            username = form.cleaned_data["username"]
+            first = form.cleaned_data["first_name"]
+            last = form.cleaned_data["last_name"]
+            phone = form.cleaned_data["phone"]
+            birthday = form.cleaned_data["birthday"]
+            address = form.cleaned_data["address"]
+            city = form.cleaned_data["city"]
+            state = form.cleaned_data["state"]
+            country = request.POST["country"]
+            zipcode = form.cleaned_data["zipcode"]
+            password = form.cleaned_data["password"]
+            confirm_password = form.cleaned_data["confirm_password"]
+            captcha = form.cleaned_data["captcha"]
+            
+            # napraviti provere (ima u django vec napravljene premade)
 
-        if captcha: 
-            recaptcha_secret_key = 'key'
-            verification_url = 'https://www.google.com/recaptcha/api/siteverify'
+            # create the user
+            user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last, phone=phone, birth=birthday, address=address, city=city, state=state, country=country, zipcode=zipcode)
+            user.is_active = False
+            user.save()
 
-            data = {
-                'secret': recaptcha_secret_key,
-                'response': captcha
-            }
+            # emailing logic
+            mail_subject = "Activate your user account."
+            message = render_to_string("supplement_store/confirmation_email.html", {
+                "user": user.username,
+                "domain": get_current_site(request).domain,
+                "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                "token": default_token_generator.make_token(user),
+                "protocol": 'https' if request.is_secure() else 'http'
+            })
+            email = EmailMessage(mail_subject, message, to=[email])
+            email.send()
 
-            response = request.post(verification_url, data=data)
-            result = response.json()
-            if result.get('success'):
-                pass
-            else:
-                messages.error(request, "reCAPTCHA verification failed. Please try again.")
-                return redirect("register_view")
-        else:
-            messages.error(request, "reCAPTCHA not submitted or manipulated.")
-            return redirect("register_view")
-
-        # check for the errors
-        if password != confirm_password:
-            messages.error(request, "Passwords do not match. Please try again.")
-            return redirect("register_view")
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email address already taken.")
-            return redirect("register_view")
-        elif User.objects.filter(username=username).exists():
-            messages.error(request, "Username already taken.")
-            return redirect("register_view")
-        
-        # create the user
-        user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last, phone=phone, birth=birthday, address=address, city=city, state=state, country=country, zipcode=zipcode)
-        user.is_active = False
-        user.save()
-
-        # emailing logic
-        mail_subject = "Activate your user account."
-        message = render_to_string("supplement_store/confirmation_email.html", {
-            "user": user.username,
-            "domain": get_current_site(request).domain,
-            "uid": urlsafe_base64_encode(force_bytes(user.pk)),
-            "token": default_token_generator.make_token(user),
-            "protocol": 'https' if request.is_secure() else 'http'
-        })
-        email = EmailMessage(mail_subject, message, to=[email])
-        email.send()
-
-        return render(request, "supplement_store/loading.html")
+            return render(request, "supplement_store/loading.html")
+        else: 
+            form = RegistrationForm(initial={
+                'email': email,
+                'username': username,
+                'first_name': first,
+                'last_name': last,
+                'phone': phone,
+                'birthday': birthday,
+                'address': address,
+                'city': city,
+                'state': state,
+                'zipcode': zipcode,
+            })
+            return render(request, "supplement_store/register.html", {
+                "countries": [(code, name) for code, name in COUNTRIES.items()],
+                "form": form
+            })
+    else:
+        form = RegistrationForm()
     return render(request, "supplement_store/register.html", {
         "countries": [(code, name) for code, name in COUNTRIES.items()],
+        "form": form
     })
 
 def activate_email(request, uidb64, token):

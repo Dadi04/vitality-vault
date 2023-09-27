@@ -13,19 +13,19 @@
         </header>
         <form action="{% url 'register_view' %}" method="post">
             {% csrf_token %}
-            <input type="email" name="email" placeholder="Email" class="register-input width100" required>
+            {{ form.email }}
             <label for="email" class="required">*</label><br>
-            <input type="text" name="username" placeholder="Username" class="register-input width100" required>
+            {{ form.username }}
             <label for="username" class="required">*</label><br>
-            <input type="text" placeholder="First Name" name="first" class="register-input" size="26" required>
+            {{ form.first_name }}
             <label for="first" class="required">*</label>
-            <input type="text" placeholder="Last Name" name="last" class="register-input" size="26" required>
+            {{ form.last_name }}
             <label for="last" class="required">*</label>
-            <input type="text" name="address" placeholder="Address" class="register-input" size="26" required>
+            {{ form.address }}
             <label for="address" class="required">*</label>
-            <input type="text" name="city" placeholder="Suburb/City" class="register-input" size="26" required>
+            {{ form.city }}
             <label for="city" class="required">*</label>
-            <input type="text" name="state" placeholder="State/Province" class="register-input" size="27">
+            {{ form.state }}
             <select name="country" id="country" class="register-input" required>
                 <option value="choose" disabled selected>Choose a Country</option>
                 {% for country_code, country_name in countries %}
@@ -33,46 +33,44 @@
                 {% endfor %}
             </select>
             <label for="country" class="required">*</label>
-            <input type="text" name="zipcode" placeholder="Zip/Postcode" class="register-input width100" required>
+            {{ form.zipcode }}
             <label for="zipcode" class="required">*</label><br>
-            <input type="text" name="phone" placeholder="Phone Number" class="register-input" id="phone" size="40" required>
+            {{ form.phone }}
             <label for="phone" class="required">*</label>
-            <input type="date" name="birthday" placeholder="Birthday" class="register-input">
+            {{ form.birthday }}
             <label for="birthday" class="required">*</label>
-            <input type="password" name="password" placeholder="Password" class="register-input" id="password" size="24" required :last-child>
+            {{ form.password }}
             <label for="password" class="required">*</label>
-            <input type="password" name="confirm-password" placeholder="Confirm Password" class="register-input" id="confirm_password" size="24" required :last-child>
+            {{ form.confirm_password }}
             <label for="confirm-password" class="required">*</label><button type="button" class="fa fa-eye" id="show_password"></button><br>
-            <script>
-                function onClick(e) {
-                  e.preventDefault();
-                  grecaptcha.enterprise.ready(async () => {
-                    const token = await grecaptcha.enterprise.execute('6LdqozAoAAAAAFvqg7aKWiKPaUZ1PsJX5PBrL3GB', {action: 'LOGIN'});
-                    // IMPORTANT: The 'token' that results from execute is an encrypted response sent by
-                    // reCAPTCHA Enterprise to the end user's browser.
-                    // This token must be validated by creating an assessment.
-                    // See https://cloud.google.com/recaptcha-enterprise/docs/create-assessment
-                  });
-                }
-            </script>
-            <input type="submit" id="submit-register">
+            <div id="bottom-register">
+                {{ form.captcha }}
+                <input type="submit" id="submit-register">
+            </div>
         </form>
         <div>
-            {% if messages %}
-                {% for message in messages %}
-                    {{ message }}
+            {% for field in form %}
+                {% for error in field.errors %}
+                    <div class="error">{{ error }}</div>
                 {% endfor %}
-            {% endif %}
+            {% endfor %}
         </div>
     </div>
 {% endblock %}
 
-<!-- loading screen TO DO -->
-<!-- instantly checking inputs TO DO -->
-<!-- captcha TO DO -->
-
 {% block script %}
     <script>
+        function onClick(e) {
+            e.preventDefault();
+            grecaptcha.enterprise.ready(async () => {
+            const token = await grecaptcha.enterprise.execute('6LdqozAoAAAAAFvqg7aKWiKPaUZ1PsJX5PBrL3GB', {action: 'LOGIN'});
+            // IMPORTANT: The 'token' that results from execute is an encrypted response sent by
+            // reCAPTCHA Enterprise to the end user's browser.
+            // This token must be validated by creating an assessment.
+            // See https://cloud.google.com/recaptcha-enterprise/docs/create-assessment
+            });
+        }
+
         const showPassword = document.getElementById('show_password')
         const passwordInput = document.getElementById('password')
         const confirmPasswordInput = document.getElementById('confirm_password')
