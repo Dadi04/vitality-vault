@@ -72,7 +72,7 @@ def register_view(request):
             password = form.cleaned_data["password"]
             confirm_password = form.cleaned_data["confirm_password"]
             captcha = form.cleaned_data["captcha"]
-            
+
             # napraviti provere (ima u django vec napravljene premade)
 
             # create the user
@@ -93,23 +93,6 @@ def register_view(request):
             email.send()
 
             return render(request, "supplement_store/loading.html")
-        else: 
-            form = RegistrationForm(initial={
-                'email': email,
-                'username': username,
-                'first_name': first,
-                'last_name': last,
-                'phone': phone,
-                'birthday': birthday,
-                'address': address,
-                'city': city,
-                'state': state,
-                'zipcode': zipcode,
-            })
-            return render(request, "supplement_store/register.html", {
-                "countries": [(code, name) for code, name in COUNTRIES.items()],
-                "form": form
-            })
     else:
         form = RegistrationForm()
     return render(request, "supplement_store/register.html", {

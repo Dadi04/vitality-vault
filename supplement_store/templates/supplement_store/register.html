@@ -26,12 +26,7 @@
             {{ form.city }}
             <label for="city" class="required">*</label>
             {{ form.state }}
-            <select name="country" id="country" class="register-input" required>
-                <option value="choose" disabled selected>Choose a Country</option>
-                {% for country_code, country_name in countries %}
-                    <option value="{{ country_code }}" id="{{ country_code }}">{{ country_name }}</option>
-                {% endfor %}
-            </select>
+            {{ form.country }}
             <label for="country" class="required">*</label>
             {{ form.zipcode }}
             <label for="zipcode" class="required">*</label><br>
@@ -88,19 +83,9 @@
             }
         })
 
-        const emailInput = document.getElementsByName('email');
-        const usernameInput = document.getElementsByName('username');
-        const firstNameInput = document.getElementsByName('first');
-        const lastNameInput = document.getElementsByName('last');
-        const addressInput = document.getElementsByName('address');
-        const cityInput = document.getElementsByName('city');
-        const zipcodeInput = document.getElementsByName('zipcode');
-        const birthdayInput = document.getElementsByName('birthday');
-        
-
-
-
         const countrySelect = document.getElementById('country');
+        const chooseCountryOption = countrySelect.querySelector('option[value=""]');
+        chooseCountryOption.disabled = true;
         const phoneInput = document.getElementById('phone');
         countrySelect.addEventListener('change', () => {
             const selectedCountry = countrySelect.value;
