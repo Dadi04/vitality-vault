@@ -8,7 +8,7 @@
         <link rel="icon" type="image/png" href="{% static 'supplement_store/images/icon.png' %}"/>
         <link rel="stylesheet" href="{% static 'supplement_store/style.css' %}">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Montserrat:wght@300&family=Lato:wght@300&display=swap" rel="stylesheet">
-        <script src="https://www.google.com/recaptcha/enterprise.js?render=6LdqozAoAAAAAFvqg7aKWiKPaUZ1PsJX5PBrL3GB"></script>
+        
         <script src="https://kit.fontawesome.com/cef40b906e.js" crossorigin="anonymous"></script>
         <title>{% block title %}{% endblock %}</title>
     </head>
@@ -192,6 +192,10 @@
             </div>
         </footer>
         
+        <div id="support">
+            <a href=""><img src="{% static 'supplement_store/images/support.png' %}" alt="support" width="80px"></a>
+        </div>
+
         {% block script %}
         {% endblock %}
     </body>

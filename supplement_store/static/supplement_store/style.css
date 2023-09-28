@@ -186,6 +186,13 @@ footer #third #third-third img {
   margin: 0 2px 5px 10px;
 }
 
+#support {
+  position: fixed;
+  z-index: 1000;
+  bottom: 1%;
+  right: 1%;
+}
+
 #login {
   width: 600px;
   margin: 0 auto;
