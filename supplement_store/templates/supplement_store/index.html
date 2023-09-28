@@ -10,7 +10,7 @@
     <div id="slide-show">
         <div id="image-slider">
             {% for image in images %}
-                <div class="slides" style="z-index: {{ image.order }};">
+                <div class="slides" style="z-index: {{image.order}};">
                     <img src="{% static '/supplement_store/images/slide_show_images/' %}{{image.image.name|filename}}" class="slide-show-images" data-id="{{image.id}}" id="image-{{image.title}}" alt="{{image.title}}">
                 </div>
             {% endfor %}

@@ -584,3 +584,65 @@ footer {
         }
     }
 }
+
+.password-reset {
+    width: fit-content;
+    margin: 0 auto;
+
+    .input {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 5px;
+        width: 95%;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.1);
+    }
+
+    #show_password {
+        border: none;
+        outline: none;
+        margin: 5px 5px 5px 0;
+        padding: 6px;
+        background-color: transparent;
+        width: 100%;
+        text-align: center;
+        border-radius: 20px;
+        transition: background-color 0.5s;
+
+        &:hover {
+            background-color: #EEE;
+            
+        }
+    }
+
+    .reset-password-submit {
+        width: 100%;
+        height: 40px;
+        border: none;
+        outline: none;
+        background: #2f2f2f;
+        color: #fff;
+        font-size: 15px;
+        border-radius: 5px;
+        text-align: center;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.3s ease;
+        margin-bottom: 30px;
+        margin-top: 15px;
+        display: block;
+
+        &:hover {
+            background-color: #444;
+        }
+    }
+
+    a {
+        text-decoration: none;
+        color: #333;
+    }
+}
