@@ -1,6 +1,7 @@
 from django.shortcuts import redirect, render
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
+from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
@@ -8,6 +9,8 @@ from django.core.mail import EmailMessage
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.forms import SetPasswordForm
 
 import requests
 from .forms import RegistrationForm
@@ -144,3 +147,33 @@ def brands(request):
 
 def contact(request):
     return render(request, "supplement_store/contact.html")
+
+class CustomPasswordResetView(PasswordResetView):
+    def form_valid(self, form):
+        email = form.cleaned_data['email']
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            form.add_error('email', 'Email does not exist.')
+            return self.form_invalid(form)
+        return super().form_valid(form)
+    
+    def get_success_url(self):
+        return reverse('password_reset_done')
+    
+class CustomPasswordResetConfirmView(PasswordResetConfirmView):
+    form_class = SetPasswordForm
+
+    def form_valid(self, form):
+        password1 = form.cleaned_data['new_password1']
+        password2 = form.cleaned_data['new_password2']
+
+        if password1 != password2:
+            form.add_error('new_password2', 'Passwords do not match')
+            return self.form_invalid(form)
+
+        response = super().form_valid(form)
+
+        update_session_auth_hash(self.request, self.request.user)
+
+        return response
