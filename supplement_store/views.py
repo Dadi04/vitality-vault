@@ -11,12 +11,14 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
+from django.http import JsonResponse
+from django.db.models import Subquery, OuterRef, F
 
-import requests
+from datetime import datetime
+
 from .forms import RegistrationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage
-from supplements.settings import RECAPTCHA_PRIVATE_KEY
+from .models import User, SlideShowImage, Support, SupportAnswer
 
 # Create your views here.
 
@@ -24,6 +26,63 @@ def index(request):
     return render(request, "supplement_store/index.html", {
         "images": SlideShowImage.objects.all().order_by('-order'),
     })
+
+@login_required
+def chatting(request):
+    if request.method == 'POST':
+        message = request.POST.get('text-field', '')
+        if message:
+            Support.objects.create(user=request.user, message=message, date=datetime.now())
+            return JsonResponse({'success': 'Message saved to the database'})
+        else:
+            return JsonResponse({'error': 'Message is empty'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
+
+@login_required
+def inbox(request):
+    if request.user.is_staff == True:
+        latest_message_subquery = Support.objects.filter(user=OuterRef('user')).order_by('-date').values('message')[:1]
+        one_message_per_user = Support.objects.annotate(latest_message=Subquery(latest_message_subquery)).filter(message=F('latest_message'))
+        messages = one_message_per_user.all()
+        return render(request, "supplement_store/inbox.html", {
+            "messages": messages
+        })
+    else: 
+        return redirect('index')
+
+@login_required
+def answer_inbox(request, username):
+    if request.user.is_staff == True:
+        user = User.objects.get(username=username)
+        messages = Support.objects.filter(user=user).order_by('-date')
+        answers = SupportAnswer.objects.filter(latest_message=Support.objects.filter(user=user).order_by('-date').first()).order_by('-date')
+        print(f"answer_inbox {answers}")
+        return render(request, "supplement_store/answer_inbox.html", {
+            "messages": messages,
+            "answers": answers
+        })
+    else: 
+        return redirect('index')
+
+@login_required
+def answering(request, username):
+    if request.user.is_staff == True:
+        user = User.objects.get(username=username)
+        response = request.POST["text"]
+        answers = SupportAnswer.objects.create(response=response, latest_message=Support.objects.filter(user=user).order_by('-date').first(), date=datetime.now())
+        print(f"answering {answers}")
+        return redirect('answer_inbox', username=user.username)
+    else: 
+        return redirect('index')    
+    
+
+@login_required
+def get_chat_messages_view(request):
+    if request.method == 'GET':
+        messages = Support.objects.filter(user=request.user).order_by('date')
+        formatted_messages = [{'user': message.user.username, 'message': message.message} for message in messages]
+        return JsonResponse({'messages': formatted_messages})
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def login_view(request):
     if request.method == 'POST':

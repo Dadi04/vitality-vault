@@ -1,0 +1,12 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Inbox
+{% endblock %}
+
+{% block body %}
+    {% for message in messages %}
+        <a href="{% url 'answer_inbox' username=message.user.username %}">{{ message }}</a><br>
+    {% endfor %}
+{% endblock %}

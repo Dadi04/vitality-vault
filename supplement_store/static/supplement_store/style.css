@@ -186,7 +186,93 @@ footer #third #third-third img {
   margin: 0 2px 5px 10px;
 }
 
-#support {
+#support-chat {
+  display: none;
+  z-index: 1000;
+  position: fixed;
+  bottom: 1%;
+  right: 1%;
+  background-color: #fff;
+  border-radius: 20px;
+  width: 350px;
+  height: 500px;
+  border: orange 1px solid;
+}
+#support-chat #header {
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+  width: 100%;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.1);
+}
+#support-chat #header img {
+  margin-left: 10px;
+}
+#support-chat #header button {
+  background-color: transparent;
+  color: orange;
+  outline: none;
+  border: orange 1px solid;
+  border-radius: 10px;
+  transition: all 0.5s;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin-left: 180px;
+}
+#support-chat #header button:hover {
+  color: #a56e08;
+  border-color: #a56e08;
+}
+#support-chat #chat {
+  height: 380px;
+  overflow-y: scroll;
+  margin: 5px;
+  display: flex;
+  flex-direction: column;
+}
+#support-chat #chat p {
+  background-color: #eee;
+  width: fit-content;
+  border-radius: 0 10px 10px 10px;
+  padding: 10px;
+}
+#support-chat #chat .sender {
+  border-radius: 10px 0 10px 10px;
+  background-color: orange;
+  align-items: flex-end;
+  align-self: flex-end;
+}
+#support-chat #message {
+  width: 90%;
+  border: orange 1px solid;
+  padding: 5px;
+  border-radius: 10px;
+  margin: 0 auto;
+}
+#support-chat #message #text-field {
+  width: 85%;
+  border-radius: 20px;
+  padding: 5px;
+  border: none;
+  outline: none;
+}
+#support-chat #message .fa-arrow-right {
+  border: orange 2px solid;
+  border-radius: 10px;
+  padding: 5px;
+  outline: none;
+  background-color: transparent;
+  color: orange;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+#support-chat #message .fa-arrow-right:hover {
+  color: #a56e08;
+  border-color: #a56e08;
+}
+
+#support-icon {
   position: fixed;
   z-index: 1000;
   bottom: 1%;
@@ -566,6 +652,97 @@ footer #third #third-third img {
 .password-reset a {
   text-decoration: none;
   color: #333;
+}
+
+#messages-from-user {
+  padding: 5px 1px;
+  border: solid 2px #333;
+  width: 1000px;
+  height: 500px;
+  overflow-y: scroll;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+#messages-from-user #answer {
+  align-items: flex-end;
+  align-self: flex-end;
+  width: 40%;
+  border: orange 1px solid;
+  padding: 5px;
+  border-radius: 10px;
+}
+#messages-from-user #answer #text-field {
+  width: 90%;
+  border-radius: 20px;
+  padding: 5px;
+  border: none;
+  outline: none;
+}
+#messages-from-user #answer .fa-arrow-right {
+  border: orange 2px solid;
+  border-radius: 10px;
+  padding: 5px;
+  outline: none;
+  background-color: transparent;
+  color: orange;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+#messages-from-user #answer .fa-arrow-right:hover {
+  color: #a56e08;
+  border-color: #a56e08;
+}
+#messages-from-user #close {
+  width: 30%;
+  align-items: flex-end;
+  align-self: flex-end;
+  margin-top: 10px;
+  font-family: "Montserrat" sans-serif;
+  border: none;
+  outline: none;
+  background: #2f2f2f;
+  color: #fff;
+  padding: 10px;
+  font-size: 15px;
+  border-radius: 40px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+  transition: all 0.3s;
+}
+#messages-from-user #close:hover {
+  background-color: #444;
+}
+#messages-from-user .answer-div {
+  align-items: flex-end;
+  align-self: flex-end;
+  justify-content: flex-end;
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+}
+#messages-from-user .answer-div .message {
+  border-radius: 10px 0 10px 10px;
+  background-color: #eee;
+  margin: 0;
+  width: fit-content;
+  padding: 5px;
+}
+#messages-from-user .answer-div .date, #messages-from-user .answer-div .name {
+  color: #666;
+}
+#messages-from-user .message-div {
+  margin-bottom: 20px;
+}
+#messages-from-user .message-div .message {
+  border-radius: 0 10px 10px 10px;
+  background-color: orange;
+  margin: 0;
+  width: fit-content;
+  padding: 5px;
+}
+#messages-from-user .message-div .date, #messages-from-user .message-div .name {
+  color: #666;
 }
 
 /*# sourceMappingURL=style.css.map */

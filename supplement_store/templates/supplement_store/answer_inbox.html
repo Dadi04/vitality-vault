@@ -1,0 +1,35 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Inbox
+{% endblock %}
+
+{% block body %}
+    <div id="messages-from-user">
+        <div id="answer">
+            <form action="{% url 'answering' username=messages.0.user.username %}" method="post">
+                {% csrf_token %}
+                <input type="text" name="text" id="text-field" placeholder="Answer" required>
+                <button type="submit" class="fa fa-arrow-right"></button>
+            </form>
+        </div>
+        <button id="close">Close the Conversation</button>
+        {% if answers %}
+            {% for answer in answers %}
+                <div class="answer-div">
+                    <span class="name">You</span>
+                    <p class="message">{{ answer.response }}</p>
+                    <span class="date">on {{ answer.date }}</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+        {% for message in messages %}
+            <div class="message-div">
+                <span class="name">{{ message.user.username }}</span>
+                <p class="message">{{ message.message }}</p> 
+                <span class="date">on {{ message.date }}</span>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

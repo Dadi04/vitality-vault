@@ -218,12 +218,109 @@ footer {
     }
 }
 
-#support {
+#support-chat {
+    display: none;
+    z-index: 1000;
+    position: fixed;
+    bottom: 1%;
+    right: 1%;
+    background-color: #fff;
+    border-radius: 20px;
+    width: 350px;
+    height: 500px;
+    border: orange 1px solid;
+
+    #header {
+        display: flex;
+        align-items: center;
+        margin-top: 5px;
+        width: 100%;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.1);
+
+        img {
+            margin-left: 10px;
+        }
+
+        button {
+            background-color: transparent;
+            color: orange;
+            outline: none;
+            border: orange 1px solid;
+            border-radius: 10px;
+            transition: all 0.5s;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            margin-left: 180px;
+
+            &:hover {
+                color: #a56e08;
+                border-color: #a56e08;
+            }
+        }
+    }
+
+    #chat {
+        height: 380px;
+        overflow-y: scroll;
+        margin: 5px;
+        display: flex;
+        flex-direction: column;
+        
+        p {
+            background-color: #eee;
+            width: fit-content;
+            border-radius: 0 10px 10px 10px;
+            padding: 10px;
+        }
+
+        .sender {
+            border-radius: 10px 0 10px 10px;
+            background-color: orange;
+            align-items: flex-end;
+            align-self: flex-end;
+        }
+    }
+
+    #message {
+        width: 90%;
+        border: orange 1px solid;
+        padding: 5px;
+        border-radius: 10px;
+        margin: 0 auto;
+
+        #text-field {
+            width: 85%;
+            border-radius: 20px;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
+
+        .fa-arrow-right {
+            border: orange 2px solid;
+            border-radius: 10px;
+            padding: 5px;
+            outline: none;
+            background-color: transparent;
+            color: orange;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+                color: #a56e08;
+                border-color: #a56e08;
+            }
+        }
+    }
+}
+
+#support-icon {
     position: fixed;
     z-index: 1000;
     bottom: 1%;
     right: 1%;
-}
+}   
 
 #login {
     width: 600px;
@@ -653,3 +750,107 @@ footer {
         color: #333;
     }
 }
+
+#messages-from-user {
+    padding: 5px 1px;
+    border: solid 2px #333;
+    width: 1000px;
+    height: 500px;
+    overflow-y: scroll;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+
+    #answer {
+        align-items: flex-end;
+        align-self: flex-end;
+        width: 40%;
+        border: orange 1px solid;
+        padding: 5px;
+        border-radius: 10px;
+
+        #text-field {
+            width: 90%;
+            border-radius: 20px;
+            padding: 5px;
+            border: none;
+            outline: none;
+        }
+
+        .fa-arrow-right {
+            border: orange 2px solid;
+            border-radius: 10px;
+            padding: 5px;
+            outline: none;
+            background-color: transparent;
+            color: orange;
+            cursor: pointer;
+            transition: all 0.3s;
+
+            &:hover {
+                color: #a56e08;
+                border-color: #a56e08;
+            }
+        }
+    }
+
+    #close {
+        width: 30%;
+        align-items: flex-end;
+        align-self: flex-end;
+        margin-top: 10px;
+        font-family: 'Montserrat' sans-serif;
+        border: none;
+        outline: none;
+        background: #2f2f2f;
+        color: #fff;
+        padding: 10px;
+        font-size: 15px;
+        border-radius: 40px;
+        text-align: center;
+        box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+        transition: all 0.3s;
+        
+        &:hover {
+            background-color: #444;
+        }
+    }
+
+    .answer-div {
+        align-items: flex-end;
+        align-self: flex-end;
+        justify-content: flex-end;
+        display: flex;
+        flex-direction: column;
+        margin-top: 20px;
+        
+        .message {
+            border-radius: 10px 0 10px 10px;
+            background-color: #eee;
+            margin: 0;
+            width: fit-content;
+            padding: 5px;
+        }    
+
+        .date, .name {
+            color: #666;
+        }
+    }
+
+    .message-div {
+        margin-bottom: 20px;
+
+        .message {
+            border-radius: 0 10px 10px 10px;
+            background-color: orange;
+            margin: 0;
+            width: fit-content;
+            padding: 5px;
+        }
+    
+        .date, .name {
+            color: #666;
+        }
+    }
+}
+

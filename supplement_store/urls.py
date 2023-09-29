@@ -19,6 +19,11 @@ urlpatterns = [
     path('about', views.about, name="about"),
     path('contact', views.contact, name="contact"),
     path("activate/<str:uidb64>/<str:token>/", views.activate_email, name='activate_email'),
+    path("chatting", views.chatting, name="chatting"),
+    path('get_chat_messages/', views.get_chat_messages_view, name='get_chat_messages'),
+    path('inbox', views.inbox, name="inbox"),
+    path('answer/<str:username>', views.answer_inbox, name="answer_inbox"),
+    path('answering/<str:username>', views.answering, name="answering"),
 
     path('password_reset', CustomPasswordResetView.as_view(
         template_name='supplement_store/password_reset_templates/password_reset_form.html', 

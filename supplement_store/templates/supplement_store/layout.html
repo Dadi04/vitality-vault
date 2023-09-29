@@ -56,6 +56,14 @@
                     </a>
                 </div>
                 {% endif %}
+                {% if user.is_staff %}
+                <div class="right">
+                    <a href="{% url 'inbox' %}">
+                        <img src="{% static 'supplement_store/images/inbox.png' %}" alt="inbox" width="32px">
+                        <p>Inbox</p>
+                    </a>
+                </div>
+                {% endif %}
                 {% if user.is_authenticated  %}
                     <div class="right">
                         <a href="{% url 'logout_view' %}">
@@ -192,9 +200,124 @@
             </div>
         </footer>
         
-        <div id="support">
-            <a href=""><img src="{% static 'supplement_store/images/support.png' %}" alt="support" width="80px"></a>
-        </div>
+        {% if not user.is_staff %}
+            <div id="support-chat">
+                <div id="header">
+                    <img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="80px">
+                    <span>David</span>
+                    <button class="fa fa-minus" id="minimize"></button>
+                </div>
+                <div id="chat">
+                    {% if user.is_authenticated %}
+                        <p>Hi, how can i help you?</p>
+                    {% else %}
+                        <p>Please sign in, in order to use chat support!</p>
+                    {% endif %}
+                </div>
+                <div id="message">
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'chatting' %}" method="post" id="form">
+                            {% csrf_token %}
+                            <input type="text" name="text-field" id="text-field" placeholder="Type message here" autocomplete="off">
+                            <input type="hidden" name="message" id="message-input">
+                            <button type="submit" class="fa fa-solid fa-arrow-right"></button>
+                        </form>
+                    {% else %}
+                        <input type="text" name="text-field" id="text-field" placeholder="Type message here" autocomplete="off">
+                        <input type="hidden" name="message" id="message-input">
+                        <button type="submit" class="fa fa-solid fa-arrow-right"></button>
+                    {% endif %}
+                </div>
+            </div>
+            <img src="{% static 'supplement_store/images/support.png' %}" alt="support" width="80px" id="support-icon">
+        {% endif %}
+        <script>
+            const supportChat = document.getElementById('support-chat');
+            const supportIcon = document.getElementById('support-icon');
+            const minimize = document.getElementById('minimize');
+            const supportMessage = document.getElementById('text-field');
+            const form = document.getElementById('form');
+            const messageInput = document.getElementById('message-input');
+            const chatDiv = document.getElementById('chat');
+
+            let messagesLoaded = false;
+
+            supportIcon.addEventListener('click', () => {
+                supportChat.style.display = 'block';
+                document.getElementById('text-field').focus();
+                supportIcon.style.display = 'none';
+
+                if (!messagesLoaded) {
+                    loadMessages();
+                    messagesLoaded = true;
+                }
+
+            }); 
+
+            minimize.addEventListener('click', () => {
+                supportChat.style.display = 'none';
+                supportIcon.style.display = 'block';
+            });
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const message = supportMessage.value;
+                if (message.trim() === '') {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(form.action, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        body: `text-field=${encodeURIComponent(message)}`,
+                    });
+
+                    if (response.ok) {
+                        supportMessage.value = '';
+                        displayMessage(message)
+                    } else {
+                        console.error('Failed to send message to server');
+                    }
+                } catch (error) {
+                    console.error('Error sending message:', error);
+                }
+            });
+
+            async function loadMessages() {
+                try {
+                    const response = await fetch('/get_chat_messages/');
+                    if (response.ok) {
+                        const data = await response.json();
+
+                        for (const message of data.messages) {
+                            displayMessage(message.message);
+                        }
+                    } else {
+                        console.error('Failed to fetch messages from the server');
+                    }
+                } catch (error) {
+                    console.error('Error fetching messages:', error);
+                }
+            }
+
+            function displayMessage(message) {
+                const messageElement = document.createElement('p');
+                messageElement.textContent = `${message}`;
+                messageElement.classList.add('sender');
+                chatDiv.appendChild(messageElement);
+            }
+
+            function getCookie(name) {
+                const value = `; ${document.cookie}`;
+                const parts = value.split(`; ${name}=`);
+                if (parts.length === 2) return parts.pop().split(';').shift();
+            }
+        </script>
 
         {% block script %}
         {% endblock %}

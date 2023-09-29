@@ -66,6 +66,24 @@ class InStock(models.Model):
     is_available = models.BooleanField()
     quantity = models.PositiveIntegerField()
 
+class Support(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    date = models.DateTimeField(default=timezone.now)
+    message = models.CharField(max_length=1000)
+    is_answered = models.BooleanField(default=False)
+    is_closed = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f"{self.user.username} : {self.message} on {self.date}"
+
+class SupportAnswer(models.Model):
+    latest_message = models.ForeignKey(Support, on_delete=models.CASCADE)
+    response = models.CharField(max_length=1000)
+    date = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return self.response
+
 class SlideShowImage(models.Model):
     title = models.CharField(max_length=20)
     image = models.ImageField(upload_to=slide_show_upload_path)
