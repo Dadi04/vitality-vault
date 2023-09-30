@@ -56,7 +56,7 @@
                     </a>
                 </div>
                 {% endif %}
-                {% if user.is_staff %}
+                {% if user.is_staff or user.is_support %}
                 <div class="right">
                     <a href="{% url 'inbox' %}">
                         <img src="{% static 'supplement_store/images/inbox.png' %}" alt="inbox" width="32px">
@@ -200,18 +200,20 @@
             </div>
         </footer>
         
-        {% if not user.is_staff %}
+        {% if not user.is_staff and not user.is_support %}
             <div id="support-chat">
                 <div id="header">
                     <img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="80px">
-                    <span>David</span>
+                    <span>Support Chat</span>
                     <button class="fa fa-minus" id="minimize"></button>
                 </div>
                 <div id="chat">
                     {% if user.is_authenticated %}
-                        <p>Hi, how can i help you?</p>
+                        <p class="starting-label">Automatic</p>
+                        <p class="starting-message">Hi, how can i help you?</p>
                     {% else %}
-                        <p>Please sign in, in order to use chat support!</p>
+                        <p class="starting-label">Automatic</p>
+                        <p class="starting-message">Please sign in, in order to use chat support!</p>
                     {% endif %}
                 </div>
                 <div id="message">
@@ -220,6 +222,7 @@
                             {% csrf_token %}
                             <input type="text" name="text-field" id="text-field" placeholder="Type message here" autocomplete="off">
                             <input type="hidden" name="message" id="message-input">
+                            <input type="hidden" name="sender" id="sender" value="{{user.username}}">
                             <button type="submit" class="fa fa-solid fa-arrow-right"></button>
                         </form>
                     {% else %}
@@ -239,6 +242,7 @@
             const form = document.getElementById('form');
             const messageInput = document.getElementById('message-input');
             const chatDiv = document.getElementById('chat');
+            const sender = document.getElementById('sender');
 
             let messagesLoaded = false;
 
@@ -262,9 +266,15 @@
             form.addEventListener('submit', async (e) => {
                 e.preventDefault();
                 
-                const message = supportMessage.value;
-                if (message.trim() === '') {
+                const messageText = supportMessage.value;
+                if (messageText.trim() === '') {
                     return;
+                }
+
+                const message = {
+                    sender: sender.value,
+                    message: messageText,
+                    type: 'support',
                 }
 
                 try {
@@ -274,7 +284,7 @@
                             'Content-Type': 'application/x-www-form-urlencoded',
                             'X-CSRFToken': getCookie('csrftoken'),
                         },
-                        body: `text-field=${encodeURIComponent(message)}`,
+                        body: `text-field=${encodeURIComponent(messageText)}`,
                     });
 
                     if (response.ok) {
@@ -290,12 +300,12 @@
 
             async function loadMessages() {
                 try {
-                    const response = await fetch('/get_chat_messages/');
+                    const response = await fetch('/load_messages/');
                     if (response.ok) {
                         const data = await response.json();
-
+                        console.log(data);
                         for (const message of data.messages) {
-                            displayMessage(message.message);
+                            displayMessage(message)
                         }
                     } else {
                         console.error('Failed to fetch messages from the server');
@@ -306,10 +316,28 @@
             }
 
             function displayMessage(message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message-div');
+
                 const messageElement = document.createElement('p');
-                messageElement.textContent = `${message}`;
-                messageElement.classList.add('sender');
-                chatDiv.appendChild(messageElement);
+                messageElement.textContent = message.message;
+
+                if (message.sender) {
+                    messageElement.classList.add('sender');
+                    const senderLabel = document.createElement('p');
+                    senderLabel.textContent = message.sender;
+                    senderLabel.classList.add('sender-label');
+                    messageDiv.appendChild(senderLabel);
+                }
+                if (message.receiver) {
+                    messageElement.classList.add('receiver');
+                    const receiverLabel = document.createElement('p');
+                    receiverLabel.textContent = message.receiver;
+                    receiverLabel.classList.add('receiver-label');
+                    messageDiv.appendChild(receiverLabel);
+                }
+                messageDiv.appendChild(messageElement);
+                chatDiv.appendChild(messageDiv);
             }
 
             function getCookie(name) {

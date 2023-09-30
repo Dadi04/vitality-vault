@@ -6,7 +6,16 @@
 {% endblock %}
 
 {% block body %}
+    <h1>New</h1>
     {% for message in messages %}
-        <a href="{% url 'answer_inbox' username=message.user.username %}">{{ message }}</a><br>
+        {% if not message.is_answered %}
+            <a href="{% url 'answer_inbox' username=message.user.username %}">{{ message }}</a><br>
+        {% endif %}
+    {% endfor %}
+    <h1>Answered</h1>
+    {% for message in messages %}
+        {% if message.is_answered %}
+            <a href="{% url 'answer_inbox' username=message.user.username %}">{{ message }}</a><br>
+        {% endif %}
     {% endfor %}
 {% endblock %}

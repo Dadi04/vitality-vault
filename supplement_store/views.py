@@ -40,9 +40,9 @@ def chatting(request):
 
 @login_required
 def inbox(request):
-    if request.user.is_staff == True:
+    if request.user.is_staff == True or request.user.is_support == True:
         latest_message_subquery = Support.objects.filter(user=OuterRef('user')).order_by('-date').values('message')[:1]
-        one_message_per_user = Support.objects.annotate(latest_message=Subquery(latest_message_subquery)).filter(message=F('latest_message'))
+        one_message_per_user = Support.objects.annotate(latest_message=Subquery(latest_message_subquery)).filter(message=F('latest_message'), is_closed=False)
         messages = one_message_per_user.all()
         return render(request, "supplement_store/inbox.html", {
             "messages": messages
@@ -52,36 +52,81 @@ def inbox(request):
 
 @login_required
 def answer_inbox(request, username):
-    if request.user.is_staff == True:
+    if request.user.is_staff == True or request.user.is_support == True:
         user = User.objects.get(username=username)
-        messages = Support.objects.filter(user=user).order_by('-date')
-        answers = SupportAnswer.objects.filter(latest_message=Support.objects.filter(user=user).order_by('-date').first()).order_by('-date')
-        print(f"answer_inbox {answers}")
+        support_messages = Support.objects.filter(user=user, is_closed=False)
+        answer_messages = SupportAnswer.objects.filter(latest_message__in=support_messages, latest_message__is_closed=False)
+
+        combined_messages = list(support_messages) + list(answer_messages)
+        sorted_messages = sorted(combined_messages, key=lambda x: x.date, reverse=True)
+
         return render(request, "supplement_store/answer_inbox.html", {
-            "messages": messages,
-            "answers": answers
+            "messages": sorted_messages,
+            "username": username
         })
     else: 
         return redirect('index')
 
 @login_required
-def answering(request, username):
-    if request.user.is_staff == True:
+def close(request, username):
+    if request.user.is_staff == True or request.user.is_support == True:
         user = User.objects.get(username=username)
+        all_support_messages = Support.objects.filter(user=user)
+        for support in all_support_messages:
+            support.is_closed = True
+            support.save()
+        all_answer_messages = SupportAnswer.objects.filter(latest_message__in=all_support_messages)
+        for answer in all_answer_messages:
+            answer.latest_message.is_closed = True
+            answer.save()
+
+        return redirect('inbox')
+    else:
+        return redirect('index')
+
+@login_required
+def answering(request, username):
+    if request.user.is_staff == True or request.user.is_support == True:
+        user = User.objects.get(username=username)
+        latest_message = Support.objects.filter(user=user, is_closed=False).order_by('-date').first()
         response = request.POST["text"]
-        answers = SupportAnswer.objects.create(response=response, latest_message=Support.objects.filter(user=user).order_by('-date').first(), date=datetime.now())
-        print(f"answering {answers}")
+        SupportAnswer.objects.create(
+            response=response, 
+            latest_message=latest_message, 
+            date=datetime.now(), 
+            answered_by=User.objects.get(username=request.user.username))
+        latest_message.is_answered = True
+        latest_message.save()
         return redirect('answer_inbox', username=user.username)
     else: 
         return redirect('index')    
-    
 
 @login_required
-def get_chat_messages_view(request):
+def load_messages(request):
     if request.method == 'GET':
-        messages = Support.objects.filter(user=request.user).order_by('date')
-        formatted_messages = [{'user': message.user.username, 'message': message.message} for message in messages]
-        return JsonResponse({'messages': formatted_messages})
+        support_messages = Support.objects.filter(user=request.user, is_closed=False)
+        support_answer_messages = SupportAnswer.objects.filter(latest_message__user=request.user, latest_message__is_closed=False)
+
+        messages = []
+
+        combined_messages = list(support_messages) + list(support_answer_messages)
+        sorted_messages = sorted(combined_messages, key=lambda x: x.date, reverse=False)
+
+        for message in sorted_messages:
+            if isinstance(message, Support):
+                messages.append({
+                    'type': 'support',
+                    'message': message.message,
+                    'sender': message.user.username,
+                })
+            elif isinstance(message, SupportAnswer):
+                messages.append({
+                    'type': 'support_answer',
+                    'message': message.response,
+                    'receiver': message.answered_by.username,
+                })
+
+        return JsonResponse({'messages': messages})
     return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 def login_view(request):

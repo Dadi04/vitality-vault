@@ -8,28 +8,30 @@
 {% block body %}
     <div id="messages-from-user">
         <div id="answer">
-            <form action="{% url 'answering' username=messages.0.user.username %}" method="post">
+            <form action="{% url 'answering' username=username %}" method="post">
                 {% csrf_token %}
-                <input type="text" name="text" id="text-field" placeholder="Answer" required>
+                <input type="text" name="text" id="text-field" placeholder="Answer" required autocomplete="off">
                 <button type="submit" class="fa fa-arrow-right"></button>
             </form>
         </div>
-        <button id="close">Close the Conversation</button>
-        {% if answers %}
-            {% for answer in answers %}
-                <div class="answer-div">
-                    <span class="name">You</span>
-                    <p class="message">{{ answer.response }}</p>
-                    <span class="date">on {{ answer.date }}</span>
-                </div>
-            {% endfor %}
-        {% endif %}
+        <form action="{% url 'close' username=username %}" method="post" id="close-form">
+            {% csrf_token %}
+            <button id="close" type="submit">Close the Conversation</button>
+        </form>
         {% for message in messages %}
-            <div class="message-div">
-                <span class="name">{{ message.user.username }}</span>
-                <p class="message">{{ message.message }}</p> 
-                <span class="date">on {{ message.date }}</span>
-            </div>
+            {% if message.answered_by.username %}
+                <div class="answer-div">
+                    <span class="name">{{ message.answered_by.username }}</span>
+                    <p class="message">{{ message.response }}</p>
+                    <span class="date">on {{ message.date }}</span>
+                </div>
+            {% else %}
+                <div class="message-div">
+                    <span class="name">{{ message.user.username }}</span>
+                    <p class="message">{{ message.message }}</p> 
+                    <span class="date">on {{ message.date }}</span>
+                </div>
+            {% endif %}
         {% endfor %}
     </div>
 {% endblock %}

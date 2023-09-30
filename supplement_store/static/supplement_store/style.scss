@@ -251,7 +251,7 @@ footer {
             cursor: pointer;
             width: 30px;
             height: 30px;
-            margin-left: 180px;
+            margin-left: 130px;
 
             &:hover {
                 color: #a56e08;
@@ -263,22 +263,67 @@ footer {
     #chat {
         height: 380px;
         overflow-y: scroll;
+        overflow-x: hidden;
         margin: 5px;
         display: flex;
         flex-direction: column;
         
-        p {
+        .starting-label {
+            color: #333;
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+
+        .starting-message {
             background-color: #eee;
             width: fit-content;
             border-radius: 0 10px 10px 10px;
             padding: 10px;
+            max-width: 200px;
+            margin-top: 0;
         }
 
-        .sender {
-            border-radius: 10px 0 10px 10px;
-            background-color: orange;
-            align-items: flex-end;
-            align-self: flex-end;
+        .message-div {
+            display: flex;
+            flex-direction: column;
+
+            .sender-label {
+                color: #333;
+                align-items: flex-end;
+                align-self: flex-end;
+                margin: 0 2px 0 0;
+            }
+    
+            .sender {
+                border-radius: 10px 0 10px 10px;
+                background-color: orange;
+                align-items: flex-end;
+                align-self: flex-end;
+                word-wrap: break-word;
+                max-width: 150px;
+                padding: 10px;
+                width: fit-content;
+                margin-top: 0;
+            }
+    
+            .receiver-label {
+                color: #333;
+                align-items: flex-start;
+                align-self: flex-start;
+                margin: 0;
+            }
+            
+            .receiver {
+                border-radius: 0 10px 10px 10px;
+                background-color: #eee;
+                align-items: flex-start;
+                align-self: flex-start;
+                word-wrap: break-word;
+                max-width: 150px;
+                padding: 10px;
+                width: fit-content;
+                margin-top: 0;
+            }
         }
     }
 
@@ -770,7 +815,7 @@ footer {
         border-radius: 10px;
 
         #text-field {
-            width: 90%;
+            width: 89%;
             border-radius: 20px;
             padding: 5px;
             border: none;
@@ -794,25 +839,30 @@ footer {
         }
     }
 
-    #close {
-        width: 30%;
-        align-items: flex-end;
-        align-self: flex-end;
-        margin-top: 10px;
-        font-family: 'Montserrat' sans-serif;
-        border: none;
-        outline: none;
-        background: #2f2f2f;
-        color: #fff;
-        padding: 10px;
-        font-size: 15px;
-        border-radius: 40px;
-        text-align: center;
-        box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
-        transition: all 0.3s;
-        
-        &:hover {
-            background-color: #444;
+    #close-form {
+        display: flex;
+        flex-direction: column;
+
+        #close {
+            width: 30%;
+            align-items: flex-end;
+            align-self: flex-end;
+            margin-top: 10px;
+            font-family: 'Montserrat' sans-serif;
+            border: none;
+            outline: none;
+            background: #2f2f2f;
+            color: #fff;
+            padding: 10px;
+            font-size: 15px;
+            border-radius: 40px;
+            text-align: center;
+            box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s;
+            
+            &:hover {
+                background-color: #444;
+            }
         }
     }
 

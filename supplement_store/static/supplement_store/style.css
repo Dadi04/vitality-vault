@@ -218,7 +218,7 @@ footer #third #third-third img {
   cursor: pointer;
   width: 30px;
   height: 30px;
-  margin-left: 180px;
+  margin-left: 130px;
 }
 #support-chat #header button:hover {
   color: #a56e08;
@@ -227,21 +227,61 @@ footer #third #third-third img {
 #support-chat #chat {
   height: 380px;
   overflow-y: scroll;
+  overflow-x: hidden;
   margin: 5px;
   display: flex;
   flex-direction: column;
 }
-#support-chat #chat p {
+#support-chat #chat .starting-label {
+  color: #333;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+#support-chat #chat .starting-message {
   background-color: #eee;
   width: fit-content;
   border-radius: 0 10px 10px 10px;
   padding: 10px;
+  max-width: 200px;
+  margin-top: 0;
 }
-#support-chat #chat .sender {
+#support-chat #chat .message-div {
+  display: flex;
+  flex-direction: column;
+}
+#support-chat #chat .message-div .sender-label {
+  color: #333;
+  align-items: flex-end;
+  align-self: flex-end;
+  margin: 0 2px 0 0;
+}
+#support-chat #chat .message-div .sender {
   border-radius: 10px 0 10px 10px;
   background-color: orange;
   align-items: flex-end;
   align-self: flex-end;
+  word-wrap: break-word;
+  max-width: 150px;
+  padding: 10px;
+  width: fit-content;
+  margin-top: 0;
+}
+#support-chat #chat .message-div .receiver-label {
+  color: #333;
+  align-items: flex-start;
+  align-self: flex-start;
+  margin: 0;
+}
+#support-chat #chat .message-div .receiver {
+  border-radius: 0 10px 10px 10px;
+  background-color: #eee;
+  align-items: flex-start;
+  align-self: flex-start;
+  word-wrap: break-word;
+  max-width: 150px;
+  padding: 10px;
+  width: fit-content;
+  margin-top: 0;
 }
 #support-chat #message {
   width: 90%;
@@ -673,7 +713,7 @@ footer #third #third-third img {
   border-radius: 10px;
 }
 #messages-from-user #answer #text-field {
-  width: 90%;
+  width: 89%;
   border-radius: 20px;
   padding: 5px;
   border: none;
@@ -693,7 +733,11 @@ footer #third #third-third img {
   color: #a56e08;
   border-color: #a56e08;
 }
-#messages-from-user #close {
+#messages-from-user #close-form {
+  display: flex;
+  flex-direction: column;
+}
+#messages-from-user #close-form #close {
   width: 30%;
   align-items: flex-end;
   align-self: flex-end;
@@ -710,7 +754,7 @@ footer #third #third-third img {
   box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
   transition: all 0.3s;
 }
-#messages-from-user #close:hover {
+#messages-from-user #close-form #close:hover {
   background-color: #444;
 }
 #messages-from-user .answer-div {

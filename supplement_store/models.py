@@ -14,6 +14,7 @@ def slide_show_upload_path(instance, filename):
 
 
 class User(AbstractUser):
+    is_support = models.BooleanField(default=False)
     remember_me = models.BooleanField(default=True)
     address = models.CharField(default=None)
     city = models.CharField(default=None)
@@ -78,6 +79,7 @@ class Support(models.Model):
 
 class SupportAnswer(models.Model):
     latest_message = models.ForeignKey(Support, on_delete=models.CASCADE)
+    answered_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True)
     response = models.CharField(max_length=1000)
     date = models.DateTimeField(default=timezone.now)
 
