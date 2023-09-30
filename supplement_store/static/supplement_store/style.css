@@ -135,6 +135,9 @@ footer #second {
   text-align: center;
   margin-bottom: 20px;
 }
+footer #second img {
+  margin: 0 10px 10px 10px;
+}
 footer #third {
   display: flex;
   align-items: center;
