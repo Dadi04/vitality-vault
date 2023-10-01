@@ -8,7 +8,6 @@
         <link rel="icon" type="image/png" href="{% static 'supplement_store/images/icon.png' %}"/>
         <link rel="stylesheet" href="{% static 'supplement_store/style.css' %}">
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&family=Montserrat:wght@300&family=Lato:wght@300&display=swap" rel="stylesheet">
-        
         <script src="https://kit.fontawesome.com/cef40b906e.js" crossorigin="anonymous"></script>
         <title>{% block title %}{% endblock %}</title>
     </head>
@@ -78,8 +77,8 @@
                     <li><a href="{% url 'index' %}">Home</a></li>
                     <li id="brands"><a href="{% url 'brands' %}">Brands</a>
                         <ul class="second">
-                            <li><a href="">IronMaxx</a></li>
-                            <li><a href="">OstroVit</a></li>
+                            <li><a href="{% url 'shop_by_brand' brand='IronMaxx' %}">IronMaxx</a></li>
+                            <li><a href="{% url 'shop_by_brand' brand='OstroVit' %}">OstroVit</a></li>
                             <li><a href="">BioTechUSA</a></li>
                             <li><a href="">AmiX</a></li>
                             <li><a href="">Myprotein</a></li>
@@ -166,6 +165,7 @@
             </div>
             <hr>
             <div id="second">
+                <h3>Featured brands</h3>
                 <img src="{% static 'supplement_store/images/ironmaxx.png' %}" alt="ironmaxx" width="100px">
                 <img src="{% static 'supplement_store/images/ostrovit.png' %}" alt="ostrovit" width="100px">
                 <img src="{% static 'supplement_store/images/biotechusa.png' %}" alt="biotechusa" width="100px">

@@ -1,0 +1,32 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+{% load filename %}
+
+{% block title %}
+    OstroVit
+{% endblock %}
+
+{% block body %}
+    <div id="shop">
+        <div class="shop-filter">
+            TO DO Filter
+        </div>
+        <div class="shop-right">
+            {% for item in items_by_brand %}
+                <div class="item">
+                    {% if item.is_new %}
+                        <div>TO DO is new</div>
+                    {% endif %}
+                    <a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" width="200px"></a>
+                    <h5><a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}">{{ item.name }} {{ item.weight }} g</a></h5>
+                    <h3>${{ item.price }}</h3>
+                    {% if item.is_on_sale %}
+                        <div>TO DO is on sale</div>
+                    {% endif %}
+                    Reviews: TO DO
+                    <button class="add-to-cart">Add to cart</button>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

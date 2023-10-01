@@ -6,8 +6,8 @@ from .countries import COUNTRIES
 
 # Create your models here.
 
-def item_image_upload_path(instance):
-    return f'supplement_store/static/supplement_store/images/product_images/{instance.name}/'
+def item_image_upload_path(instance, filename):
+    return f'supplement_store/static/supplement_store/images/product_images/{instance.fullname}/{instance.id}_{filename}'
 
 def slide_show_upload_path(instance, filename):
     return f'supplement_store/static/supplement_store/images/slide_show_images/{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}_{filename}'
@@ -38,12 +38,28 @@ class Item(models.Model):
         ('Clothing','Clothing'),
         ('Workout Accessories','Workout Accessories'),
     )
+    BRANDS = (
+        ('IronMaxx','IronMaxx'),
+        ('OstroVit','OstroVit'),
+        ('BioTechUSA','BioTechUSA'),
+        ('AmiX','AmiX'),
+        ('Myprotein','Myprotein'),
+        ('BSN','BSN'),
+        ('Optinum Nutrition','Optinum Nutrition'),
+        ('Scitec Nutrition','Scitec Nutrition'),
+        ('Gorilla Mind','Gorilla Mind'),
+        ('HTLT','HTLT'),
+        ('Quest Nutrition','Quest Nutrition'),
+        ('Gymshark','Gymshark'),
+        ('Under Armour','Under Armour'),
+        ('Retaliation Project','Retaliation Project'),
+    )
 
-    name = models.CharField(max_length=20)
+    name = models.CharField(max_length=40)
     fullname = models.CharField(max_length=60)
     category = models.CharField(choices=CATEGORIES)
     subcategory = models.CharField(max_length=50)
-    brand = models.CharField(max_length=30)
+    brand = models.CharField(choices=BRANDS)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_on_sale = models.BooleanField(default=False)
@@ -57,10 +73,24 @@ class Item(models.Model):
     color = models.CharField(max_length=10, null=True, blank=True)
     is_new = models.BooleanField(default=False)
     popularity = models.IntegerField(default=0)
-    main_image = models.ImageField(upload_to=item_image_upload_path)
-    image1 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True)
-    image2 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True)
-    image3 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True)
+    main_image = models.ImageField(upload_to=item_image_upload_path, max_length=255)
+    image1 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True, max_length=255)
+    image2 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True, max_length=255)
+    image3 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True, max_length=255)
+
+    def serialize(self):
+        return {
+            'fullname': self.fullname,
+            'flavor': self.flavor,
+            'price': float(self.price),
+            'main_image': str(self.main_image.name),
+            'image1': str(self.image1),
+            'image2': str(self.image2),
+            'image3': str(self.image3),
+        }
+
+    def __str__(self):
+        return f'{self.id}: {self.fullname}'
 
 class InStock(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
@@ -88,7 +118,7 @@ class SupportAnswer(models.Model):
 
 class SlideShowImage(models.Model):
     title = models.CharField(max_length=20)
-    image = models.ImageField(upload_to=slide_show_upload_path)
+    image = models.ImageField(upload_to=slide_show_upload_path, max_length=255)
     order = models.PositiveIntegerField()
 
     def __str__(self):

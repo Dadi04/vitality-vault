@@ -2,6 +2,7 @@ body {
   background-color: #fff;
   margin: 0;
   overflow-x: hidden;
+  font-family: "Roboto", sans-serif;
 }
 body input::-ms-reveal,
 body input::-ms-clear {
@@ -790,6 +791,172 @@ footer #third #third-third img {
 }
 #messages-from-user .message-div .date, #messages-from-user .message-div .name {
   color: #666;
+}
+
+#shop {
+  display: flex;
+  width: 1500px;
+  margin: 0 auto;
+}
+#shop .shop-filter {
+  width: 300px;
+  height: fit-content;
+  display: flex;
+}
+#shop .shop-right {
+  width: 1000px;
+  display: flex;
+}
+#shop .shop-right .item {
+  width: 300px;
+  height: 400px;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  text-align: center;
+}
+#shop .shop-right .item a {
+  text-decoration: none;
+  color: #333;
+}
+#shop .shop-right .item h5 {
+  margin: 3px;
+}
+#shop .shop-right .item h3 {
+  margin: 3px;
+}
+#shop .shop-right .item .add-to-cart {
+  width: 90%;
+  height: 40px;
+  border: none;
+  outline: none;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 15px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  margin: 0 auto;
+  display: block;
+}
+#shop .shop-right .item .add-to-cart:hover {
+  background-color: #444;
+}
+
+#item {
+  width: 100%;
+  max-width: 1500px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+}
+#item #slide-images {
+  width: 100px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+#item #other {
+  width: auto;
+  flex: 1;
+}
+#item #other #item-content {
+  display: flex;
+  flex-direction: row;
+}
+#item #other #item-content #item-left {
+  width: 50%;
+  border-right: 1px solid gray;
+  height: 300px;
+  padding-top: 10px;
+  font-size: 20px;
+}
+#item #other #item-content #item-left p {
+  margin: 3px;
+}
+#item #other #item-content #item-right {
+  width: auto;
+  margin-left: 10px;
+  padding-top: 10px;
+}
+#item #other #item-content #item-right #select-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: 400px;
+  gap: 50px;
+}
+#item #other #item-content #item-right #select-menu span {
+  font-size: 20px;
+}
+#item #other #item-content #item-right #select-menu .white-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  flex: 1;
+}
+#item #other #item-content #item-right #select-menu .white-select:hover, #item #other #item-content #item-right #select-menu .white-select:focus {
+  border-color: #666;
+}
+#item #other #item-content #item-right #select-menu .white-select option {
+  background-color: #fff;
+  color: #333;
+}
+#item #other #item-content #item-right #cart {
+  width: 80%;
+  height: 40px;
+  border: none;
+  outline: none;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 15px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+}
+#item #other #item-content #item-right #cart:hover {
+  background-color: #444;
+}
+#item #other #item-content #item-right #wishlist {
+  width: 10%;
+  height: 40px;
+  border: none;
+  outline: none;
+  background-color: #eee;
+  color: #333;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(184, 183, 183, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-left: 10px;
+}
+#item #other #item-content #item-right #wishlist:hover {
+  background-color: #bbb;
+}
+
+#description, #reviews {
+  max-width: 1600px;
+  width: 100%;
+  margin: 0 auto;
+  font-size: 18px;
 }
 
 /*# sourceMappingURL=style.css.map */

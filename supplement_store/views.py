@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.contrib import messages
@@ -12,13 +13,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F
+from django.db.models import Subquery, OuterRef, F, Count
 
 from datetime import datetime
 
 from .forms import RegistrationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer
+from .models import User, SlideShowImage, Support, SupportAnswer, Item
 
 # Create your views here.
 
@@ -121,6 +122,21 @@ def activate_email(request, uidb64, token):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+def shop_by_brand(request, brand):
+    items_by_brand = Item.objects.filter(brand=brand).distinct('fullname')
+    print(items_by_brand)
+    return render(request, "supplement_store/shop.html", {
+        "items_by_brand": items_by_brand
+    })
+
+def shop_by_itemname(request, brand, itemname):
+    items = Item.objects.filter(fullname=itemname, brand=brand).distinct('flavor')
+    items_json = json.dumps([item.serialize() for item in items])
+    return render(request, "supplement_store/item.html", {
+        "items": items,
+        "items_json": items_json
+    })
 
 @login_required
 def account(request):

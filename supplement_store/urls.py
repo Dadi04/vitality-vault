@@ -26,6 +26,9 @@ urlpatterns = [
     path('answering/<str:username>', views.answering, name="answering"),
     path('close/<str:username>', views.close, name="close"),
 
+    path('<str:brand>', views.shop_by_brand, name="shop_by_brand"),
+    path('<str:brand>/<str:itemname>', views.shop_by_itemname, name="shop_by_itemname"),
+
     path('password_reset', CustomPasswordResetView.as_view(
         template_name='supplement_store/password_reset_templates/password_reset_form.html', 
         email_template_name='supplement_store/password_reset_templates/password_reset_email.html', 

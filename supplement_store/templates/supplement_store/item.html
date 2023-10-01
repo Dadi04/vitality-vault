@@ -1,0 +1,120 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+{% load filename %}
+
+{% block title %}
+    {{items.0.name}}
+{% endblock %}
+
+{% block body %}
+    <div id="item">
+        <div id="slide-images">
+            {% for item in items %}
+                {% if item.flavor == items.0.flavor %}
+                    <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.main_image.name|filename }}" alt="{{ item.image3.name }}" id="mainimage" class="images" width="100px">
+                    {% if item.image1.name %}
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.image1.name|filename }}" alt="{{ item.image3.name }}" id="image1" class="images" width="100px">
+                    {% endif %}
+                    {% if item.image2.name %}
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.image2.name|filename }}" alt="{{ item.image3.name }}" id="image2" class="images" width="100px">
+                    {% endif %}
+                    {% if item.image3.name %}
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.image3.name|filename }}" alt="{{ item.image3.name }}" id="image3" class="images" width="100px">
+                    {% endif %}
+                {% endif %}    
+            {% endfor %}
+        </div>
+        <div id="main-image">
+            {% for item in items %}
+                {% if item.flavor == items.0.flavor %}
+                    {% if item.is_new %}
+                        <p>TO DO</p>
+                    {% endif %}
+                <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="item.image3.name" id="image-slide" width="400px">
+                {% endif %}    
+            {% endfor %}
+        </div>
+        <div id="other">
+            <h1>{{ items.0.fullname }}</h1>
+            <hr>
+            <div id="item-content">
+                <div id="item-left">
+                    <p id="flavor">Flavor: {{ items.0.flavor }}</p>
+                    <p>Weight: {{ items.0.weight }} g</p>
+                    <p>Category: {{ items.0.category }}</p>
+                    <p>Brand: {{ items.0.brand }}</p>
+                    <a href="#description">Show detailed description</a>
+                </div>
+                <div id="item-right">
+                    <div id="select-menu">
+                        <span>Flavor:</span>
+                        <select id="flavor-select" class="white-select">
+                            {% for item in items %}
+                                <option value="{{ item.flavor }}">{{ item.flavor }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <p>In Stock: TO DO</p>
+                    <h1 id="item-price">$20</h1>
+                    {% if items.0.is_on_sale %}
+                        <p>TO DO</p>
+                    {% endif %}
+                    <button id="cart">Add to Cart</button>
+                    <button id="wishlist" class="fa fa-heart"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="description">
+        <h1>Description</h1>
+        <p>{{ items.0.description|linebreaks }}</p>
+    </div>
+    <div id="reviews">
+        <h1>Reviews</h1>
+        TO DO
+    </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+        const items = {{ items_json|safe }};
+        const imageSlide = document.getElementById('image-slide');
+        const imageLeft = document.querySelectorAll('.images');
+        const flavorSelect = document.getElementById('flavor-select');
+        const itemPrice = document.getElementById('item-price');
+        const flavor = document.getElementById('flavor');    
+        const main_image = document.getElementById('mainimage');
+        const image1 = document.getElementById('image1');
+        const image2 = document.getElementById('image2');
+        const image3 = document.getElementById('image3');
+        
+        imageLeft.forEach(image => {
+            image.addEventListener('click', () => {
+                imageSlide.src = image.src;
+            });
+        });
+
+        flavorSelect.addEventListener('change', function () {
+            const selectedFlavor = this.value;
+            
+            const selectedItem = items.find(item => item.flavor === selectedFlavor);
+
+            if (selectedItem) {
+                flavor.textContent = "Flavor: " + selectedFlavor;
+                imageSlide.src = selectedItem.main_image.slice(16, 1000);;
+                main_image.src = selectedItem.main_image.slice(16, 1000);;
+                if (selectedItem.image1 !== "") {
+                    image1.src = selectedItem.image1.slice(16, 1000);
+                }
+                if (selectedItem.image2 !== "") {
+                    image2.src = selectedItem.image2.slice(16, 1000);;
+                }
+                if (selectedItem.image3 !== "") {
+                    image3.src = selectedItem.image3.slice(16, 1000);;
+                }
+                itemPrice.textContent = "$" + selectedItem.price;
+            }
+        });
+
+    </script>
+{% endblock %}
