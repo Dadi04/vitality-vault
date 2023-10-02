@@ -967,5 +967,16 @@ footer #third #third-third img {
   margin: 0 auto;
   font-size: 18px;
 }
+#description .stars, #reviews .stars {
+  font-size: 24px;
+}
+#description .fa-star, #reviews .fa-star {
+  color: gray;
+  cursor: pointer;
+  transition: color 0.1s;
+}
+#description .yellow, #reviews .yellow {
+  color: yellow;
+}
 
 /*# sourceMappingURL=style.css.map */

@@ -19,7 +19,7 @@ from datetime import datetime
 
 from .forms import RegistrationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review
 
 # Create your views here.
 
@@ -132,10 +132,25 @@ def shop_by_brand(request, brand):
 def shop_by_itemname(request, brand, itemname):
     items = Item.objects.filter(fullname=itemname, brand=brand).distinct('flavor')
     items_json = json.dumps([item.serialize() for item in items])
+    reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first())
     return render(request, "supplement_store/item.html", {
         "items": items,
-        "items_json": items_json
+        "items_json": items_json,
+        "reviews": reviews,
     })
+
+def comment(request, username, itemname):
+    if request.method == 'POST':
+        item = Item.objects.filter(fullname=itemname).first()
+        user = User.objects.get(username=username)
+        comment = request.POST["textarea"]
+        rating = request.POST["rating"]
+        if comment and rating:
+            Review.objects.create(user=user, item=item, comment=comment, rating=rating, timestamp=datetime.now())
+            return JsonResponse({'success': 'Message saved to the database'})
+        else:
+            return JsonResponse({'error': 'Message is empty'}, status=400)
+    return JsonResponse({'error': 'Invalid request method'}, status=400)
 
 @login_required
 def account(request):

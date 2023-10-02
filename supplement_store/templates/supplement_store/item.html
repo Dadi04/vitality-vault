@@ -80,7 +80,41 @@
     </div>
     <div id="reviews">
         <h1>Reviews</h1>
-        TO DO
+        {% if user.is_authenticated %}
+            <form action="{% url 'comment' username=user.username itemname=items.0.fullname %}" method="post">
+                {% csrf_token %}
+                <textarea name="textarea" id="textarea" cols="50" rows="4" placeholder="Write a comment..." required></textarea><br>
+                Your opinion: 
+                <i class="fa fa-star stars" data-star="1"></i>
+                <i class="fa fa-star stars" data-star="2"></i>
+                <i class="fa fa-star stars" data-star="3"></i>
+                <i class="fa fa-star stars" data-star="4"></i>
+                <i class="fa fa-star stars" data-star="5"></i>
+                <input type="hidden" name="rating" id="rating" value="0">
+                <input type="submit" value="Comment">
+            </form>
+        {% else %}
+            <textarea name="textarea" id="textarea" cols="30" rows="10" disabled>You need to be logged in in order to comment!</textarea>
+        {% endif %}
+        <hr>
+        <div id="comments">
+            {% if reviews %}
+                {% for review in reviews %}
+                    <div>
+                        {{review.user.username}}
+                        {{review.comment}}
+                        on {{review.timestamp}}
+                        gave 
+                        {% for star in review.rating|star_range %}
+                            <!--fix this, i napraviti da se salje async preko javascript-->
+                            <i class="fa fa-star" data-star="{{star}}"></i>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div>No comments and reviews yet</div>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}
 
@@ -99,6 +133,8 @@
         const quantity = document.getElementById('quantity');
         const areAvailableIcons = document.querySelectorAll('.product-icon');
         const isAvailableText = document.getElementById('product-text');
+        const stars = document.querySelectorAll(".fa-star");
+        const ratingInput = document.getElementById("rating");
         
         imageLeft.forEach(image => {
             image.addEventListener('click', () => {
@@ -141,5 +177,40 @@
             }
         });
 
+        stars.forEach((star, index) => {
+            star.addEventListener("mouseover", () => {
+                const starNumber = index + 1;
+                for (let i = 0; i < starNumber; i++) {
+                    stars[i].classList.add("yellow");
+                }
+            });
+
+            star.addEventListener("mouseout", () => {
+                const starNumber = index + 1;
+                if (!star.classList.contains("selected")) {
+                    for (let i = 0; i < starNumber; i++) {
+                        stars[i].classList.remove("yellow");
+                    }
+                }
+            });
+
+            star.addEventListener("click", () => {
+                const starNumber = index + 1;
+    
+                if (star.classList.contains("selected")) {
+                    for (let i = starNumber; i < stars.length; i++) {
+                        stars[i].classList.remove("yellow");
+                        stars[i].classList.remove("selected");
+                    }
+                } else {
+                    for (let i = 0; i < starNumber; i++) {
+                        stars[i].classList.add("yellow");
+                        stars[i].classList.add("selected");
+                    }
+                }
+
+                ratingInput.value = document.querySelectorAll(".selected").length;
+            });
+        });
     </script>
 {% endblock %}
