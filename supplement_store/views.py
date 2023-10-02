@@ -124,8 +124,7 @@ def logout_view(request):
     return redirect('index')
 
 def shop_by_brand(request, brand):
-    items_by_brand = Item.objects.filter(brand=brand).distinct('fullname')
-    print(items_by_brand)
+    items_by_brand = Item.objects.filter(brand=brand).order_by('-is_available').distinct()
     return render(request, "supplement_store/shop.html", {
         "items_by_brand": items_by_brand
     })

@@ -54,7 +54,16 @@
                             {% endfor %}
                         </select>
                     </div>
-                    <p>In Stock: TO DO</p>
+                    {% for item in items %}
+                        {% if item.flavor == items.0.flavor %}
+                            {% if item.is_available %}
+                                <p><i class="fa fa-circle product-icon" id="available"></i><span id="product-text"> Product available!</span></p>
+                            {% else %}
+                                <p><i class="fa fa-circle product-icon" id="unavailable"></i><span id="product-text"> Product unavailable!</span></p>
+                            {% endif %}
+                            <p id="quantity">Items left: {{ item.quantity }}</p>
+                        {% endif %}
+                    {% endfor %}
                     <h1 id="item-price">$20</h1>
                     {% if items.0.is_on_sale %}
                         <p>TO DO</p>
@@ -87,6 +96,9 @@
         const image1 = document.getElementById('image1');
         const image2 = document.getElementById('image2');
         const image3 = document.getElementById('image3');
+        const quantity = document.getElementById('quantity');
+        const areAvailableIcons = document.querySelectorAll('.product-icon');
+        const isAvailableText = document.getElementById('product-text');
         
         imageLeft.forEach(image => {
             image.addEventListener('click', () => {
@@ -101,18 +113,31 @@
 
             if (selectedItem) {
                 flavor.textContent = "Flavor: " + selectedFlavor;
-                imageSlide.src = selectedItem.main_image.slice(16, 1000);;
-                main_image.src = selectedItem.main_image.slice(16, 1000);;
-                if (selectedItem.image1 !== "") {
+                imageSlide.src = selectedItem.main_image.slice(16, 1000);
+                main_image.src = selectedItem.main_image.slice(16, 1000);
+                if (selectedItem.image1) {
                     image1.src = selectedItem.image1.slice(16, 1000);
                 }
-                if (selectedItem.image2 !== "") {
-                    image2.src = selectedItem.image2.slice(16, 1000);;
+                if (selectedItem.image2) {
+                    image2.src = selectedItem.image2.slice(16, 1000);
                 }
-                if (selectedItem.image3 !== "") {
-                    image3.src = selectedItem.image3.slice(16, 1000);;
+                if (selectedItem.image3) {
+                    image3.src = selectedItem.image3.slice(16, 1000);
                 }
                 itemPrice.textContent = "$" + selectedItem.price;
+                areAvailableIcons.forEach(isAvailableIcon => {
+                    if (selectedItem.is_available) {
+                        isAvailableText.textContent = ' Product available!';
+                        isAvailableIcon.removeAttribute('id', 'unavailable');
+                        isAvailableIcon.setAttribute('id', 'available');
+                    } else {
+                        isAvailableText.textContent = ' Product unavailable!';
+                        isAvailableIcon.removeAttribute('id', 'available');
+                        isAvailableIcon.setAttribute('id', 'unavailable');
+                    }
+                });
+                
+                quantity.textContent = "Items left: " + selectedItem.quantity;
             }
         });
 

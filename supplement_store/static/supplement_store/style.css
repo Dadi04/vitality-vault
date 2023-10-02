@@ -807,6 +807,9 @@ footer #third #third-third img {
   width: 1000px;
   display: flex;
 }
+#shop .shop-right .is_available_item {
+  opacity: 0.5;
+}
 #shop .shop-right .item {
   width: 300px;
   height: 400px;
@@ -950,6 +953,12 @@ footer #third #third-third img {
 }
 #item #other #item-content #item-right #wishlist:hover {
   background-color: #bbb;
+}
+#item #other #item-content #item-right #unavailable {
+  color: red;
+}
+#item #other #item-content #item-right #available {
+  color: green;
 }
 
 #description, #reviews {

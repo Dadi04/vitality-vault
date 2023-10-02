@@ -62,6 +62,8 @@ class Item(models.Model):
     brand = models.CharField(choices=BRANDS)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
+    is_available = models.BooleanField(default=True)
+    quantity = models.PositiveIntegerField(default=20)
     is_on_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     sale_start_date = models.DateTimeField(null=True, blank=True)
@@ -86,16 +88,12 @@ class Item(models.Model):
             'main_image': str(self.main_image.name),
             'image1': str(self.image1),
             'image2': str(self.image2),
-            'image3': str(self.image3),
+            'is_available': self.is_available,
+            'quantity': self.quantity,
         }
 
     def __str__(self):
         return f'{self.id}: {self.fullname}'
-
-class InStock(models.Model):
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    is_available = models.BooleanField()
-    quantity = models.PositiveIntegerField()
 
 class Support(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
