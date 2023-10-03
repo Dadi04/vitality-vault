@@ -43,6 +43,15 @@
                     <p>Weight: {{ items.0.weight }} g</p>
                     <p>Category: {{ items.0.category }}</p>
                     <p>Brand: {{ items.0.brand }}</p>
+                    <p>Average Review:
+                        {% for i in 5|star_range %}
+                            {% if i < average_review %}
+                                <i class="fa fa-star yellow-review"></i>
+                            {% else %}
+                                <i class="fa fa-star gray-review"></i>
+                            {% endif %}
+                        {% endfor %}
+                    </p>
                     <a href="#description">Show detailed description</a>
                 </div>
                 <div id="item-right">
@@ -81,7 +90,7 @@
     <div id="reviews">
         <h1>Reviews</h1>
         {% if user.is_authenticated %}
-            <form action="{% url 'comment' username=user.username itemname=items.0.fullname %}" method="post">
+            <form id="comment-form" action="{% url 'comment' username=user.username itemname=items.0.fullname %}" method="post">
                 {% csrf_token %}
                 <textarea name="textarea" id="textarea" cols="50" rows="4" placeholder="Write a comment..." required></textarea><br>
                 Your opinion: 
@@ -90,8 +99,13 @@
                 <i class="fa fa-star stars" data-star="3"></i>
                 <i class="fa fa-star stars" data-star="4"></i>
                 <i class="fa fa-star stars" data-star="5"></i>
-                <input type="hidden" name="rating" id="rating" value="0">
+                <input type="hidden" name="rating" id="rating" value="">
                 <input type="submit" value="Comment">
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
             </form>
         {% else %}
             <textarea name="textarea" id="textarea" cols="30" rows="10" disabled>You need to be logged in in order to comment!</textarea>
@@ -100,15 +114,20 @@
         <div id="comments">
             {% if reviews %}
                 {% for review in reviews %}
-                    <div>
+                    <div class="each-review">
                         {{review.user.username}}
                         {{review.comment}}
                         on {{review.timestamp}}
                         gave 
-                        {% for star in review.rating|star_range %}
-                            <!--fix this, i napraviti da se salje async preko javascript-->
-                            <i class="fa fa-star" data-star="{{star}}"></i>
-                        {% endfor %}
+                        {% with review.rating as user_rating %}
+                            {% for i in 5|star_range %}
+                                {% if i < user_rating %}
+                                    <i class="fa fa-star yellow-review"></i>
+                                {% else %}
+                                    <i class="fa fa-star gray-review"></i>
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
                     </div>
                 {% endfor %}
             {% else %}
@@ -133,9 +152,33 @@
         const quantity = document.getElementById('quantity');
         const areAvailableIcons = document.querySelectorAll('.product-icon');
         const isAvailableText = document.getElementById('product-text');
-        const stars = document.querySelectorAll(".fa-star");
+        const stars = document.querySelectorAll(".stars");
         const ratingInput = document.getElementById("rating");
         
+        let selectedStars = 0;
+
+        stars.forEach((star, index) => {
+            star.addEventListener("click", () => {
+                const starNumber = index + 1;
+    
+                if (star.classList.contains("selected")) {
+                    for (let i = starNumber; i < stars.length; i++) {
+                        stars[i].classList.remove("yellow");
+                        stars[i].classList.remove("selected");
+                    }
+                    selectedStars = starNumber - 1;
+                } else {
+                    for (let i = 0; i < starNumber; i++) {
+                        stars[i].classList.add("yellow");
+                        stars[i].classList.add("selected");
+                    }
+                    selectedStars = starNumber;
+                }
+
+                ratingInput.value = selectedStars;
+            });
+        });
+
         imageLeft.forEach(image => {
             image.addEventListener('click', () => {
                 imageSlide.src = image.src;
@@ -175,42 +218,6 @@
                 
                 quantity.textContent = "Items left: " + selectedItem.quantity;
             }
-        });
-
-        stars.forEach((star, index) => {
-            star.addEventListener("mouseover", () => {
-                const starNumber = index + 1;
-                for (let i = 0; i < starNumber; i++) {
-                    stars[i].classList.add("yellow");
-                }
-            });
-
-            star.addEventListener("mouseout", () => {
-                const starNumber = index + 1;
-                if (!star.classList.contains("selected")) {
-                    for (let i = 0; i < starNumber; i++) {
-                        stars[i].classList.remove("yellow");
-                    }
-                }
-            });
-
-            star.addEventListener("click", () => {
-                const starNumber = index + 1;
-    
-                if (star.classList.contains("selected")) {
-                    for (let i = starNumber; i < stars.length; i++) {
-                        stars[i].classList.remove("yellow");
-                        stars[i].classList.remove("selected");
-                    }
-                } else {
-                    for (let i = 0; i < starNumber; i++) {
-                        stars[i].classList.add("yellow");
-                        stars[i].classList.add("selected");
-                    }
-                }
-
-                ratingInput.value = document.querySelectorAll(".selected").length;
-            });
         });
     </script>
 {% endblock %}

@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Count
+from django.db.models import Subquery, OuterRef, F, Avg
 
 from datetime import datetime
 
@@ -126,17 +126,20 @@ def logout_view(request):
 def shop_by_brand(request, brand):
     items_by_brand = Item.objects.filter(brand=brand).order_by('-is_available').distinct()
     return render(request, "supplement_store/shop.html", {
-        "items_by_brand": items_by_brand
+        "items_by_brand": items_by_brand,
     })
 
 def shop_by_itemname(request, brand, itemname):
     items = Item.objects.filter(fullname=itemname, brand=brand).distinct('flavor')
     items_json = json.dumps([item.serialize() for item in items])
-    reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first())
+    reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
+    average_review = reviews.aggregate(Avg('rating'))['rating__avg']
+
     return render(request, "supplement_store/item.html", {
         "items": items,
         "items_json": items_json,
         "reviews": reviews,
+        "average_review": average_review
     })
 
 def comment(request, username, itemname):
@@ -147,10 +150,10 @@ def comment(request, username, itemname):
         rating = request.POST["rating"]
         if comment and rating:
             Review.objects.create(user=user, item=item, comment=comment, rating=rating, timestamp=datetime.now())
-            return JsonResponse({'success': 'Message saved to the database'})
+            return redirect(request.META.get('HTTP_REFERER', 'index'))
         else:
-            return JsonResponse({'error': 'Message is empty'}, status=400)
-    return JsonResponse({'error': 'Invalid request method'}, status=400)
+            messages.error(request, 'Please provide a comment and a rating.')
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 @login_required
 def account(request):

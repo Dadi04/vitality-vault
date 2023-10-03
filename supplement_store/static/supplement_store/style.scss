@@ -1007,6 +1007,14 @@ footer {
                 padding-top: 10px;
                 font-size: 20px;
 
+                .yellow-review {
+                    color: yellow;
+                }
+
+                .gray-review {
+                    color: grey;
+                }
+
                 p {
                     margin: 3px;
                 }
@@ -1112,18 +1120,28 @@ footer {
     margin: 0 auto;
     font-size: 18px;
 
-    .stars {
-        font-size: 24px;
-      }
-      
     .fa-star {
+        font-size: 24px;
         color: gray;
-        cursor: pointer;
         transition: color 0.1s;
     }
     
+    .stars {
+        cursor: pointer;
+    }
+
     .yellow {
         color: yellow;
     }
-    
+
+    #comments {
+        .yellow-review {
+            color: yellow;
+        }
+
+        .gray-review {
+            color: grey;
+        }
+    }
 }
+

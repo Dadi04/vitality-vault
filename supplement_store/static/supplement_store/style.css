@@ -879,6 +879,12 @@ footer #third #third-third img {
   padding-top: 10px;
   font-size: 20px;
 }
+#item #other #item-content #item-left .yellow-review {
+  color: yellow;
+}
+#item #other #item-content #item-left .gray-review {
+  color: grey;
+}
 #item #other #item-content #item-left p {
   margin: 3px;
 }
@@ -967,16 +973,22 @@ footer #third #third-third img {
   margin: 0 auto;
   font-size: 18px;
 }
-#description .stars, #reviews .stars {
-  font-size: 24px;
-}
 #description .fa-star, #reviews .fa-star {
+  font-size: 24px;
   color: gray;
-  cursor: pointer;
   transition: color 0.1s;
+}
+#description .stars, #reviews .stars {
+  cursor: pointer;
 }
 #description .yellow, #reviews .yellow {
   color: yellow;
+}
+#description #comments .yellow-review, #reviews #comments .yellow-review {
+  color: yellow;
+}
+#description #comments .gray-review, #reviews #comments .gray-review {
+  color: grey;
 }
 
 /*# sourceMappingURL=style.css.map */
