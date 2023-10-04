@@ -63,6 +63,7 @@ class Item(models.Model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     is_available = models.BooleanField(default=True)
+    average_rating = models.FloatField(default=0, null=True, blank=True)
     quantity = models.PositiveIntegerField(default=20)
     is_on_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -93,7 +94,7 @@ class Item(models.Model):
         }
 
     def __str__(self):
-        return f'{self.id}: {self.fullname}'
+        return f'{self.id}: {self.fullname}, Available: {self.is_available}'
 
 class Support(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

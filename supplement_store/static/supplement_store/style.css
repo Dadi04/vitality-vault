@@ -807,6 +807,12 @@ footer #third #third-third img {
   width: 1000px;
   display: flex;
 }
+#shop .shop-right .yellow-review {
+  color: yellow;
+}
+#shop .shop-right .gray-review {
+  color: grey;
+}
 #shop .shop-right .is_available_item {
   opacity: 0.5;
 }
@@ -989,6 +995,20 @@ footer #third #third-third img {
 }
 #description #comments .gray-review, #reviews #comments .gray-review {
   color: grey;
+}
+#description #comments .each-review, #reviews #comments .each-review {
+  margin: 0 10px;
+}
+#description #comments .each-review #review-username, #reviews #comments .each-review #review-username {
+  margin: 0 0 5px 0;
+  width: fit-content;
+  display: inline-block;
+}
+#description #comments .each-review #review-timestamp, #reviews #comments .each-review #review-timestamp {
+  display: inline;
+  float: right;
+  width: fit-content;
+  margin: 0;
 }
 
 /*# sourceMappingURL=style.css.map */

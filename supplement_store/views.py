@@ -124,9 +124,23 @@ def logout_view(request):
     return redirect('index')
 
 def shop_by_brand(request, brand):
-    items_by_brand = Item.objects.filter(brand=brand).order_by('-is_available').distinct()
+    items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available')
+
+    unique_items = {}
+    final_items = []
+
+    for item in items_by_brand:
+        average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
+        if item.fullname not in unique_items:
+            unique_items[item.fullname] = item
+            item.average_rating = average_review
+            item.save()
+            final_items.append(item) 
+        elif item.is_available:
+            unique_items[item.name] = item
+
     return render(request, "supplement_store/shop.html", {
-        "items_by_brand": items_by_brand,
+        "items_by_brand": final_items,
     })
 
 def shop_by_itemname(request, brand, itemname):

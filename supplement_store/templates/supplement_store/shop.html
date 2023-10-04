@@ -19,6 +19,13 @@
                     {% endif %}
                     <a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" width="200px"></a>
                     <h5><a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}">{{ item.name }} {{ item.weight }} g</a></h5>
+                    {% for i in 5|star_range %}
+                        {% if i < item.average_rating %}
+                            <i class="fa fa-star yellow-review"></i>
+                        {% else %}
+                            <i class="fa fa-star gray-review"></i>
+                        {% endif %}
+                    {% endfor %}
                     <h3>${{ item.price }}</h3>
                     {% if item.is_on_sale %}
                         <div>TO DO is on sale</div>
