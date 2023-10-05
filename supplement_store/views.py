@@ -84,6 +84,9 @@ def register_view(request):
             user.is_active = False
             user.save()
 
+            # popraviti ovo tako da ne saveuje odmah user u databazu nego tek kad on klikne na mail
+            # napraviti neki password security da ne moze bas tipa 1234
+
             # emailing logic
             mail_subject = "Activate your user account."
             message = render_to_string("supplement_store/confirmation_email.html", {

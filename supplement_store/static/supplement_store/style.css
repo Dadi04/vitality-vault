@@ -476,7 +476,7 @@ footer #third #third-third img {
   color: #333;
 }
 #register .required {
-  color: red;
+  color: darkred;
   font-weight: bold;
   margin-right: 10px;
 }
@@ -823,6 +823,25 @@ footer #third #third-third img {
   justify-content: center;
   margin: 0 auto;
   text-align: center;
+  position: relative;
+}
+#shop .shop-right .item .new {
+  position: absolute;
+  left: 60%;
+}
+#shop .shop-right .item .price {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+#shop .shop-right .item .price .on_sale {
+  text-decoration: line-through;
+  opacity: 0.5;
+  width: fit-content;
+}
+#shop .shop-right .item .price .new_price {
+  color: red;
 }
 #shop .shop-right .item a {
   text-decoration: none;
@@ -869,6 +888,13 @@ footer #third #third-third img {
   display: flex;
   flex-direction: column;
   gap: 10px;
+}
+#item #main-image {
+  position: relative;
+}
+#item #main-image #is_new {
+  position: absolute;
+  left: 60%;
 }
 #item #other {
   width: auto;
@@ -930,6 +956,32 @@ footer #third #third-third img {
   background-color: #fff;
   color: #333;
 }
+#item #other #item-content #item-right #quantity {
+  margin-bottom: 0;
+}
+#item #other #item-content #item-right #unavailable {
+  color: red;
+}
+#item #other #item-content #item-right #available {
+  color: green;
+}
+#item #other #item-content #item-right #div-price {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  height: 60px;
+}
+#item #other #item-content #item-right #div-price .on_sale {
+  text-decoration: line-through;
+  opacity: 0.5;
+  width: fit-content;
+}
+#item #other #item-content #item-right #div-price #new_price {
+  color: darkred;
+}
+#item #other #item-content #item-right #from-to-date {
+  margin-top: 0;
+}
 #item #other #item-content #item-right #cart {
   width: 80%;
   height: 40px;
@@ -965,12 +1017,6 @@ footer #third #third-third img {
 }
 #item #other #item-content #item-right #wishlist:hover {
   background-color: #bbb;
-}
-#item #other #item-content #item-right #unavailable {
-  color: red;
-}
-#item #other #item-content #item-right #available {
-  color: green;
 }
 
 #description, #reviews {

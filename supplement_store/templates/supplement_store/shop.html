@@ -15,7 +15,7 @@
             {% for item in items_by_brand %}
                 <div class="item {% if not item.is_available %}is_available_item{% endif %}">
                     {% if item.is_new %}
-                        <div>TO DO is new</div>
+                        <a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
                     {% endif %}
                     <a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" width="200px"></a>
                     <h5><a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}">{{ item.name }} {{ item.weight }} g</a></h5>
@@ -26,10 +26,12 @@
                             <i class="fa fa-star gray-review"></i>
                         {% endif %}
                     {% endfor %}
-                    <h3>${{ item.price }}</h3>
-                    {% if item.is_on_sale %}
-                        <div>TO DO is on sale</div>
-                    {% endif %}
+                    <div class="price">
+                        <h3 class="{% if item.is_on_sale %}on_sale{% endif %}">${{ item.price }}</h3>
+                        {% if item.is_on_sale %}
+                            <h3 class="new_price">${{item.sale_price}}</h3>
+                        {% endif %}
+                    </div>
                     <button class="add-to-cart">Add to cart</button>
                 </div>
             {% endfor %}

@@ -549,7 +549,7 @@ footer {
     }
 
     .required {
-        color: red;
+        color: darkred;
         font-weight: bold;
         margin-right: 10px;
     }
@@ -944,6 +944,30 @@ footer {
             justify-content: center;
             margin: 0 auto;
             text-align: center;
+            position: relative;
+
+            .new {
+                position: absolute;
+                left: 60%;
+            }
+
+            .price {
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                justify-content: center;
+
+                .on_sale {
+                    text-decoration: line-through;
+                    opacity: 0.5;
+                    width: fit-content;
+                }
+
+                .new_price {
+                    color: red;
+                }
+            }
+            
 
             a {
                 text-decoration: none;
@@ -998,6 +1022,15 @@ footer {
         display: flex;
         flex-direction: column;
         gap: 10px;
+    }
+
+    #main-image {
+        position: relative;
+
+        #is_new {
+            position: absolute;
+            left: 60%;
+        }
     }
 
     #other {
@@ -1070,6 +1103,40 @@ footer {
                     }
                 }
 
+                #quantity {
+                    margin-bottom: 0;
+                }
+
+                #unavailable {
+                    color: red;
+                }
+
+                #available {
+                    color: green;
+                }
+
+                #div-price {
+                    display: flex;
+                    flex-direction: row;
+                    gap: 10px;
+                    height: 60px;
+
+                    .on_sale {
+                        text-decoration: line-through;
+                        opacity: 0.5;
+                        width: fit-content;
+
+                    }
+
+                    #new_price {
+                        color: darkred;
+                    }
+                }
+
+                #from-to-date {
+                    margin-top: 0;
+                }
+                
                 #cart {
                     width: 80%;
                     height: 40px;
@@ -1108,14 +1175,6 @@ footer {
                     &:hover {
                         background-color: #bbb;
                     }
-                }
-
-                #unavailable {
-                    color: red;
-                }
-
-                #available {
-                    color: green;
                 }
             }
         }
