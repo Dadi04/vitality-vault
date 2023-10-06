@@ -96,19 +96,19 @@
                     </li>
                     <li id="categories"><a href="{% url 'supplements' %}">Supplements</a>
                         <ul class="second">
-                            <li><a href="">Protein powders</a></li>
-                            <li><a href="">Creatine</a></li>
-                            <li><a href="">Pre-Workouts</a></li>
-                            <li><a href="">Post-Workouts</a></li>
-                            <li><a href="">Test Boosters</a></li>
-                            <li><a href="">Mass Gainers</a></li>                            
-                            <li><a href="">Weight Loss</a></li>
-                            <li><a href="">Vitamins and Minerals</a></li>
-                            <li><a href="">Meal Replacements</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Protein powders' %}">Protein powders</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Creatine' %}">Creatine</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Pre-Workouts' %}">Pre-Workouts</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Post-Workouts' %}">Post-Workouts</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Test Boosters' %}">Test Boosters</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Mass Gainers' %}">Mass Gainers</a></li>                            
+                            <li><a href="{% url 'shop_by_category' category='Weight Loss' %}">Weight Loss</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Vitamins and Minerals' %}">Vitamins and Minerals</a></li>
+                            <li><a href="{% url 'shop_by_category' category='Meal Replacements' %}">Meal Replacements</a></li>
                             <hr>
                         </ul>
                     </li>
-                    <li id="clothing"><a href="">Clothing & Accessories</a>
+                    <li id="clothing"><a href="{% url 'clothing' %}">Clothing & Accessories</a>
                         <ul class="second">
                             <li><a href="">Tanks, T-Shirts & Shirts</a></li>
                             <li><a href="">Hoodies & Sweatshirts</a></li>

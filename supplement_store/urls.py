@@ -27,10 +27,11 @@ urlpatterns = [
     path('answering/<str:username>', views.answering, name="answering"),
     path('close/<str:username>', views.close, name="close"),
 
-
+    path('clothing', views.clothing, name="clothing"),
     path('supplements', views.supplements, name="supplements"),
-    path('<str:brand>', views.shop_by_brand, name="shop_by_brand"),
-    path('<str:brand>/<str:itemname>', views.shop_by_itemname, name="shop_by_itemname"),
+    path('brand/<str:brand>', views.shop_by_brand, name="shop_by_brand"),
+    path('category/<str:category>', views.shop_by_category, name="shop_by_category"),
+    path('<str:itemname>', views.shop_by_itemname, name="shop_by_itemname"),
     path('comment/<str:username>/<str:itemname>', views.comment, name="comment"),
 
     path('password_reset', CustomPasswordResetView.as_view(

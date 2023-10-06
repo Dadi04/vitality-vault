@@ -126,6 +126,23 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
+def clothing(request):
+    items = Item.objects.filter(size__isnull=False).order_by('name', '-is_available')
+    unique_items = {}
+    final_items = []
+
+    for item in items:
+        if item.fullname not in unique_items:
+            unique_items[item.fullname] = item
+            final_items.append(item) 
+        elif item.is_available:
+            unique_items[item.name] = item
+
+    return render(request, "supplement_store/shop.html", {
+        "items": final_items,
+    })
+
+
 def supplements(request):
     items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
     categories = []
@@ -149,7 +166,41 @@ def supplements(request):
             brands.append(item.brand)
 
     return render(request, "supplement_store/shop.html", {
-        "items_by_brand": final_items,
+        "items": final_items,
+        "categories": categories,
+        "flavors": flavors,
+        "brands": brands,
+    })
+
+def shop_by_category(request, category):
+    items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available')
+    print(items_by_category)
+
+    unique_items = {}
+    final_items = []
+    categories = []
+    flavors = []
+    brands = []
+
+    for item in items_by_category:
+        average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
+        if item.fullname not in unique_items:
+            unique_items[item.fullname] = item
+            item.average_rating = average_review
+            item.save()
+            final_items.append(item) 
+        elif item.is_available:
+            unique_items[item.name] = item
+
+        if item.category not in categories:
+            categories.append(item.category)
+        if item.flavor not in flavors:
+            flavors.append(item.flavor)
+        if item.brand not in brands:
+            brands.append(item.brand)
+
+    return render(request, "supplement_store/shop.html", {
+        "items": final_items,
         "categories": categories,
         "flavors": flavors,
         "brands": brands,
@@ -176,13 +227,13 @@ def shop_by_brand(request, brand):
     brands = Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct()
 
     return render(request, "supplement_store/shop.html", {
-        "items_by_brand": final_items,
+        "items": final_items,
         "categories": categories,
         "flavors": flavors,
         "brands": brands,
     })
 
-# upitno
+# upitno, morace js, yt ili chatgpt
 def filter_products(request):
     selected_categories = request.GET.getlist('category')
     selected_flavors = request.GET.getlist('flavor')

@@ -43,7 +43,8 @@
                 </div>
                 <div>
                     <h3>Price range</h3>
-                </div>
+                    TO DO
+                </div><br>
                 <input type="submit" value="Apply Filter">
                 {% if messages %}
                     {% for message in messages %}
@@ -53,13 +54,13 @@
             </form>
         </div>
         <div class="shop-right product-list">
-            {% for item in items_by_brand %}
+            {% for item in items %}
                 <div class="item {% if not item.is_available %}is_available_item{% endif %}">
                     {% if item.is_new %}
-                        <a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
+                        <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
                     {% endif %}
-                    <a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" width="200px"></a>
-                    <h5><a href="{% url 'shop_by_itemname' brand=item.brand itemname=item.fullname %}">{{ item.name }} {{ item.weight }} g</a></h5>
+                    <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" width="200px"></a>
+                    <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}">{{ item.name }} {{ item.weight }} g</a></h5>
                     {% for i in 5|star_range %}
                         {% if i < item.average_rating %}
                             <i class="fa fa-star yellow-review"></i>
