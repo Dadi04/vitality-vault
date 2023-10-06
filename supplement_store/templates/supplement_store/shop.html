@@ -9,9 +9,50 @@
 {% block body %}
     <div id="shop">
         <div class="shop-filter">
-            TO DO Filter
+            <form action="{% url 'filter_products' %}" method="get">
+                <h3>Filter</h3>
+                <div>
+                    <h3>Category</h3>
+                    {% for item in categories %}
+                        <label>
+                            <input type="checkbox" class="filter-checkbox" name="category" data-filter="category" value="{{ item }}">
+                            {{ item }}
+                            <br>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div>
+                    <h3>Flavor</h3>
+                    {% for item in flavors %}
+                        <label>
+                            <input type="checkbox" class="filter-checkbox" name="flavor" data-filter="flavor" value="{{ item }}">
+                            {{ item }}
+                            <br>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div>
+                    <h3>Brands</h3>
+                    {% for item in brands %}
+                        <label>
+                            <input type="checkbox" class="filter-checkbox" name="brand" data-filter="brand" value="{{ item }}">
+                            {{ item }}
+                            <br>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div>
+                    <h3>Price range</h3>
+                </div>
+                <input type="submit" value="Apply Filter">
+                {% if messages %}
+                    {% for message in messages %}
+                        <p>{{ message }}</p>
+                    {% endfor %}
+                {% endif %}
+            </form>
         </div>
-        <div class="shop-right">
+        <div class="shop-right product-list">
             {% for item in items_by_brand %}
                 <div class="item {% if not item.is_available %}is_available_item{% endif %}">
                     {% if item.is_new %}
@@ -37,4 +78,39 @@
             {% endfor %}
         </div>
     </div>
+{% endblock %}
+
+{% block script %}
+    <script>
+//        document.querySelectorAll('.filter-checkbox').forEach(function(checkbox) {
+//            checkbox.addEventListener('change', applyFilters);
+//        });
+//
+//        function applyFilters() {
+//            let selectedSubcategories = getSelectedValues('subcategory');
+//            let selectedFlavors = getSelectedValues('flavor');
+//            let selectedBrands = getSelectedValues('brand');
+//
+//            fetch('/filter-products')
+//            .then(response => response.json())
+//            .then(data => {
+//                console.log(data)
+//                updateProductListing(data);
+//            })
+//            .catch(error => console.error(error));
+//        }
+//
+//        function updateProductListing(products) {
+//            const productListingContainer = document.querySelector('.product-list');
+//            productListingContainer.innerHTML = '';
+//
+//            products.forEach(product => {
+//                const productCard = document.createElement('div');
+//                productCard.classList.add('product-card');
+//                productCard.textContent = product.name;
+//
+//                productListingContainer.appendChild(productCard);
+//            });
+//        }
+    </script>
 {% endblock %}

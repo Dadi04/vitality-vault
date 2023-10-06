@@ -126,6 +126,35 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
+def supplements(request):
+    items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
+    categories = []
+    flavors = []
+    brands = []
+    unique_items = {}
+    final_items = []
+
+    for item in items:
+        if item.fullname not in unique_items:
+            unique_items[item.fullname] = item
+            final_items.append(item) 
+        elif item.is_available:
+            unique_items[item.name] = item
+
+        if item.category not in categories:
+            categories.append(item.category)
+        if item.flavor not in flavors:
+            flavors.append(item.flavor)
+        if item.brand not in brands:
+            brands.append(item.brand)
+
+    return render(request, "supplement_store/shop.html", {
+        "items_by_brand": final_items,
+        "categories": categories,
+        "flavors": flavors,
+        "brands": brands,
+    })
+
 def shop_by_brand(request, brand):
     items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available')
 
@@ -142,9 +171,61 @@ def shop_by_brand(request, brand):
         elif item.is_available:
             unique_items[item.name] = item
 
+    categories = Item.objects.filter(brand=brand).values_list('category', flat=True).distinct()
+    flavors = Item.objects.filter(brand=brand).values_list('flavor', flat=True).distinct()
+    brands = Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct()
+
     return render(request, "supplement_store/shop.html", {
         "items_by_brand": final_items,
+        "categories": categories,
+        "flavors": flavors,
+        "brands": brands,
     })
+
+# upitno
+def filter_products(request):
+    selected_categories = request.GET.getlist('category')
+    selected_flavors = request.GET.getlist('flavor')
+    selected_brands = request.GET.getlist('brand')
+    filtered_products = None
+
+    if selected_categories:
+        filtered_products = Item.objects.filter(category__in=selected_categories).order_by('fullname', '-is_available')
+    if selected_flavors:
+        filtered_products = Item.objects.filter(flavor__in=selected_flavors).order_by('fullname', '-is_available')
+    if selected_brands:
+        filtered_products = Item.objects.filter(brand__in=selected_brands).order_by('fullname', '-is_available')    
+
+    if filtered_products:
+        unique_items = {}
+        final_items = []
+        categories = []
+        flavors = []
+        brands = []
+
+        for item in filtered_products:
+            if item.fullname not in unique_items:
+                unique_items[item.fullname] = item
+                final_items.append(item) 
+            elif item.is_available:
+                unique_items[item.name] = item
+            if item.category not in categories:
+                categories.append(item.category)
+            if item.flavor not in flavors:
+                flavors.append(item.flavor)
+            if item.brand not in brands:
+                brands.append(item.brand)    
+
+        return render(request, "supplement_store/shop.html", {
+            "items_by_brand": final_items,
+            "categories": categories,
+            "flavors": flavors,
+            "brands": brands,
+        })
+    else:
+        messages.error(request, "Please select a filter")
+        return redirect(request.META.get('HTTP_REFERER', 'index'))
+
 
 def shop_by_itemname(request, brand, itemname):
     items = Item.objects.filter(fullname=itemname, brand=brand).distinct('flavor')

@@ -159,6 +159,8 @@
         const ratingInput = document.getElementById("rating");
         
         let selectedStars = 0;
+        let currentSelectedImage = null;
+        let firstImage = null;
 
         stars.forEach((star, index) => {
             star.addEventListener("click", () => {
@@ -183,8 +185,26 @@
         });
 
         imageLeft.forEach(image => {
+            if (!firstImage) {
+                    firstImage = image;
+                    firstImage.style.borderLeft = '3px orange solid';
+                    firstImage.style.transition = 'border-left 0.2s ease-in-out';
+            }
+
             image.addEventListener('click', () => {
+                if(firstImage) {
+                    firstImage.style.borderLeft = 'none';
+                    firstImage = null;
+                }
+
+                if (currentSelectedImage) {
+                    currentSelectedImage.style.border = 'none';
+                }
+
                 imageSlide.src = image.src;
+                image.style.borderLeft = '3px orange solid';
+                image.style.transition = 'border-left 0.2s ease-in-out';
+                currentSelectedImage = image;
             });
         });
 

@@ -549,7 +549,7 @@ footer {
     }
 
     .required {
-        color: darkred;
+        color: red;
         font-weight: bold;
         margin-right: 10px;
     }
@@ -565,7 +565,7 @@ footer {
     
         &:focus {
             outline: none;
-            border-color: hwb(30 2% 18%);
+            border-color: #d16b05;
         }
     }
 
@@ -916,9 +916,11 @@ footer {
 
     .shop-filter {
         width: 300px;
-        height: fit-content;
+        height: 500px;
         display: flex;
-        
+        flex-direction: column;
+        background-color: #ddd;
+        padding-left: 10px;
     }
 
     .shop-right {
@@ -1129,7 +1131,7 @@ footer {
                     }
 
                     #new_price {
-                        color: darkred;
+                        color: red;
                     }
                 }
 
