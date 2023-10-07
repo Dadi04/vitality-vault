@@ -74,16 +74,22 @@
                         {% endif %}
                     {% endfor %}
                     <div id="div-price">
-                        <h1 class="item-price {% if items.0.is_on_sale %}on_sale{% endif %}">${{items.0.price}}</h1>
+                        <h1 id="item-price" class="{% if items.0.is_on_sale %}on_sale{% endif %}">${{items.0.price}}</h1>
                         {% if items.0.is_on_sale %}
                             <h1 id="new_price">{{items.0.sale_price}}</h1>
                         {% endif %}
                     </div>
-                    {% if items.0.is_on_sale %}    
-                        <p id="from-to-date">On Sale from {{items.0.sale_start_date}} to {{items.0.sale_end_date}}</p>
-                    {% endif %}    
-                    <button id="cart">Add to Cart</button>
-                    <button id="wishlist" class="fa fa-heart"></button>
+                    {% for item in items %}
+                        {% if item.flavor == items.0.flavor %}
+                            {% if item.is_on_sale%}
+                                <p id="from-to-date">On Sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}   
+                    <div id="buttons">
+                        <button id="cart">Add to Cart</button>
+                        <button id="wishlist" class="fa fa-heart"></button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -155,8 +161,11 @@
         const quantity = document.getElementById('quantity');
         const areAvailableIcons = document.querySelectorAll('.product-icon');
         const isAvailableText = document.getElementById('product-text');
-        const stars = document.querySelectorAll(".stars");
-        const ratingInput = document.getElementById("rating");
+        const stars = document.querySelectorAll('.stars');
+        const ratingInput = document.getElementById('rating');
+        const isNew = document.getElementById('is_new')
+        const fromToDate = document.getElementById('from-to-date')
+        const salePrice = document.getElementById('new_price')
         
         let selectedStars = 0;
         let currentSelectedImage = null;
@@ -227,6 +236,24 @@
                     image3.src = selectedItem.image3.slice(16, 1000);
                 }
                 itemPrice.textContent = "$" + selectedItem.price;
+    
+                if (!selectedItem.is_new) {
+                    isNew.style.display = 'none';
+                } else {
+                    isNew.style.display = 'block';
+                }
+
+                if (!selectedItem.is_on_sale) {
+                    fromToDate.style.display = 'none';
+                    salePrice.style.display = 'none';
+                    itemPrice.style.opacity = '1';
+                    itemPrice.style.textDecoration = 'none'
+                } else {
+                    fromToDate.style.display = 'block';
+                    salePrice.style.display = 'block';
+                    itemPrice.style.opacity = '0.5';
+                    itemPrice.style.textDecoration = 'line-through'
+                }
                 areAvailableIcons.forEach(isAvailableIcon => {
                     if (selectedItem.is_available) {
                         isAvailableText.textContent = ' Product available!';

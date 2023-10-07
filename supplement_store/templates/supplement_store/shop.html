@@ -22,6 +22,16 @@
                     {% endfor %}
                 </div>
                 <div>
+                    <h3>Subcategory</h3>
+                    {% for item in subcategories %}
+                        <label>
+                            <input type="checkbox" class="filter-checkbox" name="subcategory" data-filter="subcategory" value="{{ item }}">
+                            {{ item }}
+                            <br>
+                        </label>
+                    {% endfor %}
+                </div>
+                <div>
                     <h3>Flavor</h3>
                     {% for item in flavors %}
                         <label>
@@ -60,7 +70,7 @@
                         <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
                     {% endif %}
                     <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" width="200px"></a>
-                    <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}">{{ item.name }} {{ item.weight }} g</a></h5>
+                    <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}">{{ item.name }} {{ item.weight }}g</a></h5>
                     {% for i in 5|star_range %}
                         {% if i < item.average_rating %}
                             <i class="fa fa-star yellow-review"></i>

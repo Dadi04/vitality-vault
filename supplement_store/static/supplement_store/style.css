@@ -795,20 +795,22 @@ footer #third #third-third img {
 
 #shop {
   display: flex;
-  width: 1500px;
+  width: 1550px;
   margin: 0 auto;
 }
 #shop .shop-filter {
-  width: 300px;
-  height: 600px;
+  width: 350px;
   display: flex;
   flex-direction: column;
   background-color: #ddd;
   padding-left: 10px;
 }
 #shop .shop-right {
-  width: 1000px;
+  max-width: 1200px;
+  width: 100%;
   display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
 }
 #shop .shop-right .yellow-review {
   color: yellow;
@@ -820,13 +822,12 @@ footer #third #third-third img {
   opacity: 0.5;
 }
 #shop .shop-right .item {
-  width: 300px;
+  max-width: calc(25% - 30px);
+  width: 100%;
   height: 400px;
-  align-items: center;
-  justify-content: center;
-  margin: 0 auto;
   text-align: center;
   position: relative;
+  box-sizing: border-box;
 }
 #shop .shop-right .item .new {
   position: absolute;
@@ -983,9 +984,12 @@ footer #third #third-third img {
   color: red;
 }
 #item #other #item-content #item-right #from-to-date {
-  margin-top: 0;
+  margin: 0;
 }
-#item #other #item-content #item-right #cart {
+#item #other #item-content #item-right #buttons {
+  margin-top: 10px;
+}
+#item #other #item-content #item-right #buttons #cart {
   width: 80%;
   height: 40px;
   border: none;
@@ -1000,10 +1004,10 @@ footer #third #third-third img {
   transition: background-color 0.3s ease;
   display: inline-block;
 }
-#item #other #item-content #item-right #cart:hover {
+#item #other #item-content #item-right #buttons #cart:hover {
   background-color: #444;
 }
-#item #other #item-content #item-right #wishlist {
+#item #other #item-content #item-right #buttons #wishlist {
   width: 10%;
   height: 40px;
   border: none;
@@ -1018,7 +1022,7 @@ footer #third #third-third img {
   display: inline-block;
   margin-left: 10px;
 }
-#item #other #item-content #item-right #wishlist:hover {
+#item #other #item-content #item-right #buttons #wishlist:hover {
   background-color: #bbb;
 }
 

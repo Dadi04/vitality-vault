@@ -145,7 +145,9 @@ def clothing(request):
 
 def supplements(request):
     items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
+    
     categories = []
+    subcategories = []
     flavors = []
     brands = []
     unique_items = {}
@@ -164,23 +166,26 @@ def supplements(request):
             flavors.append(item.flavor)
         if item.brand not in brands:
             brands.append(item.brand)
+        if item.subcategory not in subcategories:
+            subcategories.append(item.subcategory)
 
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
         "categories": categories,
+        "subcategories": subcategories,
         "flavors": flavors,
         "brands": brands,
     })
 
 def shop_by_category(request, category):
     items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available')
-    print(items_by_category)
 
-    unique_items = {}
-    final_items = []
     categories = []
+    subcategories = []
     flavors = []
     brands = []
+    unique_items = {}
+    final_items = []
 
     for item in items_by_category:
         average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
@@ -198,10 +203,13 @@ def shop_by_category(request, category):
             flavors.append(item.flavor)
         if item.brand not in brands:
             brands.append(item.brand)
+        if item.subcategory not in subcategories:
+            subcategories.append(item.subcategory)    
 
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
         "categories": categories,
+        "subcategories": subcategories,
         "flavors": flavors,
         "brands": brands,
     })
@@ -223,12 +231,14 @@ def shop_by_brand(request, brand):
             unique_items[item.name] = item
 
     categories = Item.objects.filter(brand=brand).values_list('category', flat=True).distinct()
+    subcategories = Item.objects.filter(brand=brand).values_list('subcategory', flat=True).distinct()
     flavors = Item.objects.filter(brand=brand).values_list('flavor', flat=True).distinct()
     brands = Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct()
 
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
         "categories": categories,
+        "subcategories": subcategories,
         "flavors": flavors,
         "brands": brands,
     })
@@ -236,12 +246,15 @@ def shop_by_brand(request, brand):
 # upitno, morace js, yt ili chatgpt
 def filter_products(request):
     selected_categories = request.GET.getlist('category')
+    selected_subcategories = request.GET.getlist('subcategory')
     selected_flavors = request.GET.getlist('flavor')
     selected_brands = request.GET.getlist('brand')
     filtered_products = None
 
     if selected_categories:
         filtered_products = Item.objects.filter(category__in=selected_categories).order_by('fullname', '-is_available')
+    if selected_subcategories:
+        filtered_products = Item.objects.filter(subcategory__in=selected_subcategories).order_by('fullname', '-is_available')    
     if selected_flavors:
         filtered_products = Item.objects.filter(flavor__in=selected_flavors).order_by('fullname', '-is_available')
     if selected_brands:
@@ -251,6 +264,7 @@ def filter_products(request):
         unique_items = {}
         final_items = []
         categories = []
+        subcategories = []
         flavors = []
         brands = []
 
@@ -266,10 +280,13 @@ def filter_products(request):
                 flavors.append(item.flavor)
             if item.brand not in brands:
                 brands.append(item.brand)    
-
+            if item.subcategory not in subcategories:
+                subcategories.append(item.subcategory)       
+        print(final_items)
         return render(request, "supplement_store/shop.html", {
-            "items_by_brand": final_items,
+            "items": final_items,
             "categories": categories,
+            "subcategories": subcategories,
             "flavors": flavors,
             "brands": brands,
         })
@@ -278,9 +295,9 @@ def filter_products(request):
         return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 
-def shop_by_itemname(request, brand, itemname):
-    items = Item.objects.filter(fullname=itemname, brand=brand).distinct('flavor')
-    items_json = json.dumps([item.serialize() for item in items])
+def shop_by_itemname(request, itemname):
+    items = Item.objects.filter(fullname=itemname).distinct('flavor')
+    items_json = json.dumps([item.serialize() for item in items], default=str)
     reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
     average_review = reviews.aggregate(Avg('rating'))['rating__avg']
 
