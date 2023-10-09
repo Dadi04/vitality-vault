@@ -89,6 +89,7 @@ class Item(models.Model):
             'main_image': str(self.main_image.name),
             'image1': str(self.image1),
             'image2': str(self.image2),
+            'is_new': self.is_new,
             'is_available': self.is_available,
             'is_on_sale': self.is_on_sale,
             'sale_price': float(self.sale_price) if self.sale_price else '',

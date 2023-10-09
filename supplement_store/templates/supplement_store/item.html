@@ -237,10 +237,10 @@
                 }
                 itemPrice.textContent = "$" + selectedItem.price;
     
-                if (!selectedItem.is_new) {
-                    isNew.style.display = 'none';
-                } else {
+                if (selectedItem.is_new) {
                     isNew.style.display = 'block';
+                } else {
+                    isNew.style.display = 'none';
                 }
 
                 if (!selectedItem.is_on_sale) {
