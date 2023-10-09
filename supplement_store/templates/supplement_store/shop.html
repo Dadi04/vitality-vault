@@ -51,9 +51,29 @@
                         </label>
                     {% endfor %}
                 </div>
-                <div>
+                <div id="double-slider">
                     <h3>Price range</h3>
-                    TO DO
+                    <div id="range-slider">
+                        <span class="slider-track"></span>
+                        <input type="range" name="min_val" class="min-val" min="1" max="100" value="20" oninput="slideMin()">
+                        <input type="range" name="max_val" class="max-val" min="1" max="100" value="60" oninput="slideMax()">
+                        <div class="tooltip min-tooltip"></div>
+                        <div class="tooltip max-tooltip"></div>
+                    </div>
+                    <div id="input-div">
+                        <div id="min-box">
+                            <div class="wrap">
+                                <span class="input-addon">$</span>
+                                <input type="text" name="min_input" class="input_field min-input" onchange="setMinInput()">
+                            </div>
+                        </div>
+                        <div id="max-box">
+                            <div class="wrap">
+                                <span class="input-addon">$</span>
+                                <input type="text" name="max_input" class="input_field max-input" onchange="setMaxInput()">
+                            </div>    
+                        </div>
+                    </div>
                 </div><br>
                 <input type="submit" value="Apply Filter">
                 {% if messages %}
@@ -93,35 +113,65 @@
 
 {% block script %}
     <script>
-//        document.querySelectorAll('.filter-checkbox').forEach(function(checkbox) {
-//            checkbox.addEventListener('change', applyFilters);
-//        });
-//
-//        function applyFilters() {
-//            let selectedSubcategories = getSelectedValues('subcategory');
-//            let selectedFlavors = getSelectedValues('flavor');
-//            let selectedBrands = getSelectedValues('brand');
-//
-//            fetch('/filter-products')
-//            .then(response => response.json())
-//            .then(data => {
-//                console.log(data)
-//                updateProductListing(data);
-//            })
-//            .catch(error => console.error(error));
-//        }
-//
-//        function updateProductListing(products) {
-//            const productListingContainer = document.querySelector('.product-list');
-//            productListingContainer.innerHTML = '';
-//
-//            products.forEach(product => {
-//                const productCard = document.createElement('div');
-//                productCard.classList.add('product-card');
-//                productCard.textContent = product.name;
-//
-//                productListingContainer.appendChild(productCard);
-//            });
-//        }
+        window.onload = () => {
+            slideMin();
+            slideMax();
+        };
+
+        const minVal = document.querySelector(".min-val");
+        const maxVal = document.querySelector(".max-val");
+        const priceInputMin = document.querySelector(".min-input");
+        const priceInputMax = document.querySelector(".max-input");
+        const minTooltip = document.querySelector(".min-tooltip");
+        const maxTooltip = document.querySelector(".max-tooltip");
+        const minGap = 0;
+        const range = document.querySelector(".slider-track");
+        const sliderMinValue = parseInt(minVal.min);
+        const sliderMaxValue = parseInt(maxVal.max);
+
+        function slideMin() {
+            let gap = parseInt(maxVal.value) - parseInt(minVal.value);
+            if (gap <= minGap) {
+                minVal.value = parseInt(maxVal.value) - minGap;
+            }
+            minTooltip.innerHTML = "$" + minVal.value;
+            priceInputMin.value = minVal.value;
+            setArea();
+        }
+
+        function slideMax() {
+            let gap = parseInt(maxVal.value) - parseInt(minVal.value);
+            if (gap <= minGap) {
+                maxVal.value = parseInt(minVal.value) + minGap;
+            }
+            maxTooltip.innerHTML = "$" + maxVal.value;
+            priceInputMax.value = maxVal.value;
+            setArea();
+        }
+
+        function setArea() {
+            range.style.left = (minVal.value / sliderMaxValue) * 100 + "%";
+            minTooltip.style.left = (minVal.value / sliderMaxValue) * 100 + "%";
+            range.style.right = 100 - (maxVal.value / sliderMaxValue) * 100 + "%";
+            maxTooltip.style.right = 100 - (maxVal.value / sliderMaxValue) * 100 + "%";
+        }
+
+        function setMinInput() {
+            let minPrice = parseInt(priceInputMin.value);
+            if (minPrice < sliderMinValue) {
+                priceInputMin.value = sliderMinValue;
+            }
+            minVal.value = priceInputMin.value;
+            slideMin();
+        }
+
+        function setMaxInput() {
+            let maxPrice = parseInt(priceInputMax.value);
+            if (maxPrice > sliderMaxValue) {
+                priceInputMax.value = sliderMaxValue;
+            }
+            maxVal.value = priceInputMax.value;
+            slideMax();
+        }
     </script>
 {% endblock %}
