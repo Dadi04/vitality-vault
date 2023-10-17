@@ -83,9 +83,10 @@ class Item(models.Model):
 
     def serialize(self):
         return {
+            'id': self.id,
             'fullname': self.fullname,
             'flavor': self.flavor,
-            'price': float(self.price),
+            'price': self.price,
             'main_image': str(self.main_image.name),
             'image1': str(self.image1),
             'image2': str(self.image2),
@@ -140,6 +141,9 @@ class Cart(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     in_cart = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.id}: {self.user.username} put {self.item.name} in cart'
 
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

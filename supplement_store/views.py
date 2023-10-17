@@ -19,7 +19,7 @@ from datetime import datetime
 
 from .forms import RegistrationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart
 
 # Create your views here.
 
@@ -169,12 +169,15 @@ def supplements(request):
         if item.subcategory not in subcategories:
             subcategories.append(item.subcategory)
 
+    context_json = json.dumps(items, default=str)
+
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
         "categories": categories,
         "subcategories": subcategories,
         "flavors": flavors,
         "brands": brands,
+        "context_json": context_json,
     })
 
 def shop_by_category(request, category):
@@ -243,58 +246,6 @@ def shop_by_brand(request, brand):
         "brands": brands,
     })
 
-# upitno, morace js, yt ili chatgpt
-def filter_products(request):
-    selected_categories = request.GET.getlist('category')
-    selected_subcategories = request.GET.getlist('subcategory')
-    selected_flavors = request.GET.getlist('flavor')
-    selected_brands = request.GET.getlist('brand')
-    filtered_products = None
-
-    if selected_categories:
-        filtered_products = Item.objects.filter(category__in=selected_categories).order_by('fullname', '-is_available')
-    if selected_subcategories:
-        filtered_products = Item.objects.filter(subcategory__in=selected_subcategories).order_by('fullname', '-is_available')    
-    if selected_flavors:
-        filtered_products = Item.objects.filter(flavor__in=selected_flavors).order_by('fullname', '-is_available')
-    if selected_brands:
-        filtered_products = Item.objects.filter(brand__in=selected_brands).order_by('fullname', '-is_available')    
-
-    if filtered_products:
-        unique_items = {}
-        final_items = []
-        categories = []
-        subcategories = []
-        flavors = []
-        brands = []
-
-        for item in filtered_products:
-            if item.fullname not in unique_items:
-                unique_items[item.fullname] = item
-                final_items.append(item) 
-            elif item.is_available:
-                unique_items[item.name] = item
-            if item.category not in categories:
-                categories.append(item.category)
-            if item.flavor not in flavors:
-                flavors.append(item.flavor)
-            if item.brand not in brands:
-                brands.append(item.brand)    
-            if item.subcategory not in subcategories:
-                subcategories.append(item.subcategory)       
-        print(final_items)
-        return render(request, "supplement_store/shop.html", {
-            "items": final_items,
-            "categories": categories,
-            "subcategories": subcategories,
-            "flavors": flavors,
-            "brands": brands,
-        })
-    else:
-        messages.error(request, "Please select a filter")
-        return redirect(request.META.get('HTTP_REFERER', 'index'))
-
-
 def shop_by_itemname(request, itemname):
     items = Item.objects.filter(fullname=itemname).distinct('flavor')
     items_json = json.dumps([item.serialize() for item in items], default=str)
@@ -333,7 +284,26 @@ def wishlist(request):
     return render(request, "supplement_store/wishlist.html")
 
 def shopping_cart(request):
-    return render(request, "supplement_store/cart.html")
+    if request.method == 'POST':
+        item_id = request.POST["id"]
+        item = Item.objects.get(id=item_id)
+        quantity = 1 if request.POST["quantity"] else request.POST["quantity"]
+        if quantity > item.quantity: 
+            return redirect('shop_by_itemname', fullname=item.fullname)
+        if not item.is_available:
+            return redirect(request.META.get('HTTP_REFERER', 'index'))
+        
+        Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
+    items = Cart.objects.filter(in_cart=True, user=request.user)
+    return render(request, "supplement_store/cart.html", {
+        "items": items,
+    })    
+    
+def remove_cart(request):
+    if request.method == 'POST':  
+        item = Item.objects.get(id=request.POST["item_id"]) 
+        Cart.objects.filter(item=item, user=request.user, in_cart=True).update(in_cart=False)
+    return redirect(request.META.get('HTTP_REFERER', 'index'))    
 
 def newsletter(request):
     return redirect(request.META.get('HTTP_REFERER', 'index'))
@@ -478,3 +448,59 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         update_session_auth_hash(self.request, self.request.user)
 
         return response
+    
+
+
+
+
+    
+# upitno, morace js, yt ili chatgpt
+#def filter_products(request):
+#    selected_categories = request.GET.getlist('category')
+#    selected_subcategories = request.GET.getlist('subcategory')
+#    selected_flavors = request.GET.getlist('flavor')
+#    selected_brands = request.GET.getlist('brand')
+#    filtered_products = None
+#
+#    if selected_categories:
+#        filtered_products = Item.objects.filter(category__in=selected_categories).order_by('fullname', '-is_available')
+#    if selected_subcategories:
+#        filtered_products = Item.objects.filter(subcategory__in=selected_subcategories).order_by('fullname', '-is_available')    
+#    if selected_flavors:
+#        filtered_products = Item.objects.filter(flavor__in=selected_flavors).order_by('fullname', '-is_available')
+#    if selected_brands:
+#        filtered_products = Item.objects.filter(brand__in=selected_brands).order_by('fullname', '-is_available')    
+#
+#    if filtered_products:
+#        unique_items = {}
+#        final_items = []
+#        categories = []
+#        subcategories = []
+#        flavors = []
+#        brands = []
+#
+#        for item in filtered_products:
+#            if item.fullname not in unique_items:
+#                unique_items[item.fullname] = item
+#                final_items.append(item) 
+#            elif item.is_available:
+#                unique_items[item.name] = item
+#            if item.category not in categories:
+#                categories.append(item.category)
+#            if item.flavor not in flavors:
+#                flavors.append(item.flavor)
+#            if item.brand not in brands:
+#                brands.append(item.brand)    
+#            if item.subcategory not in subcategories:
+#                subcategories.append(item.subcategory)       
+#        print(final_items)
+#        return render(request, "supplement_store/shop.html", {
+#            "items": final_items,
+#            "categories": categories,
+#            "subcategories": subcategories,
+#            "flavors": flavors,
+#            "brands": brands,
+#        })
+#    else:
+#        messages.error(request, "Please select a filter")
+#        return redirect(request.META.get('HTTP_REFERER', 'index'))

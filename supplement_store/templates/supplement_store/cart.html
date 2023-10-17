@@ -1,10 +1,36 @@
 {% extends 'supplement_store/layout.html' %}
 {% load static %}
+{% load filename %}
 
 {% block title %}
     Shopping Cart
 {% endblock %}
 
 {% block body %}
-    TO DO Shopping Cart
+    {% if items %}
+        <div id="cart">
+            {% for item in items %}
+                <div id="item-in-cart">
+                    <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image.name|filename}}" alt="{{ item.item.main_image.name }}" width="200px">
+                    <h5>{{ item.item.name }} {{ item.item.weight }}g</h5>
+                    <h3>${{ item.item.price }} x {{ item.quantity }}</h3>
+                    <form action="{% url 'remove_cart' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ item.item.id }}" name="item_id">
+                        <input type="submit" value="Remove">
+                    </form>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div>
+            <p>Your cart is empty!</p>
+        </div>    
+    {% endif %}
+
+    <div id="checkout">
+        <div>
+            <h1>Total: {{ items|total_price }}</h1>
+        </div>
+    </div>
 {% endblock %}

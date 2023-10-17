@@ -9,7 +9,7 @@
 {% block body %}
     <div id="shop">
         <div class="shop-filter">
-            <form action="{% url 'filter_products' %}" method="get">
+            <form action="" method="get"><!--url 'filter_products'-->
                 <h3>Filter</h3>
                 <div>
                     <h3>Category</h3>
@@ -55,8 +55,8 @@
                     <h3>Price range</h3>
                     <div id="range-slider">
                         <span class="slider-track"></span>
-                        <input type="range" name="min_val" class="min-val" min="1" max="100" value="20" oninput="slideMin()">
-                        <input type="range" name="max_val" class="max-val" min="1" max="100" value="60" oninput="slideMax()">
+                        <input type="range" name="min_val" class="min-val" min="0" max="100" value="20" oninput="slideMin()">
+                        <input type="range" name="max_val" class="max-val" min="0" max="100" value="60" oninput="slideMax()">
                         <div class="tooltip min-tooltip"></div>
                         <div class="tooltip max-tooltip"></div>
                     </div>
@@ -75,7 +75,6 @@
                         </div>
                     </div>
                 </div><br>
-                <input type="submit" value="Apply Filter">
                 {% if messages %}
                     {% for message in messages %}
                         <p>{{ message }}</p>
@@ -104,7 +103,12 @@
                             <h3 class="new_price">${{item.sale_price}}</h3>
                         {% endif %}
                     </div>
-                    <button class="add-to-cart">Add to cart</button>
+                    <form action="{% url 'shopping_cart' %}" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" value="{{ item.id }}" name="id">
+                        <input type="hidden" value="1" name="quantity">
+                        <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
+                    </form>
                 </div>
             {% endfor %}
         </div>

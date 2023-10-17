@@ -1245,6 +1245,16 @@ footer {
 
                 #quantity {
                     margin-bottom: 0;
+                    appearance: none;
+                    -webkit-appearance: none;
+                    -moz-appearance: none;
+                    background-color: #fff;
+                    border: 1px solid #ccc;
+                    border-radius: 4px;
+                    padding: 5px 14px;
+                    font-size: 16px;
+                    color: #333;
+                    flex: 1;
                 }
 
                 #unavailable {

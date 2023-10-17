@@ -29,6 +29,8 @@
                 {% if item.flavor == items.0.flavor %}
                     {% if item.is_new %}
                         <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px">
+                    {% else %}
+                        <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px" style="display: none;">
                     {% endif %}
                 <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="item.image3.name" id="image-slide" width="400px">
                 {% endif %}    
@@ -54,43 +56,47 @@
                     </p>
                     <a href="#description">Show detailed description</a>
                 </div>
-                <div id="item-right">
-                    <div id="select-menu">
-                        <span>Flavor:</span>
-                        <select id="flavor-select" class="white-select">
-                            {% for item in items %}
-                                <option value="{{ item.flavor }}">{{ item.flavor }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    {% for item in items %}
-                        {% if item.flavor == items.0.flavor %}
-                            {% if item.is_available %}
-                                <p><i class="fa fa-circle product-icon" id="available"></i><span id="product-text"> Product available!</span></p>
-                            {% else %}
-                                <p><i class="fa fa-circle product-icon" id="unavailable"></i><span id="product-text"> Product unavailable!</span></p>
+                <form action="{% url 'shopping_cart' %}" method="post">
+                    {% csrf_token %}
+                    <div id="item-right">
+                        <div id="select-menu">
+                            <span>Flavor:</span>
+                            <select id="flavor-select" class="white-select">
+                                {% for item in items %}
+                                    <option value="{{ item.flavor }}">{{ item.flavor }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        {% for item in items %}
+                            {% if item.flavor == items.0.flavor %}
+                                {% if item.is_available %}
+                                    <p><i class="fa fa-circle product-icon" id="available"></i><span id="product-text"> Product available!</span></p>
+                                {% else %}
+                                    <p><i class="fa fa-circle product-icon" id="unavailable"></i><span id="product-text"> Product unavailable!</span></p>
+                                {% endif %}
+                                <input type="number" max="{{ item.quantity }}" name="quantity" placeholder="Quantity" id="quantity">
+                                <input type="hidden" value="{{ item.id }}" id="item_id">
+                                <div id="div-price" class="{% if item.is_on_sale %}is_on_sale{% endif %}">
+                                    <h1 id="item-price" class="{% if item.is_on_sale %}on_sale{% endif %}">${{item.price}}</h1>
+                                    {% if item.is_on_sale %}
+                                        <h1 id="new_price">${{item.sale_price}}</h1>
+                                    {% else %}
+                                        <h1 id="new_price" style="display: none;">${{item.sale_price}}</h1>
+                                    {% endif %}
+                                </div>
+                                {% if item.is_on_sale%}
+                                    <p id="from-to-date">On Sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
+                                {% else %}
+                                    <p id="from-to-date" style="display: none;">On Sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
+                                {% endif %}
                             {% endif %}
-                            <p id="quantity">Items left: {{ item.quantity }}</p>
-                        {% endif %}
-                    {% endfor %}
-                    <div id="div-price">
-                        <h1 id="item-price" class="{% if items.0.is_on_sale %}on_sale{% endif %}">${{items.0.price}}</h1>
-                        {% if items.0.is_on_sale %}
-                            <h1 id="new_price">{{items.0.sale_price}}</h1>
-                        {% endif %}
+                        {% endfor %}   
+                        <div id="buttons">
+                            <input id="cart" value="Add to Cart" type="submit">
+                            <button id="wishlist" class="fa fa-heart"></button>
+                        </div>
                     </div>
-                    {% for item in items %}
-                        {% if item.flavor == items.0.flavor %}
-                            {% if item.is_on_sale%}
-                                <p id="from-to-date">On Sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
-                            {% endif %}
-                        {% endif %}
-                    {% endfor %}   
-                    <div id="buttons">
-                        <button id="cart">Add to Cart</button>
-                        <button id="wishlist" class="fa fa-heart"></button>
-                    </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>
@@ -158,14 +164,11 @@
         const image1 = document.getElementById('image1');
         const image2 = document.getElementById('image2');
         const image3 = document.getElementById('image3');
-        const quantity = document.getElementById('quantity');
         const areAvailableIcons = document.querySelectorAll('.product-icon');
         const isAvailableText = document.getElementById('product-text');
         const stars = document.querySelectorAll('.stars');
         const ratingInput = document.getElementById('rating');
-        const isNew = document.getElementById('is_new')
-        const fromToDate = document.getElementById('from-to-date')
-        const salePrice = document.getElementById('new_price')
+        const itemId = document.getElementById('item_id');
         
         let selectedStars = 0;
         let currentSelectedImage = null;
@@ -223,6 +226,7 @@
             const selectedItem = items.find(item => item.flavor === selectedFlavor);
 
             if (selectedItem) {
+                itemId.value = selectedItem.id
                 flavor.textContent = "Flavor: " + selectedFlavor;
                 imageSlide.src = selectedItem.main_image.slice(16, 1000);
                 main_image.src = selectedItem.main_image.slice(16, 1000);
@@ -238,21 +242,21 @@
                 itemPrice.textContent = "$" + selectedItem.price;
     
                 if (selectedItem.is_new) {
-                    isNew.style.display = 'block';
+                    document.getElementById('is_new').style.display = 'block';
                 } else {
-                    isNew.style.display = 'none';
+                    document.getElementById('is_new').style.display = 'none';
                 }
 
-                if (!selectedItem.is_on_sale) {
-                    fromToDate.style.display = 'none';
-                    salePrice.style.display = 'none';
-                    itemPrice.style.opacity = '1';
-                    itemPrice.style.textDecoration = 'none'
-                } else {
-                    fromToDate.style.display = 'block';
-                    salePrice.style.display = 'block';
+                if (selectedItem.is_on_sale) {
+                    document.getElementById('from-to-date').style.display = 'block';
+                    document.getElementById('new_price').style.display = 'block';
                     itemPrice.style.opacity = '0.5';
                     itemPrice.style.textDecoration = 'line-through'
+                } else {
+                    document.getElementById('from-to-date').style.display = 'none';
+                    document.getElementById('new_price').style.display = 'none';
+                    itemPrice.style.opacity = '1';
+                    itemPrice.style.textDecoration = 'none'
                 }
                 areAvailableIcons.forEach(isAvailableIcon => {
                     if (selectedItem.is_available) {
@@ -265,8 +269,6 @@
                         isAvailableIcon.setAttribute('id', 'unavailable');
                     }
                 });
-                
-                quantity.textContent = "Items left: " + selectedItem.quantity;
             }
         });
     </script>
