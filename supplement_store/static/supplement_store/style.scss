@@ -1382,3 +1382,118 @@ footer {
     }
 }
 
+#shopping-cart {
+    max-width: 1500px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: rgba(241, 240, 240, 0.7);
+
+    #header {
+        display: flex;
+        flex-direction: row;
+        background-color: #444444;
+        color: #fff;
+        padding: 0 20px;
+
+        #header-right {
+            display: flex;
+            gap: 200px;
+            margin-left: auto;
+
+            h3 {
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+    
+    #bottom {
+        display: flex;
+        flex-direction: row;
+        border-bottom: 1px solid #2f2f2f;
+        padding: 0 20px;
+
+        #bottom-right {
+            display: flex;
+            gap: 390px;
+            margin-left: auto;
+        }
+    }
+
+    #no-items {
+        border-bottom: 1px solid #2f2f2f;
+    }
+
+    #main {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0 20px;
+    
+        #empty-cart {
+            margin: 0 auto;
+        }
+
+        #item-in-cart {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px solid #2f2f2f;
+
+            #item-name {
+                margin: 0;
+                display: flex;
+            }
+
+            #item-submit {
+                background-color: transparent;
+                cursor: pointer;
+                margin-left: 5px;
+                outline: none;
+                padding: 5px;
+                transition: all 0.3s;
+                border: none;
+
+                &:hover {
+                    color: red;
+                    transform: scale(1.5);
+                }
+            }
+
+            #main-right {
+                margin-left: auto;
+                display: flex;
+                gap: 190px;
+                align-items: center;
+
+                #item-quantity, #item-price, #item-total {
+                    margin: 0;
+                    display: flex;
+                }
+
+                #item-quantity {
+                    margin-left: 25px;
+                    
+                    button {
+                        outline: none;
+                        border: none;
+                        background-color: transparent;
+                        opacity: 0.5;
+                        transition: all 0.2s;
+
+                        &:hover {
+                            opacity: 1;
+                        }
+                    }
+                }
+
+                #item-price {
+                    margin-left: 5px;
+                }
+            }
+        }
+    }
+}

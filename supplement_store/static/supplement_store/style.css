@@ -1195,4 +1195,102 @@ footer #third #third-third img {
   margin: 0;
 }
 
+#shopping-cart {
+  max-width: 1500px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: rgba(241, 240, 240, 0.7);
+}
+#shopping-cart #header {
+  display: flex;
+  flex-direction: row;
+  background-color: #444444;
+  color: #fff;
+  padding: 0 20px;
+}
+#shopping-cart #header #header-right {
+  display: flex;
+  gap: 200px;
+  margin-left: auto;
+}
+#shopping-cart #header #header-right h3 {
+  display: flex;
+  align-items: center;
+}
+#shopping-cart #bottom {
+  display: flex;
+  flex-direction: row;
+  border-bottom: 1px solid #2f2f2f;
+  padding: 0 20px;
+}
+#shopping-cart #bottom #bottom-right {
+  display: flex;
+  gap: 390px;
+  margin-left: auto;
+}
+#shopping-cart #no-items {
+  border-bottom: 1px solid #2f2f2f;
+}
+#shopping-cart #main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0 20px;
+}
+#shopping-cart #main #empty-cart {
+  margin: 0 auto;
+}
+#shopping-cart #main #item-in-cart {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  border-bottom: 1px solid #2f2f2f;
+}
+#shopping-cart #main #item-in-cart #item-name {
+  margin: 0;
+  display: flex;
+}
+#shopping-cart #main #item-in-cart #item-submit {
+  background-color: transparent;
+  cursor: pointer;
+  margin-left: 5px;
+  outline: none;
+  padding: 5px;
+  transition: all 0.3s;
+  border: none;
+}
+#shopping-cart #main #item-in-cart #item-submit:hover {
+  color: red;
+  transform: scale(1.5);
+}
+#shopping-cart #main #item-in-cart #main-right {
+  margin-left: auto;
+  display: flex;
+  gap: 190px;
+  align-items: center;
+}
+#shopping-cart #main #item-in-cart #main-right #item-quantity, #shopping-cart #main #item-in-cart #main-right #item-price, #shopping-cart #main #item-in-cart #main-right #item-total {
+  margin: 0;
+  display: flex;
+}
+#shopping-cart #main #item-in-cart #main-right #item-quantity {
+  margin-left: 25px;
+}
+#shopping-cart #main #item-in-cart #main-right #item-quantity button {
+  outline: none;
+  border: none;
+  background-color: transparent;
+  opacity: 0.5;
+  transition: all 0.2s;
+}
+#shopping-cart #main #item-in-cart #main-right #item-quantity button:hover {
+  opacity: 1;
+}
+#shopping-cart #main #item-in-cart #main-right #item-price {
+  margin-left: 5px;
+}
+
 /*# sourceMappingURL=style.css.map */

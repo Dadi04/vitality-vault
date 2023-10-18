@@ -7,30 +7,61 @@
 {% endblock %}
 
 {% block body %}
-    {% if items %}
-        <div id="cart">
-            {% for item in items %}
-                <div id="item-in-cart">
-                    <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image.name|filename}}" alt="{{ item.item.main_image.name }}" width="200px">
-                    <h5>{{ item.item.name }} {{ item.item.weight }}g</h5>
-                    <h3>${{ item.item.price }} x {{ item.quantity }}</h3>
-                    <form action="{% url 'remove_cart' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ item.item.id }}" name="item_id">
-                        <input type="submit" value="Remove">
-                    </form>
-                </div>
-            {% endfor %}
+    <div id="shopping-cart">
+        <div id="header">
+            <h1>CART</h1>
+            <div id="header-right">
+                <h3>Quantity</h3>
+                <h3>Price</h3>
+                <h3>Total</h3>
+            </div>
         </div>
-    {% else %}
-        <div>
-            <p>Your cart is empty!</p>
-        </div>    
-    {% endif %}
-
+        {% if items %}
+            <div id="main">
+                {% for item in items %}
+                    <div id="item-in-cart">
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image.name|filename}}" alt="{{ item.item.main_image.name }}" width="100px">
+                        <h4 id="item-name">{{ item.item.name }} {{ item.item.weight }}g</h5>
+                        <form action="{% url 'remove_cart' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ item.item.id }}" name="item_id">
+                            <button type="submit" class="fa-solid fa-x" id="item-submit"></button>
+                        </form>
+                        <div id="main-right">
+                            <h3 id="item-quantity">
+                                <button class="fa fa-minus-circle" id="minus-button" data-id="{{item.item.id}}"></button>
+                                {{ item.quantity }}
+                                <button class="fa fa-plus-circle" id="plus-button" data-id="{{item.item.id}}"></button>
+                            </h3>
+                            <h3 id="item-price">${{ item.item.price }}</h3>
+                            <h3 id="item-total">${{ item.item.price|multiply:item.quantity }}</h3>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div id="main no-items">
+                <h1 id="empty-cart">Your cart is empty!</h1>
+            </div>    
+        {% endif %}
+        <div id="bottom">
+            <h1>TOTAL</h1>
+            <div id="bottom-right">
+                {% if items %}
+                    <h1>{{ items|total_items}}</h1>
+                    <h1>${{ items|total_price }}</h1>
+                {% else %}    
+                    <h1>$0.00</h1>
+                {% endif %}
+            </div>    
+        </div>
+    </div>
     <div id="checkout">
         <div>
-            <h1>Total: {{ items|total_price }}</h1>
+            <form action="" method="post">
+                {% csrf_token %}
+                <input type="submit" value="Procced to payment">
+            </form>
         </div>
     </div>
 {% endblock %}

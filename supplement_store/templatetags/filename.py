@@ -17,3 +17,14 @@ def total_price(items):
     for item in items:
         total += item.item.price * item.quantity
     return total
+
+@register.filter
+def total_items(items):
+    quantity = 0
+    for item in items:
+        quantity += item.quantity
+    return quantity
+
+@register.filter
+def multiply(value, arg):
+    return value * arg
