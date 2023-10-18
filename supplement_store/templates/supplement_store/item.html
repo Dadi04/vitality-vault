@@ -75,7 +75,7 @@
                                     <p><i class="fa fa-circle product-icon" id="unavailable"></i><span id="product-text"> Product unavailable!</span></p>
                                 {% endif %}
                                 <input type="number" max="{{ item.quantity }}" name="quantity" placeholder="Quantity" id="quantity">
-                                <input type="hidden" value="{{ item.id }}" id="item_id">
+                                <input type="hidden" value="{{ item.id }}" name="id" id="item_id">
                                 <div id="div-price" class="{% if item.is_on_sale %}is_on_sale{% endif %}">
                                     <h1 id="item-price" class="{% if item.is_on_sale %}on_sale{% endif %}">${{item.price}}</h1>
                                     {% if item.is_on_sale %}

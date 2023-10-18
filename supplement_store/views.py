@@ -285,10 +285,10 @@ def wishlist(request):
 
 def shopping_cart(request):
     if request.method == 'POST':
-        item_id = request.POST["id"]
+        item_id = request.POST.get("id")
         item = Item.objects.get(id=item_id)
-        quantity = 1 if request.POST["quantity"] else request.POST["quantity"]
-        if quantity > item.quantity: 
+        quantity = int(request.POST.get("quantity", 1))
+        if quantity is not None and quantity > item.quantity:
             return redirect('shop_by_itemname', fullname=item.fullname)
         if not item.is_available:
             return redirect(request.META.get('HTTP_REFERER', 'index'))
