@@ -15,14 +15,14 @@ def star_range(value):
 def total_price(items):
     total = 0
     for item in items:
-        total += item.item.price * item.quantity
+        total += item['total_price']
     return total
 
 @register.filter
 def total_items(items):
     quantity = 0
     for item in items:
-        quantity += item.quantity
+        quantity += item['total_quantity']
     return quantity
 
 @register.filter

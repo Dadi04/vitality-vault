@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg
+from django.db.models import Subquery, OuterRef, F, Avg, Sum
 
 from datetime import datetime
 
@@ -294,15 +294,18 @@ def shopping_cart(request):
             return redirect(request.META.get('HTTP_REFERER', 'index'))
         
         Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
-    items = Cart.objects.filter(in_cart=True, user=request.user)
+    cart_items = (
+        Cart.objects.filter(in_cart=True, user=request.user).values('item__id', 'item__name', 'item__weight', 'item__price', 'item__main_image', 'item__fullname', 'item__quantity')
+        .annotate(total_quantity=Sum('quantity'),total_price=Sum(F('item__price') * F('quantity'))).order_by('-total_quantity')
+    )
     return render(request, "supplement_store/cart.html", {
-        "items": items,
+        "items": cart_items,
     })    
     
 def remove_cart(request):
     if request.method == 'POST':  
         item = Item.objects.get(id=request.POST["item_id"]) 
-        Cart.objects.filter(item=item, user=request.user, in_cart=True).update(in_cart=False)
+        Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
     return redirect(request.META.get('HTTP_REFERER', 'index'))    
 
 def newsletter(request):

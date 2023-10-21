@@ -20,27 +20,27 @@
             <div id="main">
                 {% for item in items %}
                     <div id="item-in-cart">
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image.name|filename}}" alt="{{ item.item.main_image.name }}" width="100px">
-                        <h4 id="item-name">{{ item.item.name }} {{ item.item.weight }}g</h5>
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="100px">
+                        <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h5>
                         <form action="{% url 'remove_cart' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" value="{{ item.item.id }}" name="item_id">
+                            <input type="hidden" value="{{ item.item__id }}" name="item_id">
                             <button type="submit" class="fa-solid fa-x" id="item-submit"></button>
                         </form>
                         <div id="main-right">
                             <h3 id="item-quantity">
-                                <button class="fa fa-minus-circle" id="minus-button" data-id="{{item.item.id}}"></button>
-                                {{ item.quantity }}
-                                <button class="fa fa-plus-circle" id="plus-button" data-id="{{item.item.id}}"></button>
+                                <button class="fa fa-minus-circle" id="minus-button" data-id="{{item.item__id}}"></button>
+                                <input type="number" id="item_quantity" value="{{ item.total_quantity }}" min="1" max="{{ item.item__quantity }}" disabled>
+                                <button class="fa fa-plus-circle" id="plus-button" data-id="{{item.item__id}}"></button>
                             </h3>
-                            <h3 id="item-price">${{ item.item.price }}</h3>
-                            <h3 id="item-total">${{ item.item.price|multiply:item.quantity }}</h3>
+                            <h3 id="item-price">${{ item.item__price }}</h3>
+                            <h3 id="item-total">${{ item.total_price }}</h3>
                         </div>
                     </div>
                 {% endfor %}
             </div>
         {% else %}
-            <div id="main no-items">
+            <div id="main" class="no-items">
                 <h1 id="empty-cart">Your cart is empty!</h1>
             </div>    
         {% endif %}
@@ -48,7 +48,7 @@
             <h1>TOTAL</h1>
             <div id="bottom-right">
                 {% if items %}
-                    <h1>{{ items|total_items}}</h1>
+                    <h1>{{ items|total_items }}</h1>
                     <h1>${{ items|total_price }}</h1>
                 {% else %}    
                     <h1>$0.00</h1>
@@ -64,4 +64,26 @@
             </form>
         </div>
     </div>
+{% endblock %}
+
+{% block script %} 
+    <script>
+        const itemQuantity = document.getElementById('item_quantity');
+        
+        document.getElementById('minus-button').addEventListener('click', () => {
+            const minValue = parseInt(itemQuantity.getAttribute('min'));
+            itemQuantity.value = parseInt(itemQuantity.value) - 1;
+            if (itemQuantity.value < minValue) {
+                itemQuantity.value = minValue;
+            }
+            
+        });
+        document.getElementById('plus-button').addEventListener('click', () => {
+            const maxValue = parseInt(itemQuantity.getAttribute('max'));
+            itemQuantity.value = parseInt(itemQuantity.value) + 1;
+            if (itemQuantity.value > maxValue) {
+                itemQuantity.value = maxValue;
+            }
+        });
+    </script>
 {% endblock %}
