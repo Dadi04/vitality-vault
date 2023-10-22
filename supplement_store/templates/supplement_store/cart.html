@@ -29,9 +29,15 @@
                         </form>
                         <div id="main-right">
                             <h3 id="item-quantity">
-                                <button class="fa fa-minus-circle" id="minus-button" data-id="{{item.item__id}}"></button>
+                                <form action="{% url 'decrease_quantity' id=item.item__id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="fa fa-minus-circle" id="minus-button" data-id="{{item.item__id}}"></button>
+                                </form>
                                 <input type="number" id="item_quantity" value="{{ item.total_quantity }}" min="1" max="{{ item.item__quantity }}" disabled>
-                                <button class="fa fa-plus-circle" id="plus-button" data-id="{{item.item__id}}"></button>
+                                <form action="{% url 'increase_quantity' id=item.item__id %}" method="post">
+                                    {% csrf_token %}
+                                    <button class="fa fa-plus-circle" id="plus-button" data-id="{{item.item__id}}"></button>
+                                </form>
                             </h3>
                             <h3 id="item-price">${{ item.item__price }}</h3>
                             <h3 id="item-total">${{ item.total_price }}</h3>
@@ -48,8 +54,8 @@
             <h1>TOTAL</h1>
             <div id="bottom-right">
                 {% if items %}
-                    <h1>{{ items|total_items }}</h1>
-                    <h1>${{ items|total_price }}</h1>
+                    <h1 id="total-items">{{ items|total_items }}</h1>
+                    <h1 id="total-price">${{ items|total_price }}</h1>
                 {% else %}    
                     <h1>$0.00</h1>
                 {% endif %}
@@ -67,23 +73,4 @@
 {% endblock %}
 
 {% block script %} 
-    <script>
-        const itemQuantity = document.getElementById('item_quantity');
-        
-        document.getElementById('minus-button').addEventListener('click', () => {
-            const minValue = parseInt(itemQuantity.getAttribute('min'));
-            itemQuantity.value = parseInt(itemQuantity.value) - 1;
-            if (itemQuantity.value < minValue) {
-                itemQuantity.value = minValue;
-            }
-            
-        });
-        document.getElementById('plus-button').addEventListener('click', () => {
-            const maxValue = parseInt(itemQuantity.getAttribute('max'));
-            itemQuantity.value = parseInt(itemQuantity.value) + 1;
-            if (itemQuantity.value > maxValue) {
-                itemQuantity.value = maxValue;
-            }
-        });
-    </script>
 {% endblock %}

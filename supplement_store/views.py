@@ -296,7 +296,7 @@ def shopping_cart(request):
         Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
     cart_items = (
         Cart.objects.filter(in_cart=True, user=request.user).values('item__id', 'item__name', 'item__weight', 'item__price', 'item__main_image', 'item__fullname', 'item__quantity')
-        .annotate(total_quantity=Sum('quantity'),total_price=Sum(F('item__price') * F('quantity'))).order_by('-total_quantity')
+        .annotate(total_quantity=Sum('quantity'),total_price=Sum(F('item__price') * F('quantity')))
     )
     return render(request, "supplement_store/cart.html", {
         "items": cart_items,
@@ -306,6 +306,20 @@ def remove_cart(request):
     if request.method == 'POST':  
         item = Item.objects.get(id=request.POST["item_id"]) 
         Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))    
+
+def decrease_quantity(request, id):
+    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
+    if cart_item and cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+        
+def increase_quantity(request, id):
+    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
+    if cart_item and cart_item.quantity < cart_item.item.quantity:
+        cart_item.quantity += 1
+        cart_item.save()
     return redirect(request.META.get('HTTP_REFERER', 'index'))    
 
 def newsletter(request):
