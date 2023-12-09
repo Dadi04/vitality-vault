@@ -35,7 +35,7 @@ def login_view(request):
         remember = request.POST.get("remember")
 
         if '@' in first:
-            user = authenticate(request, email=first, password=password)
+            user = User.objects.get(email=first)
         else:
             user = authenticate(request, username=first, password=password)
 
@@ -141,7 +141,6 @@ def clothing(request):
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
     })
-
 
 def supplements(request):
     items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
@@ -283,6 +282,7 @@ def reset_password(request):
 def wishlist(request):
     return render(request, "supplement_store/wishlist.html")
 
+@login_required
 def shopping_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get("id")
@@ -300,7 +300,7 @@ def shopping_cart(request):
     )
     return render(request, "supplement_store/cart.html", {
         "items": cart_items,
-    })    
+    })
     
 def remove_cart(request):
     if request.method == 'POST':  
