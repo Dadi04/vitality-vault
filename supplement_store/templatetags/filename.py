@@ -28,3 +28,7 @@ def total_items(items):
 @register.filter
 def multiply(value, arg):
     return value * arg
+
+@register.filter
+def filter(query_params, key):
+    return query_params.getlist(key)

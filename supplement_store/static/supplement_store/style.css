@@ -804,6 +804,23 @@ footer #third #third-third img {
   flex-direction: column;
   background-color: #ddd;
   padding-left: 10px;
+  border-radius: 5px;
+}
+#shop .shop-filter #filter-sumbit {
+  display: inline;
+  float: right;
+  margin: 20px;
+  background-color: transparent;
+  color: black;
+  border: 2px solid black;
+  padding: 10px;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: 1s all;
+}
+#shop .shop-filter #filter-sumbit:hover {
+  transform: scale(1.1);
+  background-color: #aaa;
 }
 #shop .shop-filter #double-slider {
   background-color: transparent;

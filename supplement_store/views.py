@@ -13,7 +13,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q
 
 from datetime import datetime
 
@@ -143,8 +143,26 @@ def clothing(request):
     })
 
 def supplements(request):
-    items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
+    categories = request.GET.getlist('category')
+    subcategories = request.GET.getlist('subcategory')
+    flavors = request.GET.getlist('flavor')
+    brands = request.GET.getlist('brand')
+    min_price = request.GET.get('min_val', 0)
+    max_price = request.GET.get('max_val', 100)
+
+    q_objects = Q()
+    for category in categories:
+        q_objects |= Q(category__icontains=category)
+    for subcategory in subcategories:
+        q_objects |= Q(subcategory__icontains=subcategory)
+    for flavor in flavors:
+        q_objects |= Q(flavor__icontains=flavor)
+    for brand in brands:
+        q_objects |= Q(brand__icontains=brand)    
+    q_objects &= Q(price__gte=min_price, price__lte=max_price)    
+    filtered_items = Item.objects.filter(q_objects).order_by('name', '-is_available')
     
+    items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
     categories = []
     subcategories = []
     flavors = []
@@ -152,13 +170,12 @@ def supplements(request):
     unique_items = {}
     final_items = []
 
-    for item in items:
+    for item in filtered_items:
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
-            final_items.append(item) 
-        elif item.is_available:
-            unique_items[item.name] = item
+            final_items.append(item)
 
+    for item in items:
         if item.category not in categories:
             categories.append(item.category)
         if item.flavor not in flavors:
@@ -168,15 +185,12 @@ def supplements(request):
         if item.subcategory not in subcategories:
             subcategories.append(item.subcategory)
 
-    context_json = json.dumps(items, default=str)
-
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
         "categories": categories,
         "subcategories": subcategories,
         "flavors": flavors,
         "brands": brands,
-        "context_json": context_json,
     })
 
 def shop_by_category(request, category):
@@ -465,59 +479,3 @@ class CustomPasswordResetConfirmView(PasswordResetConfirmView):
         update_session_auth_hash(self.request, self.request.user)
 
         return response
-    
-
-
-
-
-    
-# upitno, morace js, yt ili chatgpt
-#def filter_products(request):
-#    selected_categories = request.GET.getlist('category')
-#    selected_subcategories = request.GET.getlist('subcategory')
-#    selected_flavors = request.GET.getlist('flavor')
-#    selected_brands = request.GET.getlist('brand')
-#    filtered_products = None
-#
-#    if selected_categories:
-#        filtered_products = Item.objects.filter(category__in=selected_categories).order_by('fullname', '-is_available')
-#    if selected_subcategories:
-#        filtered_products = Item.objects.filter(subcategory__in=selected_subcategories).order_by('fullname', '-is_available')    
-#    if selected_flavors:
-#        filtered_products = Item.objects.filter(flavor__in=selected_flavors).order_by('fullname', '-is_available')
-#    if selected_brands:
-#        filtered_products = Item.objects.filter(brand__in=selected_brands).order_by('fullname', '-is_available')    
-#
-#    if filtered_products:
-#        unique_items = {}
-#        final_items = []
-#        categories = []
-#        subcategories = []
-#        flavors = []
-#        brands = []
-#
-#        for item in filtered_products:
-#            if item.fullname not in unique_items:
-#                unique_items[item.fullname] = item
-#                final_items.append(item) 
-#            elif item.is_available:
-#                unique_items[item.name] = item
-#            if item.category not in categories:
-#                categories.append(item.category)
-#            if item.flavor not in flavors:
-#                flavors.append(item.flavor)
-#            if item.brand not in brands:
-#                brands.append(item.brand)    
-#            if item.subcategory not in subcategories:
-#                subcategories.append(item.subcategory)       
-#        print(final_items)
-#        return render(request, "supplement_store/shop.html", {
-#            "items": final_items,
-#            "categories": categories,
-#            "subcategories": subcategories,
-#            "flavors": flavors,
-#            "brands": brands,
-#        })
-#    else:
-#        messages.error(request, "Please select a filter")
-#        return redirect(request.META.get('HTTP_REFERER', 'index'))

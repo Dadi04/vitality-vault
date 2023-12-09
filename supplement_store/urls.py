@@ -25,7 +25,6 @@ urlpatterns = [
     path("chatting", views.chatting, name="chatting"),
     path('load_messages', views.load_messages, name='load_messages'),
     path('inbox', views.inbox, name="inbox"),
-    #path('filter-products', views.filter_products, name='filter_products'),
     path('answer/<str:username>', views.answer_inbox, name="answer_inbox"),
     path('answering/<str:username>', views.answering, name="answering"),
     path('close/<str:username>', views.close, name="close"),
