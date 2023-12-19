@@ -35,15 +35,15 @@
                         </a>
                     </div>
                 {% endif %}
-                <div class="right">
-                    <a href="{% url 'shopping_cart' %}">   
-                        <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px">
-                        <p>Cart</p>
-                    </a> 
+                <div class="right" id="shopping_cart_div">  
+                    <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
+                    <span class="counter">0</span>
+                    <p id="shopping_cart_text">Cart</p>
                 </div>
                 <div class="right">
                     <a href="{% url 'wishlist' %}">
                         <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
+                        <span class="counter">0</span>
                         <p>Wishlist</p>
                     </a>
                 </div>
@@ -125,6 +125,15 @@
                 </ul>
             </div>
         </nav>
+        <div id="show_cart" class="showCartDivClass">
+            <h1>My Shopping Cart</h1>
+            <h2>You have {broj} items in the cart</h2>
+            <hr>
+            <p>for item in items ...</p>
+            <hr>
+            <p>Total</p>
+            <a href="{% url 'shopping_cart' %}"><button>Shopping Cart</button></a>
+        </div>
         {% block body %}{% endblock %}
 
         <footer>
@@ -210,12 +219,10 @@
                     <h4>We Accept</h4>
                     <img src="{% static 'supplement_store/images/paypal.webp' %}" alt="paypal" width="60px">
                     <img src="{% static 'supplement_store/images/stripe.png' %}" alt="stripe" width="60px">
-                    <img src="{% static 'supplement_store/images/visa.png' %}" alt="visa" width="60px">
-                    <img src="{% static 'supplement_store/images/mastercard.png' %}" alt="mastercard" width="60px"><br>
+                    <img src="{% static 'supplement_store/images/visa.png' %}" alt="visa" width="60px"><br>
+                    <img src="{% static 'supplement_store/images/mastercard.png' %}" alt="mastercard" width="60px">
                     <img src="{% static 'supplement_store/images/american-express.webp' %}" alt="american-express" width="60px">
                     <img src="{% static 'supplement_store/images/discover.png' %}" alt="discover" width="60px">
-                    <img src="{% static 'supplement_store/images/google-pay.png' %}" alt="google-pay" width="60px">
-                    <img src="{% static 'supplement_store/images/apple-pay.png' %}" alt="apple-pay" width="60px">
                 </div>
             </div>
         </footer>
@@ -266,57 +273,59 @@
 
             let messagesLoaded = false;
 
-            supportIcon.addEventListener('click', () => {
-                supportChat.style.display = 'block';
-                document.getElementById('text-field').focus();
-                supportIcon.style.display = 'none';
+            {% if not user.is_superuser %}
+                supportIcon.addEventListener('click', () => {
+                    supportChat.style.display = 'block';
+                    document.getElementById('text-field').focus();
+                    supportIcon.style.display = 'none';
 
-                if (!messagesLoaded) {
-                    loadMessages();
-                    messagesLoaded = true;
-                }
-
-            }); 
-
-            minimize.addEventListener('click', () => {
-                supportChat.style.display = 'none';
-                supportIcon.style.display = 'block';
-            });
-
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const messageText = supportMessage.value;
-                if (messageText.trim() === '') {
-                    return;
-                }
-
-                const message = {
-                    sender: sender.value,
-                    message: messageText,
-                    type: 'support',
-                }
-
-                try {
-                    const response = await fetch(form.action, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                            'X-CSRFToken': getCookie('csrftoken'),
-                        },
-                        body: `text-field=${encodeURIComponent(messageText)}`,
-                    });
-
-                    if (response.ok) {
-                        supportMessage.value = '';
-                        displayMessage(message)
-                    } else {
-                        console.error('Failed to send message to server');
+                    if (!messagesLoaded) {
+                        loadMessages();
+                        messagesLoaded = true;
                     }
-                } catch (error) {
-                    console.error('Error sending message:', error);
-                }
-            });
+
+                }); 
+            
+                minimize.addEventListener('click', () => {
+                    supportChat.style.display = 'none';
+                    supportIcon.style.display = 'block';
+                });
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    
+                    const messageText = supportMessage.value;
+                    if (messageText.trim() === '') {
+                        return;
+                    }
+
+                    const message = {
+                        sender: sender.value,
+                        message: messageText,
+                        type: 'support',
+                    }
+
+                    try {
+                        const response = await fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-CSRFToken': getCookie('csrftoken'),
+                            },
+                            body: `text-field=${encodeURIComponent(messageText)}`,
+                        });
+
+                        if (response.ok) {
+                            supportMessage.value = '';
+                            displayMessage(message)
+                        } else {
+                            console.error('Failed to send message to server');
+                        }
+                    } catch (error) {
+                        console.error('Error sending message:', error);
+                    }
+                });
+            {% endif %}
 
             async function loadMessages() {
                 try {
@@ -365,6 +374,21 @@
                 const parts = value.split(`; ${name}=`);
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
+
+            const cartIcon = document.getElementById('shopping_cart_icon')
+            const cartParagraph = document.getElementById('shopping_cart_text')
+            const showCartDiv = document.getElementById('show_cart');
+            document.addEventListener('click', function(event) {
+                if (event.target == cartIcon || event.target == cartParagraph) {
+                    showCartDiv.style.visibility = (showCartDiv.style.visibility == 'visible') ? 'hidden' : 'visible';
+                } else if (!showCartDiv.contains(event.target)) {
+
+                    if (showCartDiv.style.visibility == 'visible') {
+
+                        showCartDiv.style.visibility = 'hidden';
+                    }
+                }
+            });
         </script>
 
         {% block script %}

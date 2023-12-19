@@ -48,6 +48,9 @@ nav #top #search input {
   color: white;
   background-color: #111;
 }
+nav #top #shopping_cart_div {
+  cursor: pointer;
+}
 nav #top .right {
   display: inline-block;
   margin-left: 25px;
@@ -62,6 +65,15 @@ nav #top .right p {
 nav #top .right a {
   text-decoration: none;
   color: #333;
+}
+nav #top .right .counter {
+  width: 20px;
+  height: 20px;
+  background-color: darkred;
+  color: white;
+  border-radius: 100%;
+  position: absolute;
+  font-size: 15px;
 }
 nav #bottom {
   width: 100%;
@@ -91,6 +103,18 @@ nav #bottom .second {
 }
 nav #bottom #brands:hover .second, nav #bottom #categories:hover .second, nav #bottom #clothing:hover .second, nav #bottom .second:hover {
   display: block;
+}
+
+#show_cart {
+  width: 500px;
+  height: fit-content;
+  position: absolute;
+  top: 100px;
+  right: 25%;
+  background-color: #8a8a8a;
+  padding: 5px;
+  visibility: hidden;
+  z-index: 1000;
 }
 
 footer {
