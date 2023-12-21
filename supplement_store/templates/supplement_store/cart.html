@@ -16,9 +16,9 @@
                 <h3>Total</h3>
             </div>
         </div>
-        {% if items %}
+        {% if items_in_cart %}
             <div id="main">
-                {% for item in items %}
+                {% for item in items_in_cart %}
                     <div id="item-in-cart">
                         <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="100px">
                         <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h5>
@@ -53,9 +53,9 @@
         <div id="bottom">
             <h1>TOTAL</h1>
             <div id="bottom-right">
-                {% if items %}
-                    <h1 id="total-items">{{ items|total_items }}</h1>
-                    <h1 id="total-price">${{ items|total_price }}</h1>
+                {% if items_in_cart %}
+                    <h1 id="total-items">{{ items_in_cart|total_items }}</h1>
+                    <h1 id="total-price">${{ items_in_cart|total_price }}</h1>
                 {% else %}    
                     <h1>$0.00</h1>
                 {% endif %}

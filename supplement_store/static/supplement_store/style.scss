@@ -131,6 +131,27 @@ nav {
     padding: 5px;
     visibility: hidden;
     z-index: 1000;
+
+    .show_cart_div_nav {
+        display: flex;
+        align-items: center;
+
+        .show_cart_button_remove {
+            transition: all 0.2s;
+            background-color: transparent;
+            border: none;
+
+            &:hover {
+                transform: scale(1.3);
+            }
+        }
+    }
+
+    #show_cart_footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
 }
 
 footer {
@@ -1440,12 +1461,18 @@ footer {
 
         #header-right {
             display: flex;
-            gap: 200px;
+            gap: 130px;
             margin-left: auto;
+            align-items: center;
 
             h3 {
-                display: flex;
-                align-items: center;
+                margin: 0;
+                width: 100px;
+                text-align: right;
+
+                &:first-child {
+                    margin-right: 30px;
+                }
             }
         }
     }
@@ -1458,8 +1485,17 @@ footer {
 
         #bottom-right {
             display: flex;
-            gap: 390px;
+            gap: 350px;
             margin-left: auto;
+
+            #total-items {
+                width: 40px;
+                
+            }
+            #total-price {
+                width: 150px;
+                text-align: right;
+            }
         }
     }
 
@@ -1511,15 +1547,17 @@ footer {
             #main-right {
                 margin-left: auto;
                 display: flex;
-                gap: 190px;
+                gap: 130px;
                 align-items: center;
 
                 #item-quantity, #item-price, #item-total {
                     margin: 0;
-                    display: flex;
+                    width: 100px;
+                    text-align: right;
                 }
 
                 #item-quantity {
+                    display: flex;
                     margin-left: 25px;
                     
                     #item_quantity {
@@ -1542,10 +1580,6 @@ footer {
                             opacity: 1;
                         }
                     }
-                }
-
-                #item-price {
-                    margin-left: 5px;
                 }
             }
         }

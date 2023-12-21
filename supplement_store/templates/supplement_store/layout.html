@@ -1,4 +1,5 @@
 {% load static %}
+{% load filename %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -37,7 +38,7 @@
                 {% endif %}
                 <div class="right" id="shopping_cart_div">  
                     <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
-                    <span class="counter">0</span>
+                    <span class="counter">{{ items_in_cart|total_items }}</span>
                     <p id="shopping_cart_text">Cart</p>
                 </div>
                 <div class="right">
@@ -126,13 +127,29 @@
             </div>
         </nav>
         <div id="show_cart" class="showCartDivClass">
-            <h1>My Shopping Cart</h1>
-            <h2>You have {broj} items in the cart</h2>
-            <hr>
-            <p>for item in items ...</p>
-            <hr>
-            <p>Total</p>
-            <a href="{% url 'shopping_cart' %}"><button>Shopping Cart</button></a>
+            <h2>My Shopping Cart</h1>
+            <h4>You have {{ items_in_cart|total_items }} items in the cart</h2>
+            {% if items_in_cart %}
+                <hr>
+                <div>
+                    {% for item in items_in_cart %}
+                        <div class="show_cart_div_nav">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="75px">
+                            <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h5>
+                            <form action="{% url 'remove_cart' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ item.item__id }}" name="item_id">
+                                <button type="submit" class="fa-solid fa-x show_cart_button_remove" id="item-submit"></button>
+                            </form>
+                        </div>
+                    {% endfor %}
+                </div>
+                <hr>
+            {% endif %}
+            <div id="show_cart_footer">
+                <p>Total: ${{ items_in_cart|total_price }}</p>
+                <a href="{% url 'shopping_cart' %}"><button>Shopping Cart</button></a>
+            </div>    
         </div>
         {% block body %}{% endblock %}
 
