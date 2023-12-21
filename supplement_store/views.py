@@ -313,7 +313,7 @@ def shopping_cart(request):
         .annotate(total_quantity=Sum('quantity'),total_price=Sum(F('item__price') * F('quantity')))
     )
     return render(request, "supplement_store/cart.html", {
-        "items_in_cart": cart_items,
+        "items": cart_items,
     })
     
 def remove_cart(request):
