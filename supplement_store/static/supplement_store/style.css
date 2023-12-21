@@ -1371,5 +1371,11 @@ footer #third #third-third img {
 #shopping-cart #main #item-in-cart #main-right #item-quantity button:hover {
   opacity: 1;
 }
+#shopping-cart #checkout {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+}
 
 /*# sourceMappingURL=style.css.map */

@@ -7,6 +7,11 @@
 {% endblock %}
 
 {% block body %}
+    <div>
+        1. Korpa
+        2. Adresa isporuke
+        3. Dostava i placanje
+    </div>
     <div id="shopping-cart">
         <div id="header">
             <h1>CART</h1>
@@ -39,7 +44,11 @@
                                     <button class="fa fa-plus-circle" id="plus-button" data-id="{{item.item__id}}"></button>
                                 </form>
                             </h3>
-                            <h3 id="item-price">${{ item.item__price }}</h3>
+                            {% if item.item__sale_price %}
+                                <h3 id="item-price">${{ item.item__sale_price }}</h3>
+                            {% else %}
+                                <h3 id="item-price">${{ item.item__price }}</h3>
+                            {% endif %}
                             <h3 id="item-total">${{ item.total_price }}</h3>
                         </div>
                     </div>
@@ -61,13 +70,26 @@
                 {% endif %}
             </div>    
         </div>
-    </div>
-    <div id="checkout">
-        <div>
-            <form action="" method="post">
-                {% csrf_token %}
-                <input type="submit" value="Procced to payment">
-            </form>
+        <div id="checkout">
+            <div>
+                <form action="{% url 'remove_cart_all' %}" method="post">
+                    {% csrf_token %}
+                    <input type="submit" value="Empty the shopping cart">
+                </form>
+            </div>
+            {% if not items %}
+                <p>Please add some items to the cart in order to proceed</p>
+            {% endif %}
+            <div>
+                <form action="{% url 'preparation_page' %}" method="post">
+                    {% csrf_token %}
+                    {% if items %}
+                        <input type="submit" value="Proceed">
+                    {% else %}
+                        <input type="button" value="Proceed">
+                    {% endif %}
+                </form>
+            </div>
         </div>
     </div>
 {% endblock %}

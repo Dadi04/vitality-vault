@@ -42,20 +42,20 @@
                             <img src="{% static 'supplement_store/images/account.png' %}" alt="account" width="32px">
                             <p>Account</p>
                         </a>
+                    </div> 
+                    <div class="right" id="shopping_cart_div">  
+                        <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
+                        <span class="counter">{{ items_in_cart|total_items }}</span>
+                        <p id="shopping_cart_text">Cart</p>
+                    </div>
+                    <div class="right">
+                        <a href="{% url 'wishlist' %}">
+                            <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
+                            <span class="counter">0</span>
+                            <p>Wishlist</p>
+                        </a>
                     </div>
                 {% endif %}
-                <div class="right" id="shopping_cart_div">  
-                    <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
-                    <span class="counter">{{ items_in_cart|total_items }}</span>
-                    <p id="shopping_cart_text">Cart</p>
-                </div>
-                <div class="right">
-                    <a href="{% url 'wishlist' %}">
-                        <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
-                        <span class="counter">0</span>
-                        <p>Wishlist</p>
-                    </a>
-                </div>
                 {% if user.is_authenticated  %}
                     <div class="right">
                         <a href="{% url 'logout_view' %}">
