@@ -1112,9 +1112,8 @@ footer #third #third-third img {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: space-between;
   width: 400px;
-  gap: 50px;
 }
 #item #other #item-content #item-right #select-menu span {
   font-size: 20px;
@@ -1130,7 +1129,7 @@ footer #third #third-third img {
   font-size: 16px;
   color: #333;
   cursor: pointer;
-  flex: 1;
+  width: 300px;
 }
 #item #other #item-content #item-right #select-menu .white-select:hover, #item #other #item-content #item-right #select-menu .white-select:focus {
   border-color: #666;
@@ -1139,7 +1138,17 @@ footer #third #third-third img {
   background-color: #fff;
   color: #333;
 }
-#item #other #item-content #item-right #quantity {
+#item #other #item-content #item-right #quantity-menu {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 50px;
+}
+#item #other #item-content #item-right #quantity-menu span {
+  font-size: 20px;
+}
+#item #other #item-content #item-right #quantity-menu #quantity {
   margin-bottom: 0;
   appearance: none;
   -webkit-appearance: none;
@@ -1147,10 +1156,17 @@ footer #third #third-third img {
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 4px;
-  padding: 5px 14px;
+  padding: 5px 5px;
   font-size: 16px;
+  width: 150px;
   color: #333;
-  flex: 1;
+  text-align: center;
+}
+#item #other #item-content #item-right #quantity-menu #minus-button, #item #other #item-content #item-right #quantity-menu #plus-button {
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 14px;
 }
 #item #other #item-content #item-right #unavailable {
   color: red;
@@ -1215,38 +1231,38 @@ footer #third #third-third img {
   background-color: #bbb;
 }
 
-#description, #reviews {
+#similar, #description, #reviews {
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   font-size: 18px;
 }
-#description .fa-star, #reviews .fa-star {
+#similar .fa-star, #description .fa-star, #reviews .fa-star {
   font-size: 24px;
   color: gray;
   transition: color 0.1s;
 }
-#description .stars, #reviews .stars {
+#similar .stars, #description .stars, #reviews .stars {
   cursor: pointer;
 }
-#description .yellow, #reviews .yellow {
+#similar .yellow, #description .yellow, #reviews .yellow {
   color: yellow;
 }
-#description #comments .yellow-review, #reviews #comments .yellow-review {
+#similar #comments .yellow-review, #description #comments .yellow-review, #reviews #comments .yellow-review {
   color: yellow;
 }
-#description #comments .gray-review, #reviews #comments .gray-review {
+#similar #comments .gray-review, #description #comments .gray-review, #reviews #comments .gray-review {
   color: grey;
 }
-#description #comments .each-review, #reviews #comments .each-review {
+#similar #comments .each-review, #description #comments .each-review, #reviews #comments .each-review {
   margin: 0 10px;
 }
-#description #comments .each-review #review-username, #reviews #comments .each-review #review-username {
+#similar #comments .each-review #review-username, #description #comments .each-review #review-username, #reviews #comments .each-review #review-username {
   margin: 0 0 5px 0;
   width: fit-content;
   display: inline-block;
 }
-#description #comments .each-review #review-timestamp, #reviews #comments .each-review #review-timestamp {
+#similar #comments .each-review #review-timestamp, #description #comments .each-review #review-timestamp, #reviews #comments .each-review #review-timestamp {
   display: inline;
   float: right;
   width: fit-content;

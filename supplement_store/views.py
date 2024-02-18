@@ -308,7 +308,8 @@ def shopping_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get("id")
         item = Item.objects.get(id=item_id)
-        quantity = int(request.POST.get("quantity", 1))
+        quantity = int(request.POST.get("quantity"))
+        print(quantity)
         if quantity is not None and quantity > item.quantity:
             return redirect('shop_by_itemname', fullname=item.fullname)
         if not item.is_available:

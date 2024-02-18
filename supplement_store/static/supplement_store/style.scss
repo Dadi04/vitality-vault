@@ -1275,9 +1275,8 @@ footer {
                     display: flex;
                     flex-direction: row;
                     align-items: center;
-                    justify-content: center;
+                    justify-content: space-between;
                     width: 400px;
-                    gap: 50px;
 
                     span {
                         font-size: 20px;
@@ -1294,7 +1293,7 @@ footer {
                         font-size: 16px;
                         color: #333;
                         cursor: pointer;
-                        flex: 1;
+                        width: 300px;
     
                         &:hover, &:focus {
                             border-color: #666;
@@ -1307,19 +1306,40 @@ footer {
                     }
                 }
 
-                #quantity {
-                    margin-bottom: 0;
-                    appearance: none;
-                    -webkit-appearance: none;
-                    -moz-appearance: none;
-                    background-color: #fff;
-                    border: 1px solid #ccc;
-                    border-radius: 4px;
-                    padding: 5px 14px;
-                    font-size: 16px;
-                    color: #333;
-                    flex: 1;
+                #quantity-menu {
+                    display: flex;
+                    flex-direction: row;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 50px;
+
+                    span {
+                        font-size: 20px;
+                    }
+
+                    #quantity {
+                        margin-bottom: 0;
+                        appearance: none;
+                        -webkit-appearance: none;
+                        -moz-appearance: none;
+                        background-color: #fff;
+                        border: 1px solid #ccc;
+                        border-radius: 4px;
+                        padding: 5px 5px;
+                        font-size: 16px;
+                        width: 150px;
+                        color: #333;
+                        text-align: center;
+                    }
+    
+                    #minus-button, #plus-button {
+                        border: none;
+                        outline: none;
+                        background: transparent;
+                        font-size: 14px;
+                    }
                 }
+                
 
                 #unavailable {
                     color: red;
@@ -1399,7 +1419,7 @@ footer {
     }
 }
 
-#description, #reviews {
+#similar, #description, #reviews {
     max-width: 1600px;
     width: 100%;
     margin: 0 auto;

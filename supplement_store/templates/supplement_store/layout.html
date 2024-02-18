@@ -45,7 +45,7 @@
                     </div> 
                     <div class="right" id="shopping_cart_div">  
                         <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
-                        <span class="counter">{{ items_in_cart|total_items }}</span>
+                        <span class="counter" id="counting">{{ items_in_cart|total_items }}</span>
                         <p id="shopping_cart_text">Cart</p>
                     </div>
                     <div class="right">
@@ -394,8 +394,9 @@
             const cartIcon = document.getElementById('shopping_cart_icon')
             const cartParagraph = document.getElementById('shopping_cart_text')
             const showCartDiv = document.getElementById('show_cart');
+            const counter = document.getElementById('counting');
             document.addEventListener('click', function(event) {
-                if (event.target == cartIcon || event.target == cartParagraph) {
+                if (event.target == cartIcon || event.target == cartParagraph || event.target == counter) {
                     showCartDiv.style.visibility = (showCartDiv.style.visibility == 'visible') ? 'hidden' : 'visible';
                 } else if (!showCartDiv.contains(event.target)) {
 
