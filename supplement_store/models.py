@@ -152,9 +152,8 @@ class Wishlist(models.Model):
 
 class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    item = models.ForeignKey(Cart, on_delete=models.CASCADE)
     date = models.DateTimeField()
-    total_price = models.DecimalField(max_digits=10, decimal_places=2)
     is_purchased = models.BooleanField(default=False)
 
 class Coupon(models.Model):

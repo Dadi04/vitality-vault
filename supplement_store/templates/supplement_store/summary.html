@@ -1,0 +1,28 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+{% load filename %}
+
+{% block title %}
+    Preparation Page
+{% endblock %}
+
+{% block body %}
+    <div id="heading">
+        <p>
+            <a href="{% url 'shopping_cart' %}">1. Shopping Cart</a> → 
+            <a href="{% url 'delivery_and_payment' %}">2. Delivery and payment</a> →
+            <a href="{% url 'summary' %}">3. Summary</a>
+        </p>
+    </div>
+    <div id="one_more_check">
+        <h1>#TODO</h1>
+    </div>
+    <div id="payment_ending">
+        <form action="{% url 'create_new_order' %}">
+            <input type="submit" value="Buy">
+        </form>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}

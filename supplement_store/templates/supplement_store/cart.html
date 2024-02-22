@@ -7,10 +7,12 @@
 {% endblock %}
 
 {% block body %}
-    <div>
-        1. Korpa
-        2. Adresa isporuke
-        3. Dostava i placanje
+    <div id="heading">
+        <p>
+            <a href="{% url 'shopping_cart' %}">1. Shopping Cart</a> → 
+            <span>2. Delivery and payment</span> →
+            <span>3. Summary</span>
+        </p>
     </div>
     <div id="shopping-cart">
         <div id="header">
@@ -81,7 +83,7 @@
                 <p>Please add some items to the cart in order to proceed</p>
             {% endif %}
             <div>
-                <form action="{% url 'preparation_page' %}" method="post">
+                <form action="{% url 'delivery_and_payment' %}" method="post">
                     {% csrf_token %}
                     {% if items %}
                         <input type="submit" value="Proceed">

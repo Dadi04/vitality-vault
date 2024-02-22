@@ -1212,6 +1212,9 @@ footer #third #third-third img {
 #item #other #item-content #item-right #buttons #cart:hover {
   background-color: #444;
 }
+#item #other #item-content #item-right #buttons .not_in_stock {
+  background-color: gray !important;
+}
 #item #other #item-content #item-right #buttons #wishlist {
   width: 10%;
   height: 40px;
@@ -1267,6 +1270,29 @@ footer #third #third-third img {
   float: right;
   width: fit-content;
   margin: 0;
+}
+
+#heading {
+  opacity: 0.8;
+  margin: 0 auto;
+  width: fit-content;
+}
+#heading a, #heading span {
+  text-decoration: none;
+  color: darkgrey;
+  opacity: 0.8;
+  transition: all 0.2s;
+}
+#heading a:hover {
+  opacity: 1;
+  color: black;
+  text-decoration: underline;
+  cursor: pointer;
+}
+#heading span:hover {
+  opacity: 1;
+  color: black;
+  cursor: pointer;
 }
 
 #shopping-cart {

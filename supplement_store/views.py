@@ -19,7 +19,7 @@ from datetime import datetime
 
 from .forms import RegistrationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction
 
 # Create your views here.
 
@@ -297,11 +297,44 @@ def wishlist(request):
     return render(request, "supplement_store/wishlist.html")
 
 @login_required
-def preparation_page(request):
+def create_new_order(request, item):
+    user = request.user
+    mail_subject = "New Order Just Arrived"
+    message = f'New order for {item.item.name} has been placed. Transaction id is {item.item.id}'
+    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', user.email])
+    email.send()
+    return render(request, "supplement_store/success.html")
+
+@login_required
+def summary(request):
     items = Cart.objects.filter(user=request.user, in_cart=True)
     if not items:
         return redirect('shopping_cart')
-    return render(request, "supplement_store/preparation_page.html")  
+    else:
+        for item in items:
+            Transaction.objects.create(user=request.user, item=item, date=datetime.now(), is_purchased=True)
+            create_new_order(request, item)
+            item.delete()
+        return render(request, "supplement_store/success.html")
+    # ovde se nalaze sam info za info za ljude i info za cart
+
+@login_required
+def delivery_and_payment(request):
+    items = Cart.objects.filter(user=request.user, in_cart=True)
+    if not items:
+        return redirect('shopping_cart')
+    name = request.POST.get('name')
+    surname = request.POST.get('surname')
+    address = request.POST.get('address')
+    city = request.POST.get('city')
+    state = request.POST.get('state')
+    country = request.POST.get('country')
+    zipcode = request.POST.get('zipcode')
+    phone = request.POST.get('phone')
+    payment_method = request.POST.get('paymentmethod')
+    # print(name, surname, address, city, state, country, zipcode, phone, payment_method)
+    # dodati u transaction sve licni info, payment method (paypal, stripe ili kartica)
+    return render(request, "supplement_store/delivery_payment.html")
 
 @login_required
 def shopping_cart(request):
@@ -309,12 +342,10 @@ def shopping_cart(request):
         item_id = request.POST.get("id")
         item = Item.objects.get(id=item_id)
         quantity = int(request.POST.get("quantity"))
-        print(quantity)
-        if quantity is not None and quantity > item.quantity:
-            return redirect('shop_by_itemname', fullname=item.fullname)
         if not item.is_available:
             return redirect(request.META.get('HTTP_REFERER', 'index'))
-        
+        if quantity is not None and quantity > item.quantity:
+            return redirect('shop_by_itemname', fullname=item.fullname)
         Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
     cart_items = (
         Cart.objects.filter(in_cart=True, user=request.user)

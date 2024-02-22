@@ -1393,7 +1393,11 @@ footer {
                             background-color: #444;
                         }
                     }
-    
+        
+                    .not_in_stock {
+                        background-color: gray !important;
+                    }
+
                     #wishlist {
                         width: 10%;
                         height: 40px;
@@ -1463,6 +1467,32 @@ footer {
                 margin: 0;
             }
         }
+    }
+}
+
+#heading {
+    opacity: 0.8;
+    margin: 0 auto;
+    width: fit-content;
+
+    a, span {
+        text-decoration: none;
+        color: darkgrey;
+        opacity: 0.8;
+        transition: all 0.2s;
+    }
+
+    a:hover {
+        opacity: 1;
+        color: black;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+    span:hover {
+        opacity: 1;
+        color: black;
+        cursor: pointer;
     }
 }
 
