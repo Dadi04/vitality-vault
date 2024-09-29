@@ -261,14 +261,15 @@ def shop_by_brand(request, brand):
 
 def shop_by_itemname(request, itemname):
     items = Item.objects.filter(fullname=itemname).distinct('flavor')
+    if items:
+        for item in items:
+            subcategory = item.subcategory
+        similar_items = Item.objects.filter(subcategory=subcategory).distinct('fullname')
 
-    for item in items:
-        subcategory = item.subcategory
-    similar_items = Item.objects.filter(subcategory=subcategory).distinct('fullname')
-
-    items_fullnames = set(item.fullname for item in items)
-    similar_items = [item for item in similar_items if item.fullname not in items_fullnames]
-
+        items_fullnames = set(item.fullname for item in items)
+        similar_items = [item for item in similar_items if item.fullname not in items_fullnames]
+    else:
+        similar_items = None
     items_json = json.dumps([item.serialize() for item in items], default=str)
     reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
     average_review = reviews.aggregate(Avg('rating'))['rating__avg']
@@ -320,6 +321,7 @@ def create_new_order(request):
             Cart.objects.filter(user=request.user, item=item, in_cart=True).delete()
             Item.objects.update(id=item.id, name=item.name, quantity=-1, popularity=+1)
     return render(request, "supplement_store/success.html")
+# pronaci nacin kako dobiti iteme, zavrsiti summary page
 
 @login_required
 def summary(request):
