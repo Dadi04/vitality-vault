@@ -110,7 +110,7 @@ nav #bottom #brands:hover .second, nav #bottom #categories:hover .second, nav #b
   height: fit-content;
   position: absolute;
   top: 100px;
-  right: 18%;
+  right: 11%;
   background-color: #8a8a8a;
   padding: 5px;
   visibility: hidden;
@@ -636,6 +636,7 @@ footer #third #third-third img {
   opacity: 0;
   transition: opacity 0.3s;
   z-index: 100;
+  cursor: pointer;
 }
 #slide-show #left-arrow:hover {
   opacity: 1;
@@ -647,8 +648,9 @@ footer #third #third-third img {
   outline: 0;
   border: 0;
   opacity: 0;
-  transition: opacity 1s;
+  transition: opacity 0.3s;
   z-index: 100;
+  cursor: pointer;
 }
 #slide-show #right-arrow:hover {
   opacity: 1;
@@ -1232,6 +1234,64 @@ footer #third #third-third img {
 }
 #item #other #item-content #item-right #buttons #wishlist:hover {
   background-color: #bbb;
+}
+
+#similar {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+#similar h1 {
+  align-self: flex-start;
+}
+#similar #similar-items {
+  display: flex;
+  transition: transform 0.5s ease-in-out;
+  width: 1400px;
+}
+#similar #similar-items .similar-item {
+  min-width: 300px;
+  text-align: center;
+  box-sizing: border-box;
+  margin-right: 20px;
+}
+#similar #similar-items .similar-item a {
+  text-decoration: none;
+}
+#similar #similar-items .similar-item a img {
+  width: 300px;
+  height: 300px;
+}
+#similar #similar-items .similar-item a .desc {
+  color: #000;
+  display: flex;
+  justify-content: space-between;
+}
+#similar #similar-items .similar-item a .desc h4 {
+  margin: 0;
+}
+#similar #similar-items .similar-item a .desc .new_price {
+  color: red;
+}
+#similar #left-arrow {
+  position: absolute;
+  top: 50%;
+  left: 1%;
+  outline: 0;
+  border: 0;
+  z-index: 100;
+  cursor: pointer;
+}
+#similar #right-arrow {
+  position: absolute;
+  top: 50%;
+  right: 1%;
+  outline: 0;
+  border: 0;
+  z-index: 100;
+  cursor: pointer;
 }
 
 #similar, #description, #reviews {

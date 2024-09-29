@@ -261,6 +261,14 @@ def shop_by_brand(request, brand):
 
 def shop_by_itemname(request, itemname):
     items = Item.objects.filter(fullname=itemname).distinct('flavor')
+
+    for item in items:
+        subcategory = item.subcategory
+    similar_items = Item.objects.filter(subcategory=subcategory).distinct('fullname')
+
+    items_fullnames = set(item.fullname for item in items)
+    similar_items = [item for item in similar_items if item.fullname not in items_fullnames]
+
     items_json = json.dumps([item.serialize() for item in items], default=str)
     reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
     average_review = reviews.aggregate(Avg('rating'))['rating__avg']
@@ -269,7 +277,8 @@ def shop_by_itemname(request, itemname):
         "items": items,
         "items_json": items_json,
         "reviews": reviews,
-        "average_review": average_review
+        "average_review": average_review,
+        "similar_items": similar_items,
     })
 
 def comment(request, username, itemname):

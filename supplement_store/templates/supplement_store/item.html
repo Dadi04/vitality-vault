@@ -44,6 +44,7 @@
                     <p id="flavor">Flavor: {{ items.0.flavor }}</p>
                     <p>Weight: {{ items.0.weight }} g</p>
                     <p>Category: {{ items.0.category }}</p>
+                    <p>Subcategory: {{ items.0.subcategory }}</p>
                     <p>Brand: {{ items.0.brand }}</p>
                     <p>Average Review:
                         {% for i in 5|star_range %}
@@ -107,12 +108,35 @@
             </div>
         </div>
     </div>
-    <div id="similar">
-        #TODO
-    </div>
+    {% if similar_items %}
+        <div id="similar">
+            <h1>Similar</h1>
+                <div id="similar-items">
+                    {% for item in similar_items %}
+                        <div class="similar-item">
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}">
+                                <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}">
+                                <div class="desc">
+                                    <h4>{{ item.name }}</h4>
+                                    {% if item.is_on_sale %}
+                                        <h4 class="new_price">${{item.sale_price}}</h3>
+                                    {% else %}
+                                        <h4>${{ item.price }}</h4>    
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </div>
+                    {% endfor %}
+                </div>
+                <img src="{% static '/supplement_store/images/left.svg' %}" alt="left1" width="50px" id="left-arrow">
+                <img src="{% static '/supplement_store/images/right.svg' %}" alt="right1" width="50px" id="right-arrow">
+            <hr>
+        </div>
+    {% endif %}
     <div id="description">
         <h1>Description</h1>
         <p>{{ items.0.description|linebreaks }}</p>
+        <hr>
     </div>
     <div id="reviews">
         <h1>Reviews</h1>
@@ -179,7 +203,7 @@
         const stars = document.querySelectorAll('.stars');
         const ratingInput = document.getElementById('rating');
         const itemId = document.getElementById('item_id');
-
+        
         let selectedStars = 0;
         let currentSelectedImage = null;
         let firstImage = null;
@@ -300,6 +324,33 @@
             if (newValue >= 1) {
                 itemQuantity.value = newValue;
                 itemQuantity.setAttribute('value', newValue);   
+            }
+        });
+
+        const leftArrow = document.getElementById('left-arrow');
+        const rightArrow = document.getElementById('right-arrow');
+        const similarItems = document.getElementById('similar-items');
+        const itemWidth = 300;
+        const visibleItems = 4;
+        const totalItems = document.querySelectorAll('.similar-item').length;
+        const totalScrollWidth = totalItems * itemWidth;
+        let scrollPosition = 0;
+
+        const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
+
+        leftArrow.addEventListener("click", () => {
+            console.log(totalItems);
+            if (scrollPosition > 0) {
+                scrollPosition -= itemWidth;
+                similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+            }
+        });
+
+        rightArrow.addEventListener("click", () => {
+            console.log(totalItems);
+            if (scrollPosition < maxScrollPosition) {
+                scrollPosition += itemWidth;
+                similarItems.style.transform = `translateX(-${scrollPosition}px)`;
             }
         });
     </script>
