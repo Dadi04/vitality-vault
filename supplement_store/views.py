@@ -306,32 +306,24 @@ def wishlist(request):
     return render(request, "supplement_store/wishlist.html")
 
 @login_required
-def create_new_order(request, item):
-    user = request.user
-    mail_subject = "New Order Just Arrived"
-    message = f'New order for {item.item.name} has been placed. Transaction id is {item.item.id}'
-    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', user.email])
-    email.send()
-    return render(request, "supplement_store/success.html")
-
-@login_required
-def summary(request):
+def create_new_order(request):
     items = Cart.objects.filter(user=request.user, in_cart=True)
     if not items:
         return redirect('shopping_cart')
     else:
         for item in items:
+            mail_subject = "New Order Just Arrived"
+            message = f'New order for {item.item.name} has been placed. Transaction id is {item.item.id}'
+            email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
+            email.send()
             Transaction.objects.create(user=request.user, item=item, date=datetime.now(), is_purchased=True)
-            create_new_order(request, item)
-            item.delete()
-        return render(request, "supplement_store/success.html")
-    # ovde se nalaze sam info za info za ljude i info za cart
+            Cart.objects.filter(user=request.user, item=item, in_cart=True).delete()
+            Item.objects.update(id=item.id, name=item.name, quantity=-1, popularity=+1)
+    return render(request, "supplement_store/success.html")
 
 @login_required
-def delivery_and_payment(request):
+def summary(request):
     items = Cart.objects.filter(user=request.user, in_cart=True)
-    if not items:
-        return redirect('shopping_cart')
     name = request.POST.get('name')
     surname = request.POST.get('surname')
     address = request.POST.get('address')
@@ -341,8 +333,29 @@ def delivery_and_payment(request):
     zipcode = request.POST.get('zipcode')
     phone = request.POST.get('phone')
     payment_method = request.POST.get('paymentmethod')
-    # print(name, surname, address, city, state, country, zipcode, phone, payment_method)
+    if not items:
+        return redirect('shopping_cart')
+    return render(request, "supplement_store/summary.html", {
+        "name": name,
+        "surname": surname,
+        "address": address,
+        "city": city,
+        "state": state,
+        "country": country,
+        "zipcode": zipcode,
+        "phone": phone,
+        "payment_method": payment_method,
+        "items": items,
+    })
+    # ovde se nalaze sam info za info za ljude i info za cart
+    # treba da se upali paypal api, stripe api ili api banke u zavisnosti sta sam uzeo kada se klikne buy dugme i to je to ovo je samo provera 
     # dodati u transaction sve licni info, payment method (paypal, stripe ili kartica)
+
+@login_required
+def delivery_and_payment(request):
+    items = Cart.objects.filter(user=request.user, in_cart=True)
+    if not items:
+        return redirect('shopping_cart')
     return render(request, "supplement_store/delivery_payment.html")
 
 @login_required

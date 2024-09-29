@@ -15,24 +15,30 @@
         </p>
     </div>
     <div id="payment_main">
-        <form action="{% url 'summary' %}">
+        <form action="{% url 'summary' %}" autocomplete="off" method="post">
             {% csrf_token %}
-            <h1>Shipping Address</h1>
-            <input type="text" placeholder="Name" name="name">
-            <input type="text" placeholder="Surname" name="surname">
-            <input type="text" placeholder="Address" name="address">
-            <input type="text" placeholder="City" name="city">
-            <input type="text" placeholder="State" name="state">
-            <input type="text" placeholder="Country" name="country">
-            <input type="text" placeholder="Zipcode" name="zipcode">
-            <input type="text" placeholder="Phone" name="phone">
-            <input type="submit" value="Proceed">
-            <h1>Payment Method</h1>
-            <select name="paymentmethod" id="paymentmethod">
-                <option value="paypal">PayPal</option>
-                <option value="stripe">Stripe</option>
-                <option value="creditcard">Credit Card</option>
-            </select>
+            <div id="shipping">
+                <h1>Shipping Information</h1>
+                <input type="text" placeholder="Name" name="name">
+                <input type="text" placeholder="Surname" name="surname">
+                <input type="text" placeholder="Phone" name="phone">
+                <input type="text" placeholder="Address" name="address">
+                <input type="text" placeholder="City" name="city">
+                <input type="text" placeholder="Zipcode" name="zipcode">
+                <input type="text" placeholder="State" name="state">
+                <input type="text" placeholder="Country" name="country">
+            </div>
+            <div id="payment">
+                <h1>Payment Method</h1>
+                <div id="sub-payment">
+                    <select name="paymentmethod" id="paymentmethod">
+                        <option value="paypal">PayPal</option>
+                        <option value="stripe">Stripe</option>
+                        <option value="creditcard">Credit Card</option>
+                    </select>
+                    <input type="submit" value="Proceed" id="submit">
+                </div>
+            </div>
         </form>
     </div>
 {% endblock %}
