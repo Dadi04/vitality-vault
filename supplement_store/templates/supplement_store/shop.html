@@ -56,8 +56,8 @@
                     <h3>Price range</h3>
                     <div id="range-slider">
                         <span class="slider-track"></span>
-                        <input type="range" name="min_val" class="min-val" min="0" max="100" value="0" oninput="slideMin()">
-                        <input type="range" name="max_val" class="max-val" min="0" max="100" value="100" oninput="slideMax()">
+                        <input type="range" name="min_val" class="min-val" min="0" max="100" value="{% if request.GET.min_val %}{{ request.GET.min_val }}{% else %}0{% endif %}" oninput="slideMin()">
+                        <input type="range" name="max_val" class="max-val" min="0" max="100" value="{% if request.GET.max_val %}{{ request.GET.max_val }}{% else %}100{% endif %}" oninput="slideMax()">
                         <div class="tooltip min-tooltip"></div>
                         <div class="tooltip max-tooltip"></div>
                     </div>
@@ -65,13 +65,13 @@
                         <div id="min-box">
                             <div class="wrap">
                                 <span class="input-addon">$</span>
-                                <input type="text" name="min_input" class="input_field min-input" onchange="setMinInput()">
+                                <input type="text" name="min_input" class="input_field min-input" value="{% if request.GET.min_input %}{{ request.GET.min_input }}{% else %}0{% endif %}" onchange="setMinInput()">
                             </div>
                         </div>
                         <div id="max-box">
                             <div class="wrap">
                                 <span class="input-addon">$</span>
-                                <input type="text" name="max_input" class="input_field max-input" onchange="setMaxInput()">
+                                <input type="text" name="max_input" class="input_field max-input" value="{% if request.GET.max_input %}{{ request.GET.max_input }}{% else %}100{% endif %}" onchange="setMaxInput()">
                             </div>    
                         </div>
                     </div>
