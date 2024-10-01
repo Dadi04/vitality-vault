@@ -1,0 +1,8 @@
+
+napraviti kopiju database
+yaml file za automatizaciju database
+login i register popraviti dugmice i dodati u register
+neki random ahh bug za comment
+proveriti register
+poceti index stranu
+
