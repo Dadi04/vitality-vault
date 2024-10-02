@@ -318,8 +318,8 @@ def create_new_order(request):
             email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
             email.send()
             Transaction.objects.create(user=request.user, item=item, date=datetime.now(), is_purchased=True)
-            Cart.objects.filter(user=request.user, item=item, in_cart=True).delete()
-            Item.objects.update(id=item.id, name=item.name, quantity=-1, popularity=+1)
+            Cart.objects.filter(user=request.user, item=item.item, in_cart=True).delete()
+            Item.objects.filter(id=item.item.id, name=item.item.name).update(quantity=item.item.quantity - 1, popularity=item.item.popularity + 1)
     return render(request, "supplement_store/success.html")
 # pronaci nacin kako dobiti iteme, zavrsiti summary page
 
