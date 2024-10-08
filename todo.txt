@@ -1,8 +1,16 @@
+zavrsiti payment sve osim api-ajeva
+
 zavrsiti about us stranu
-napraviti kopiju database
-yaml file za automatizaciju database
-login i register popraviti dugmice i dodati u register
 neki random ahh bug za comment
-proveriti register
+
+
+dodati login sa google i facebook (umesto apple)
+
 poceti index stranu
 
+
+
+
+staviti da cart bude na hover ne na click
+staviti da filter bude na instant click a ne da imam dugme "filter"
+staviti da help ima neku tranziciju

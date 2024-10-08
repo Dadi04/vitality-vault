@@ -322,6 +322,7 @@ def create_new_order(request):
             Item.objects.filter(id=item.item.id, name=item.item.name).update(quantity=item.item.quantity - 1, popularity=item.item.popularity + 1)
     return render(request, "supplement_store/success.html")
 # pronaci nacin kako dobiti iteme, zavrsiti summary page
+# transaction : vise itema u jedan transaction, user, ukupne pare, datum, 
 
 @login_required
 def summary(request):

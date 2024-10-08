@@ -43,13 +43,24 @@
                 <input type="submit" id="submit-register">
             </div>
         </form>
-        <div>
+        <div id="error-div">
             {% for field in form %}
                 {% for error in field.errors %}
                     <div class="error">{{ error }}</div>
                 {% endfor %}
             {% endfor %}
         </div>
+    </div>
+    <hr id="login-hr">
+    <div id="google-apple">
+        <button class="google-button">
+            <i class="fa fa-google"></i>Sign In with Google
+            <!-- needs fixed asap -->
+        </button>
+        <button class="apple-button">
+            <i class="fa fa-apple"></i>Sign In with Apple
+            <!-- change to facebook -->
+        </button>
     </div>
     <!-- ubaciti login sa google i facebook -->
 {% endblock %}

@@ -36,12 +36,14 @@ class RegistrationForm(forms.Form):
         
     def clean_email(self):
         email = self.cleaned_data.get('email')    
-
-        if User.objects.filter(email=email).exists():
-            raise forms.ValidationError("This email is already taken.")
+        if email:
+            if User.objects.filter(email=email).exists():
+                raise forms.ValidationError("This email is already taken.")
+        return email
 
     def clean_username(self):
         username = self.cleaned_data.get('username')    
-
-        if User.objects.filter(username=username).exists():
-            raise forms.ValidationError("This username is already taken.")
+        if username:
+            if User.objects.filter(username=username).exists():
+                raise forms.ValidationError("This username is already taken.")
+        return username
