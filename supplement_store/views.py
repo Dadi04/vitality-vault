@@ -16,10 +16,11 @@ from django.http import JsonResponse
 from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField
 
 from datetime import datetime
+from decimal import Decimal
 
 from .forms import RegistrationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction, TransactionItem
 
 # Create your views here.
 
@@ -308,21 +309,47 @@ def wishlist(request):
 
 @login_required
 def create_new_order(request):
-    items = Cart.objects.filter(user=request.user, in_cart=True)
-    if not items:
+    items_in_cart = Cart.objects.filter(user=request.user, in_cart=True)
+    if not items_in_cart:
         return redirect('shopping_cart')
-    else:
-        for item in items:
-            mail_subject = "New Order Just Arrived"
-            message = f'New order for {item.item.name} has been placed. Transaction id is {item.item.id}'
-            email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
-            email.send()
-            Transaction.objects.create(user=request.user, item=item, date=datetime.now(), is_purchased=True)
-            Cart.objects.filter(user=request.user, item=item.item, in_cart=True).delete()
-            Item.objects.filter(id=item.item.id, name=item.item.name).update(quantity=item.item.quantity - 1, popularity=item.item.popularity + 1)
+    
+    transaction = Transaction.objects.create(user=request.user, date=datetime.now())
+
+    total_price = Decimal('0.00')
+    item_list = []
+
+    for cart_item in items_in_cart:
+        item = cart_item.item
+        quantity = cart_item.quantity
+
+        TransactionItem.objects.create(transaction=transaction, item=item, quantity=quantity)
+        total_price += item.price * quantity
+
+        item_list.append(f'{item.name} (x{quantity}) - ${item.price * quantity}')
+
+        Item.objects.filter(id=item.id).update(quantity=item.quantity - quantity, popularity=item.popularity + 1)
+    
+    transaction.total_price = total_price
+    transaction.save()
+
+    item_detail = '\n'.join(item_list)
+    mail_subject = "New Order Just Arrived"
+    message = (
+        f"New order has been placed by {request.user.username}.\n"
+        f"Transaction ID: {transaction.id}\n"
+        f"Total Price: ${transaction.total_price}\n\n"
+        f"Items ordered:\n{item_detail}"
+    )
+
+    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
+    email.send()
+
+    items_in_cart.delete()
+
     return render(request, "supplement_store/success.html")
 # pronaci nacin kako dobiti iteme, zavrsiti summary page
-# transaction : vise itema u jedan transaction, user, ukupne pare, datum, 
+# odraditi summary page
+# odraditi success page
 
 @login_required
 def summary(request):

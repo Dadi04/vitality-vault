@@ -1,4 +1,6 @@
 zavrsiti payment sve osim api-ajeva
+zavrsiti summary i success strane
+
 
 zavrsiti about us stranu
 neki random ahh bug za comment

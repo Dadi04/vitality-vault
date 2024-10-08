@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
 
+from decimal import Decimal
+
 from .countries import COUNTRIES
 
 # Create your models here.
@@ -152,9 +154,30 @@ class Wishlist(models.Model):
 
 class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    item = models.ForeignKey(Cart, on_delete=models.CASCADE)
+    items = models.ManyToManyField(Item, through='TransactionItem')
     date = models.DateTimeField()
-    is_purchased = models.BooleanField(default=False)
+    total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    # is_purchased = models.BooleanField(default=False)
+
+    def calculate_total(self):
+        total = Decimal('0.00')
+        for transaction_item in self.transactionitem_set.all():
+            total += transaction_item.quantity * transaction_item.item.price
+        self.total_price = total
+        self.save()
+
+    def __str__(self):
+        return f'Transaction {self.id} by {self.user.username} on {self.date}'
+
+class TransactionItem(models.Model):
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return f'{self.item.name} (x{self.quantity}) in Transaction {self.transaction.id}'
+
+
 
 class Coupon(models.Model):
     code = models.CharField(max_length=50, unique=True)
