@@ -12,30 +12,34 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+env = environ.Env(DEBUG=(bool, False))
+environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-)$+-2rz%-sx0n91#tnrbz60whudr*-skfwjfst!)03z$p6yv=e'
-RECAPTCHA_PUBLIC_KEY = '6LcozlkoAAAAAPm2SXqZExF2XyFHvCsEaTgSmyuO'
-RECAPTCHA_PRIVATE_KEY = '6LcozlkoAAAAAJBojbiodALw5YrLqsgpyu6krwQS'
+SECRET_KEY = env("SECRET_KEY")
+if not SECRET_KEY:
+    raise Exception("The SECRET_KEY setting must not be empty.")
+RECAPTCHA_PUBLIC_KEY = env("RECAPTCHA_PUBLIC_KEY")
+RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
 INSTALLED_APPS = [
     'supplement_store',
-    'captcha',
+    'django_recaptcha',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -83,23 +87,23 @@ WSGI_APPLICATION = 'supplements.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'supplements_db',
-        'USER': 'postgres',
-        'PASSWORD': 'Adm123456',
-        'HOST': 'localhost',
-        'PORT': '5432'
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
 # Email configuration 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True
-EMAIL_FROM = 'dadica.petkovic@gmail.com'
-EMAIL_HOST_USER = 'dadica.petkovic@gmail.com'
-EMAIL_HOST_PASSWORD = 'glpcxgcuejixsbxc'
+EMAIL_BACKEND = env('EMAIL_BACKEND')
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env.int('EMAIL_PORT')
+EMAIL_USE_SSL = env.bool('EMAIL_USE_SSL')
+EMAIL_FROM = env('EMAIL_FROM')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
 
 EMAIL_LOG_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 

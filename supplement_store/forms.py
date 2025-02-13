@@ -1,5 +1,5 @@
 from django import forms
-from captcha.fields import ReCaptchaField
+from django_recaptcha.fields import ReCaptchaField
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from supplement_store.countries import COUNTRIES

@@ -1,4 +1,5 @@
-venv/
+.venv/
 supplements/__pycache__/
 *.pyc
 supplement_store/migrations/__pycache__
+.env
