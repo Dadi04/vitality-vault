@@ -457,6 +457,10 @@ def contact(request):
     return render(request, "supplement_store/contact.html")
 
 @login_required
+def add_item_to_shop(request):
+    return render(request, "supplement_store/add_item_to_shop.html")
+
+@login_required
 def chatting(request):
     if request.method == 'POST':
         message = request.POST.get('text-field', '')

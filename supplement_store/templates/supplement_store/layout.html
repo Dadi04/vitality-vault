@@ -20,22 +20,6 @@
                     <i class="fa fa-search fa-solid"></i>
                     <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search" autocomplete="off">
                 </div>
-                {% if user.is_staff %}
-                    <div class="right">
-                        <a href="{% url 'admin:index' %}">
-                            <img src="{% static 'supplement_store/images/admin.png' %}" alt="admin" width="32px">
-                            <p>Admin Page</p>
-                        </a>
-                    </div>
-                {% endif %}
-                {% if user.is_staff or user.is_support %}
-                    <div class="right">
-                        <a href="{% url 'inbox' %}">
-                            <img src="{% static 'supplement_store/images/inbox.png' %}" alt="inbox" width="32px">
-                            <p>Inbox</p>
-                        </a>
-                    </div>
-                {% endif %}
                 {% if user.is_authenticated  %}
                     <div class="right">
                         <a href="{% url 'account' %}">
@@ -83,8 +67,8 @@
                             <li><a href="{% url 'shop_by_brand' brand='AmiX' %}">AmiX</a></li>
                             <li><a href="{% url 'shop_by_brand' brand='Myprotein' %}">Myprotein</a></li>
                             <li><a href="{% url 'shop_by_brand' brand='BSN' %}">BSN</a></li>
-                            <!-- <li><a href="{% url 'shop_by_brand' brand='Optimum Nutrition' %}">Optimum Nutrition</a></li> -->
-                            <!-- <li><a href="{% url 'shop_by_brand' brand='Scitec Nutrition' %}">Scitec Nutrition</a></li> -->
+                            <li><a href="{% url 'shop_by_brand' brand='Optimum Nutrition' %}">Optimum Nutrition</a></li>
+                            <li><a href="{% url 'shop_by_brand' brand='Scitec Nutrition' %}">Scitec Nutrition</a></li>
                             <li><a href="{% url 'shop_by_brand' brand='Gorilla Mind' %}">Gorilla Mind</a></li>
                             <li><a href="{% url 'shop_by_brand' brand='HTLT' %}">HTLT</a></li>
                             <li><a href="{% url 'shop_by_brand' brand='Quest Nutrition' %}">Quest Nutrition</a></li>
@@ -150,8 +134,31 @@
                 <a href="{% url 'shopping_cart' %}"><button>Shopping Cart</button></a>
             </div>    
         </div>
+
         {% block body %}{% endblock %}
 
+        {% if user.is_staff or user.is_support %}
+            <div id="admin-bottom-left">
+                <div class="right">
+                    <a href="{% url 'admin:index' %}">
+                        <img src="{% static 'supplement_store/images/admin.png' %}" alt="admin" width="32px">
+                        <p>Admin Page</p>
+                    </a>
+                </div>
+                <div class="right">
+                    <a href="{% url 'inbox' %}">
+                        <img src="{% static 'supplement_store/images/inbox.png' %}" alt="inbox" width="32px">
+                        <p>Inbox</p>
+                    </a>
+                </div>
+                <div class="right">
+                    <a href="{% url 'add_item_to_shop' %}">
+                        <img src="{% static 'supplement_store/images/add_item_to_shop.png' %}" alt="add_item_to_shop.png" width="32px">
+                        <p>Add an Item</p>
+                    </a>
+                </div>
+            </div>
+        {% endif %}
         <footer>
             <div id="first">
                 <h3>SITE LINKS</h3>

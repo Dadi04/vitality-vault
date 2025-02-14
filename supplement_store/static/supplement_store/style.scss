@@ -154,6 +154,31 @@ nav {
     }
 }
 
+#admin-bottom-left {
+    padding-top: 20px;
+    position: fixed;
+    width: 300px;
+    height: auto;
+    background-color: black;
+    bottom: 1%;
+    left: 1%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border: 2px white solid;
+    
+    .right {
+        text-align: center;
+        width: 100px;
+        
+        a {
+            color: white;
+            text-decoration: none;
+        }
+    }
+}
+
 footer {
     bottom: 0;
     left: 0;
@@ -778,6 +803,7 @@ footer {
                 width: fit-content;
                 padding: 5px;
                 transition: color 0.3s;
+                cursor: pointer;
                 &:hover {
                     color: rgba(0, 0, 0, 0.6);
                 }

@@ -21,6 +21,7 @@ urlpatterns = [
     path('delivery-and-payment', views.delivery_and_payment, name="delivery_and_payment"),
     path('summary', views.summary, name="summary"),
     path('create_new_order', views.create_new_order, name="create_new_order"),
+    path('add_item_to_shop', views.add_item_to_shop, name="add_item_to_shop"),
     path('newsletter', views.newsletter, name="newsletter"),
     path('brands', views.brands, name="brands"),
     path('about', views.about, name="about"),
