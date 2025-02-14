@@ -458,6 +458,18 @@ def contact(request):
 
 @login_required
 def add_item_to_shop(request):
+    context = {
+        'categories': Item.CATEGORIES,
+        'brands': Item.BRANDS,
+    }
+    return render(request, "supplement_store/add_item_to_shop.html", context)
+
+@login_required
+def add_single_item(request):
+    return render(request, "supplement_store/add_item_to_shop.html")
+
+@login_required
+def add_multiple_items(request):
     return render(request, "supplement_store/add_item_to_shop.html")
 
 @login_required
