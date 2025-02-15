@@ -34,6 +34,7 @@ class Item(models.Model):
         ('Creatine','Creatine'),
         ('Pre-Workouts','Pre-Workouts'),
         ('Post-Workouts','Post-Workouts'),
+        ('Amino Acids','Amino Acids'),
         ('Test Boosters','Test Boosters'),
         ('Mass Gainers', 'Mass Gainers'),
         ('Weight Loss', 'Weight Loss'),

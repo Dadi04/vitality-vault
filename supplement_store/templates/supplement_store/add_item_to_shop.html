@@ -9,7 +9,7 @@
     <div id="add-item">
         <div id="left">
             <h2>Add Single Item</h2>
-            <form action="{% url 'add_items' %}" method="post">
+            <form action="{% url 'add_items' %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
                 <input type="text" name="name" placeholder="Name" required>
                 <input type="text" name="fullname" placeholder="Fullname" required><br>
@@ -43,14 +43,12 @@
                 <label for="main_image">Upload Main Image:</label><br>
                 <input type="file" id="main_image" name="main_image" accept=".png,.jpg,.gif,.jpeg,.svg,.webp" required><br>
                 <label for="image1">Upload Image1:</label><br>
-                <input type="file" id="image1" name="image1" accept=".png,.jpg,.gif,.jpeg,.svg,.webp" required><br>
+                <input type="file" id="image1" name="image1" accept=".png,.jpg,.gif,.jpeg,.svg,.webp"><br>
                 <label for="image2">Upload Image2:</label><br>
-                <input type="file" id="image2" name="image2" accept=".png,.jpg,.gif,.jpeg,.svg,.webp" required><br>
+                <input type="file" id="image2" name="image2" accept=".png,.jpg,.gif,.jpeg,.svg,.webp"><br>
                 <label for="image3">Upload Image3:</label><br>
-                <input type="file" id="image3" name="image3" accept=".png,.jpg,.gif,.jpeg,.svg,.webp" required><br>
-
+                <input type="file" id="image3" name="image3" accept=".png,.jpg,.gif,.jpeg,.svg,.webp"><br>
                 <input type="submit" name="submit-left" value="Add Item">
-                <!-- check if everything is correct -->
             </form>
         </div>
         <div id="right">
@@ -60,7 +58,6 @@
                 <label for="items_file">Upload .xlsx or .xls file:</label><br>
                 <input type="file" id="items_file" name="items_file" accept=".xlsx,.xls" required><br>
                 <input type="submit" name="submit-right" value="Add Items">
-                <!-- check if everything is correct -->
             </form>
         </div>
     </div>

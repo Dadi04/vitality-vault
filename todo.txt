@@ -13,8 +13,8 @@ dodati login sa google i facebook (umesto apple)
 
 poceti index stranu
 
-
-
+staviti da ne radi za obicnog korisnika uci ovde
+ne rade zvezdice na shop strani, tj ne pojavljuju se kako treba
 
 staviti da cart bude na hover ne na click
 staviti filter sort by price by rating by popularity itd

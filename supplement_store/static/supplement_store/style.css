@@ -1018,6 +1018,7 @@ footer #third #third-third img {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
+  align-content: flex-start;
   gap: 30px;
 }
 #shop .shop-right .yellow-review {

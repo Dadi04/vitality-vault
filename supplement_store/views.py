@@ -288,6 +288,7 @@ def shop_by_itemname(request, itemname):
         "similar_items": similar_items,
     })
 
+@login_required
 def comment(request, username, itemname):
     if request.method == 'POST':
         item = Item.objects.filter(fullname=itemname).first()
@@ -520,7 +521,40 @@ def add_items(request):
 
                 item.save()
             return render(request, "supplement_store/add_item_to_shop.html")    
-        # create single item add
+        
+        item = Item.objects.create(
+            name = request.POST.get('name'),
+            fullname = request.POST.get('fullname'),
+            category = request.POST.get('category'),
+            subcategory = request.POST.get('subcategory'),
+            description = request.POST.get('description'),
+            brand = request.POST.get('brand'),
+            price = request.POST.get('price'),
+            is_available = ('is_available' in request.POST),
+            quantity = request.POST.get('quantity'),
+            sale_price = request.POST.get('sale_price') if request.POST.get('sale_price') else None,
+            sale_start_date = request.POST.get('sale_start_date') if request.POST.get('sale_start_date') else None,
+            sale_end_date = request.POST.get('sale_end_date') if request.POST.get('sale_end_date') else None,
+            weight = request.POST.get('weight'),
+            flavor = request.POST.get('flavor'),
+            gender = request.POST.get('gender'),
+            size = request.POST.get('size'),
+            color = request.POST.get('color'),
+            is_new = ('is_new' in request.POST),
+            popularity = request.POST.get('popularity')
+        )
+
+        if request.FILES.get('main_image'):
+            print(request.FILES.get('main_image'))
+            item.main_image = request.FILES.get('main_image')
+        if request.FILES.get('image1'):
+            item.image1 = request.FILES.get('image1')
+        if request.FILES.get('image2'):
+            item.image2 = request.FILES.get('image2')
+        if request.FILES.get('image3'):
+            item.image3 = request.FILES.get('image3')
+
+        item.save()
 
     return render(request, "supplement_store/add_item_to_shop.html")
 
