@@ -14,6 +14,8 @@ def item_image_upload_path(instance, filename):
 def slide_show_upload_path(instance, filename):
     return f'supplement_store/static/supplement_store/images/slide_show_images/{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}_{filename}'
 
+# napriti da se is new skida nakon 1 meseca
+# napraviti da se sale stavi na sale start date i da se skine na sale end date
 
 class User(AbstractUser):
     is_support = models.BooleanField(default=False)
@@ -67,7 +69,6 @@ class Item(models.Model):
     average_rating = models.FloatField(default=0, null=True, blank=True)
     is_available = models.BooleanField(default=True)
     quantity = models.PositiveIntegerField(default=20)
-    is_on_sale = models.BooleanField(default=False)
     sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     sale_start_date = models.DateField(null=True, blank=True)
     sale_end_date = models.DateField(null=True, blank=True)
@@ -94,7 +95,6 @@ class Item(models.Model):
             'image2': str(self.image2),
             'is_new': self.is_new,
             'is_available': self.is_available,
-            'is_on_sale': self.is_on_sale,
             'sale_price': float(self.sale_price) if self.sale_price else '',
             'sale_start_date': self.sale_start_date,
             'sale_end_date': self.sale_end_date,
@@ -103,6 +103,12 @@ class Item(models.Model):
 
     def __str__(self):
         return f'{self.id}: {self.fullname}, Available: {self.is_available}'
+
+# class Sale(models.Model):
+#     item = models.ForeignKey(Item, on_delete=models.CASCADE)
+#     sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+#     sale_start_date = models.DateField(null=True, blank=True)
+#     sale_end_date = models.DateField(null=True, blank=True)
 
 class Support(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)

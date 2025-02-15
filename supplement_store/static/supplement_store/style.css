@@ -1294,7 +1294,8 @@ footer #third #third-third img {
 #similar #similar-items .similar-item a .desc {
   color: #000;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
+  font-size: 16px;
 }
 #similar #similar-items .similar-item a .desc h4 {
   margin: 0;

@@ -1,12 +1,11 @@
-import json
 from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
-from django.contrib import messages
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.contrib import messages
 from django.contrib.sites.shortcuts import get_current_site
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.decorators import login_required
@@ -14,9 +13,15 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmVie
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
 from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField
+from django.conf import settings
+from django.core.files import File
 
 from datetime import datetime
 from decimal import Decimal
+
+import os
+import json
+import pandas as pd
 
 from .forms import RegistrationForm
 from .countries import COUNTRIES
@@ -465,11 +470,58 @@ def add_item_to_shop(request):
     return render(request, "supplement_store/add_item_to_shop.html", context)
 
 @login_required
-def add_single_item(request):
-    return render(request, "supplement_store/add_item_to_shop.html")
+def add_items(request):
+    if request.method == 'POST':
+        if request.FILES.get('items_file'): 
+            file = request.FILES.get('items_file')
+            df = pd.read_excel(file)
 
-@login_required
-def add_multiple_items(request):
+            for _, row in df.iterrows():
+                sale_price = row['Sale Price'] if pd.notnull(row['Sale Price']) else None
+                sale_start_date = row['Sale Start Date'] if pd.notnull(row['Sale Start Date']) else None
+                sale_end_date = row['Sale End Date'] if pd.notnull(row['Sale End Date']) else None
+
+                item = Item.objects.create(
+                    name = row['Name'],
+                    fullname = row['Fullname'],
+                    category = row['Category'],
+                    subcategory = row['Subcategory'],
+                    description = row['Description'],
+                    brand = row['Brand'],
+                    price = row['Price'],
+                    is_available = row['Is Available?'],
+                    quantity = row['Quantity'],
+                    sale_price = sale_price,
+                    sale_start_date = sale_start_date,
+                    sale_end_date = sale_end_date,
+                    weight = row['Weight'],
+                    flavor = row['Flavor'],
+                    gender = row['Gender'],
+                    size = row['Size'],
+                    color = row['Color'],
+                    is_new = row['Is New?'],
+                    popularity = row['Popularity']
+                )
+
+                def attach_image(field, image_filename):
+                    if pd.notnull(image_filename):
+                        source_dir = os.path.join(settings.BASE_DIR, 'supplement_store', 'static', 'supplement_store', 'images', 'product_images')
+                        full_image_path = os.path.join(source_dir, image_filename)
+                        if os.path.exists(full_image_path):
+                            with open(full_image_path, 'rb') as f:
+                                field.save(os.path.basename(full_image_path), File(f), save=False)
+                        else:
+                            print(f"Image not found: {full_image_path}")
+
+                attach_image(item.main_image, row['Main Image'])
+                attach_image(item.image1, row['Image1'])
+                attach_image(item.image2, row['Image2'])
+                attach_image(item.image3, row['Image3'])
+
+                item.save()
+            return render(request, "supplement_store/add_item_to_shop.html")    
+        # create single item add
+
     return render(request, "supplement_store/add_item_to_shop.html")
 
 @login_required

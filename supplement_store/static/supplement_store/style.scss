@@ -1488,7 +1488,8 @@ footer {
                 .desc {
                     color: #000;
                     display: flex;
-                    justify-content: space-between;
+                    justify-content: space-evenly;
+                    font-size: 16px;
 
                     h4 {
                         margin: 0;

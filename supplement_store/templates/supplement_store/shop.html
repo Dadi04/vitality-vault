@@ -99,8 +99,8 @@
                         {% endif %}
                     {% endfor %}
                     <div class="price">
-                        <h3 class="{% if item.is_on_sale %}on_sale{% endif %}">${{ item.price }}</h3>
-                        {% if item.is_on_sale %}
+                        <h3 class="{% if item.sale_price %}on_sale{% endif %}">${{ item.price }}</h3>
+                        {% if item.sale_price %}
                             <h3 class="new_price">${{item.sale_price}}</h3>
                         {% endif %}
                     </div>
