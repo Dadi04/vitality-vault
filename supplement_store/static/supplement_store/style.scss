@@ -1360,11 +1360,16 @@ footer {
                 .desc {
                     color: #000;
                     display: flex;
-                    justify-content: space-evenly;
+                    // justify-content: space-evenly;
                     font-size: 16px;
+                    flex-direction: column;
 
                     h4 {
                         margin: 0;
+                    }
+
+                    .price {
+                        padding-top: 3px;
                     }
 
                     .new_price {

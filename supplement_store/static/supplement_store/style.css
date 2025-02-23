@@ -1182,11 +1182,14 @@ footer #third #third-third img {
 #similar #similar-items .similar-item a .desc {
   color: #000;
   display: flex;
-  justify-content: space-evenly;
   font-size: 16px;
+  flex-direction: column;
 }
 #similar #similar-items .similar-item a .desc h4 {
   margin: 0;
+}
+#similar #similar-items .similar-item a .desc .price {
+  padding-top: 3px;
 }
 #similar #similar-items .similar-item a .desc .new_price {
   color: red;

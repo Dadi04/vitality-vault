@@ -221,6 +221,26 @@ def supplements(request):
 def shop_by_category(request, category):
     items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available')
 
+    sort_option = request.GET.get('sort', 'nameasc')
+    if sort_option in ['priceasc', 'pricedesc']:
+        items_by_category = items_by_category.annotate(effective_price=Coalesce('sale_price', 'price'))
+        if sort_option == 'priceasc':
+            items_by_category = items_by_category.order_by('effective_price')
+        else:
+            items_by_category = items_by_category.order_by('-effective_price')
+    elif sort_option == 'pricedesc':
+        items_by_category = items_by_category.order_by('-price')
+    elif sort_option == 'popasc':
+        items_by_category = items_by_category.order_by('popularity')
+    elif sort_option == 'popdesc':
+        items_by_category = items_by_category.order_by('-popularity')
+    elif sort_option == 'nameasc':
+        items_by_category = items_by_category.order_by('name', 'flavor')
+    elif sort_option == 'namedesc':
+        items_by_category = items_by_category.order_by('-name', 'flavor')
+    else:
+        items_by_category = items_by_category.order_by('name', 'flavor')
+
     categories = []
     subcategories = []
     flavors = []
@@ -230,22 +250,23 @@ def shop_by_category(request, category):
 
     for item in items_by_category:
         average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
+
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
             item.average_rating = average_review
             item.save()
             final_items.append(item) 
         elif item.is_available:
-            unique_items[item.name] = item
+            unique_items[item.fullname] = item
 
         if item.category not in categories:
             categories.append(item.category)
+        if item.subcategory not in subcategories:
+            subcategories.append(item.subcategory)
         if item.flavor not in flavors:
             flavors.append(item.flavor)
         if item.brand not in brands:
             brands.append(item.brand)
-        if item.subcategory not in subcategories:
-            subcategories.append(item.subcategory)    
 
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
@@ -258,18 +279,39 @@ def shop_by_category(request, category):
 def shop_by_brand(request, brand):
     items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available')
 
+    sort_option = request.GET.get('sort', 'nameasc')
+    if sort_option in ['priceasc', 'pricedesc']:
+        items_by_brand = items_by_brand.annotate(effective_price=Coalesce('sale_price', 'price'))
+        if sort_option == 'priceasc':
+            items_by_brand = items_by_brand.order_by('effective_price')
+        else:
+            items_by_brand = items_by_brand.order_by('-effective_price')
+    elif sort_option == 'pricedesc':
+        items_by_brand = items_by_brand.order_by('-price')
+    elif sort_option == 'popasc':
+        items_by_brand = items_by_brand.order_by('popularity')
+    elif sort_option == 'popdesc':
+        items_by_brand = items_by_brand.order_by('-popularity')
+    elif sort_option == 'nameasc':
+        items_by_brand = items_by_brand.order_by('name', 'flavor')
+    elif sort_option == 'namedesc':
+        items_by_brand = items_by_brand.order_by('-name', 'flavor')
+    else:
+        items_by_brand = items_by_brand.order_by('name', 'flavor')
+
     unique_items = {}
     final_items = []
 
     for item in items_by_brand:
         average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
+
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
             item.average_rating = average_review
             item.save()
             final_items.append(item) 
         elif item.is_available:
-            unique_items[item.name] = item
+            unique_items[item.fullname] = item
 
     categories = Item.objects.filter(brand=brand).values_list('category', flat=True).distinct()
     subcategories = Item.objects.filter(brand=brand).values_list('subcategory', flat=True).distinct()
