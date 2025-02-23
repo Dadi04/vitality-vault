@@ -13,6 +13,7 @@ from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmVie
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
 from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField
+from django.db.models.functions import Coalesce
 from django.conf import settings
 from django.core.files import File
 
@@ -153,8 +154,6 @@ def supplements(request):
     subcategories = request.GET.getlist('subcategory')
     flavors = request.GET.getlist('flavor')
     brands = request.GET.getlist('brand')
-    min_price = request.GET.get('min_val', 0)
-    max_price = request.GET.get('max_val', 100)
 
     q_objects = Q()
     for category in categories:
@@ -165,38 +164,58 @@ def supplements(request):
         q_objects |= Q(flavor__icontains=flavor)
     for brand in brands:
         q_objects |= Q(brand__icontains=brand)    
-    q_objects &= Q(price__gte=min_price, price__lte=max_price)    
-    filtered_items = Item.objects.filter(q_objects).order_by('name', '-is_available')
+
+    filtered_items = Item.objects.filter(q_objects)
     
-    items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
-    categories = []
-    subcategories = []
-    flavors = []
-    brands = []
+    sort_option = request.GET.get('sort', 'nameasc')
+    if sort_option in ['priceasc', 'pricedesc']:
+        filtered_items = filtered_items.annotate(effective_price=Coalesce('sale_price', 'price'))
+        if sort_option == 'priceasc':
+            filtered_items = filtered_items.order_by('effective_price')
+        else:
+            filtered_items = filtered_items.order_by('-effective_price')
+    elif sort_option == 'pricedesc':
+        filtered_items = filtered_items.order_by('-price')
+    elif sort_option == 'popasc':
+        filtered_items = filtered_items.order_by('popularity')
+    elif sort_option == 'popdesc':
+        filtered_items = filtered_items.order_by('-popularity')
+    elif sort_option == 'nameasc':
+        filtered_items = filtered_items.order_by('name', 'flavor')
+    elif sort_option == 'namedesc':
+        filtered_items = filtered_items.order_by('-name', 'flavor')
+    else:
+        filtered_items = filtered_items.order_by('name', 'flavor')
+
     unique_items = {}
     final_items = []
-
     for item in filtered_items:
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
             final_items.append(item)
 
+    items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
+    categories_list = []
+    subcategories_list = []
+    flavors_list = []
+    brands_list = []
+    
     for item in items:
-        if item.category not in categories:
-            categories.append(item.category)
-        if item.flavor not in flavors:
-            flavors.append(item.flavor)
-        if item.brand not in brands:
-            brands.append(item.brand)
-        if item.subcategory not in subcategories:
-            subcategories.append(item.subcategory)
+        if item.category not in categories_list:
+            categories_list.append(item.category)
+        if item.subcategory not in subcategories_list:
+            subcategories_list.append(item.subcategory)    
+        if item.flavor not in flavors_list:
+            flavors_list.append(item.flavor)
+        if item.brand not in brands_list:
+            brands_list.append(item.brand)
 
     return render(request, "supplement_store/shop.html", {
         "items": final_items,
-        "categories": categories,
-        "subcategories": subcategories,
-        "flavors": flavors,
-        "brands": brands,
+        "categories": categories_list,
+        "subcategories": subcategories_list,
+        "flavors": flavors_list,
+        "brands": brands_list,
     })
 
 def shop_by_category(request, category):

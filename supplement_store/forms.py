@@ -53,7 +53,7 @@ class ItemForm(forms.ModelForm):
         model = Item
         fields = [
             'name', 'fullname', 'category', 'subcategory', 'description',
-            'brand', 'price', 'is_available', 'quantity', 'sale_price',
+            'brand', 'price', 'quantity', 'sale_price',
             'sale_start_date', 'sale_end_date', 'weight', 'flavor', 'gender',
             'size', 'color', 'is_new', 'popularity', 'main_image', 'image1', 
             'image2', 'image3',

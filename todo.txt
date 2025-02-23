@@ -19,3 +19,5 @@ staviti da filter bude na instant click a ne da imam dugme "filter"
 staviti da help ima neku tranziciju
 
 napraviti error 404 stranu ukoliko ne postoji artikal
+
+pagination u shopu

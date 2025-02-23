@@ -52,30 +52,7 @@
                         </label>
                     {% endfor %}
                 </div>
-                <div id="double-slider">
-                    <h3>Price range</h3>
-                    <div id="range-slider">
-                        <span class="slider-track"></span>
-                        <input type="range" name="min_val" class="min-val" min="0" max="100" value="{% if request.GET.min_val %}{{ request.GET.min_val }}{% else %}0{% endif %}" oninput="slideMin()">
-                        <input type="range" name="max_val" class="max-val" min="0" max="100" value="{% if request.GET.max_val %}{{ request.GET.max_val }}{% else %}100{% endif %}" oninput="slideMax()">
-                        <div class="tooltip min-tooltip"></div>
-                        <div class="tooltip max-tooltip"></div>
-                    </div>
-                    <div id="input-div">
-                        <div id="min-box">
-                            <div class="wrap">
-                                <span class="input-addon">$</span>
-                                <input type="text" name="min_input" class="input_field min-input" value="{% if request.GET.min_input %}{{ request.GET.min_input }}{% else %}0{% endif %}" onchange="setMinInput()">
-                            </div>
-                        </div>
-                        <div id="max-box">
-                            <div class="wrap">
-                                <span class="input-addon">$</span>
-                                <input type="text" name="max_input" class="input_field max-input" value="{% if request.GET.max_input %}{{ request.GET.max_input }}{% else %}100{% endif %}" onchange="setMaxInput()">
-                            </div>    
-                        </div>
-                    </div>
-                </div><br>
+                <br>
                 {% if messages %}
                     {% for message in messages %}
                         <p>{{ message }}</p>
@@ -83,100 +60,53 @@
                 {% endif %}
             </form>
         </div>
-        <div class="shop-right product-list">
-            {% for item in items %}
-                <div class="item {% if not item.is_available %}is_available_item{% endif %}">
-                    {% if item.is_new %}
-                        <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
-                    {% endif %}
-                    <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" height="200px"></a>
-                    <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}">{{ item.name }} {{ item.weight }}g</a></h5>
-                    {% for i in 5|star_range %}
-                        {% if i < item.average_rating %}
-                            <i class="fa fa-star yellow-review"></i>
-                        {% else %}
-                            <i class="fa fa-star gray-review"></i>
+        <div id="right-side">
+            <div id="filter-by">
+                <form action="">
+                    <select name="sort" id="sort" onchange="this.form.submit()">
+                        <option selected disabled>Filter by:</option>
+                        <option value="popasc">Popularity - ascending</option>
+                        <option value="popdesc">Popularity - descending</option>
+                        <option value="priceasc">Price - ascending</option>
+                        <option value="pricedesc">Price - descending</option>
+                        <option value="nameasc">Name - ascending</option>
+                        <option value="namedesc">Name - descending</option>
+                    </select>
+                </form>
+            </div>
+            <div class="shop-right product-list">
+                {% for item in items %}
+                    <div class="item {% if not item.is_available %}is_available_item{% endif %}">
+                        {% if item.is_new %}
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
                         {% endif %}
-                    {% endfor %}
-                    <div class="price">
-                        <h3 class="{% if item.sale_price %}on_sale{% endif %}">${{ item.price }}</h3>
-                        {% if item.sale_price %}
-                            <h3 class="new_price">${{item.sale_price}}</h3>
-                        {% endif %}
+                        <a href="{% url 'shop_by_itemname' itemname=item.fullname %}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" height="200px"></a>
+                        <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}">{{ item.name }} {{ item.weight }}g</a></h5>
+                        {% for i in 5|star_range %}
+                            {% if i < item.average_rating %}
+                                <i class="fa fa-star yellow-review"></i>
+                            {% else %}
+                                <i class="fa fa-star gray-review"></i>
+                            {% endif %}
+                        {% endfor %}
+                        <div class="price">
+                            <h3 class="{% if item.sale_price %}on_sale{% endif %}">${{ item.price }}</h3>
+                            {% if item.sale_price %}
+                                <h3 class="new_price">${{item.sale_price}}</h3>
+                            {% endif %}
+                        </div>
+                        <form action="{% url 'shopping_cart' %}" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{ item.id }}" name="id">
+                            <input type="hidden" value="1" name="quantity">
+                            <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
+                        </form>
                     </div>
-                    <form action="{% url 'shopping_cart' %}" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" value="{{ item.id }}" name="id">
-                        <input type="hidden" value="1" name="quantity">
-                        <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
-                    </form>
-                </div>
-            {% endfor %}
+                {% endfor %}
+            </div>
         </div>
     </div>
 {% endblock %}
 
 {% block script %}
-    <script>
-        window.onload = () => {
-            slideMin();
-            slideMax();
-        };
-
-        const minVal = document.querySelector(".min-val");
-        const maxVal = document.querySelector(".max-val");
-        const priceInputMin = document.querySelector(".min-input");
-        const priceInputMax = document.querySelector(".max-input");
-        const minTooltip = document.querySelector(".min-tooltip");
-        const maxTooltip = document.querySelector(".max-tooltip");
-        const minGap = 0;
-        const range = document.querySelector(".slider-track");
-        const sliderMinValue = parseInt(minVal.min);
-        const sliderMaxValue = parseInt(maxVal.max);
-
-        function slideMin() {
-            let gap = parseInt(maxVal.value) - parseInt(minVal.value);
-            if (gap <= minGap) {
-                minVal.value = parseInt(maxVal.value) - minGap;
-            }
-            minTooltip.innerHTML = "$" + minVal.value;
-            priceInputMin.value = minVal.value;
-            setArea();
-        }
-
-        function slideMax() {
-            let gap = parseInt(maxVal.value) - parseInt(minVal.value);
-            if (gap <= minGap) {
-                maxVal.value = parseInt(minVal.value) + minGap;
-            }
-            maxTooltip.innerHTML = "$" + maxVal.value;
-            priceInputMax.value = maxVal.value;
-            setArea();
-        }
-
-        function setArea() {
-            range.style.left = (minVal.value / sliderMaxValue) * 100 + "%";
-            minTooltip.style.left = (minVal.value / sliderMaxValue) * 100 + "%";
-            range.style.right = 100 - (maxVal.value / sliderMaxValue) * 100 + "%";
-            maxTooltip.style.right = 100 - (maxVal.value / sliderMaxValue) * 100 + "%";
-        }
-
-        function setMinInput() {
-            let minPrice = parseInt(priceInputMin.value);
-            if (minPrice < sliderMinValue) {
-                priceInputMin.value = sliderMinValue;
-            }
-            minVal.value = priceInputMin.value;
-            slideMin();
-        }
-
-        function setMaxInput() {
-            let maxPrice = parseInt(priceInputMax.value);
-            if (maxPrice > sliderMaxValue) {
-                priceInputMax.value = sliderMaxValue;
-            }
-            maxVal.value = priceInputMax.value;
-            slideMax();
-        }
-    </script>
 {% endblock %}
