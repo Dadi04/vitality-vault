@@ -23,7 +23,7 @@ import os
 import json
 import pandas as pd
 
-from .forms import RegistrationForm
+from .forms import RegistrationForm, ItemForm
 from .countries import COUNTRIES
 from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction, TransactionItem
 
@@ -464,98 +464,81 @@ def contact(request):
 
 @login_required
 def add_item_to_shop(request):
-    context = {
-        'categories': Item.CATEGORIES,
-        'brands': Item.BRANDS,
-    }
-    return render(request, "supplement_store/add_item_to_shop.html", context)
+    if request.user.is_staff or request.user.is_support:
+        context = {
+            'categories': Item.CATEGORIES,
+            'brands': Item.BRANDS,
+        }
+        return render(request, "supplement_store/add_item_to_shop.html", context)
+    return redirect('inbox')
+
+def attach_image(field, image_filename):
+    if pd.notnull(image_filename):
+        source_dir = os.path.join(settings.BASE_DIR, 'supplement_store', 'static', 'supplement_store', 'images', 'product_images')
+        full_image_path = os.path.join(source_dir, image_filename)
+        if os.path.exists(full_image_path):
+            with open(full_image_path, 'rb') as f:
+                field.save(os.path.basename(full_image_path), File(f), save=False)
+        else:
+            print(f"Image not found: {full_image_path}")
 
 @login_required
-def add_items(request):
+def add_item(request):
+    if not (request.user.is_staff or request.user.is_support):
+        return redirect('inbox')
+    
     if request.method == 'POST':
-        if request.FILES.get('items_file'): 
-            file = request.FILES.get('items_file')
-            df = pd.read_excel(file)
+        form = ItemForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('add_item_to_shop')
+    else:
+        form = ItemForm()
 
-            for _, row in df.iterrows():
-                sale_price = row['Sale Price'] if pd.notnull(row['Sale Price']) else None
-                sale_start_date = row['Sale Start Date'] if pd.notnull(row['Sale Start Date']) else None
-                sale_end_date = row['Sale End Date'] if pd.notnull(row['Sale End Date']) else None
+    return render(request, "supplement_store/add_item_to_shop.html")     
 
-                item = Item.objects.create(
-                    name = row['Name'],
-                    fullname = row['Fullname'],
-                    category = row['Category'],
-                    subcategory = row['Subcategory'],
-                    description = row['Description'],
-                    brand = row['Brand'],
-                    price = row['Price'],
-                    is_available = row['Is Available?'],
-                    quantity = row['Quantity'],
-                    sale_price = sale_price,
-                    sale_start_date = sale_start_date,
-                    sale_end_date = sale_end_date,
-                    weight = row['Weight'],
-                    flavor = row['Flavor'],
-                    gender = row['Gender'],
-                    size = row['Size'],
-                    color = row['Color'],
-                    is_new = row['Is New?'],
-                    popularity = row['Popularity']
-                )
+@login_required
+def bulk_add_items(request):
+    if not (request.user.is_staff or request.user.is_support):
+        return redirect('inbox')
 
-                def attach_image(field, image_filename):
-                    if pd.notnull(image_filename):
-                        source_dir = os.path.join(settings.BASE_DIR, 'supplement_store', 'static', 'supplement_store', 'images', 'product_images')
-                        full_image_path = os.path.join(source_dir, image_filename)
-                        if os.path.exists(full_image_path):
-                            with open(full_image_path, 'rb') as f:
-                                field.save(os.path.basename(full_image_path), File(f), save=False)
-                        else:
-                            print(f"Image not found: {full_image_path}")
+    if request.method == 'POST' and request.FILES.get('items_file'):
+        file = request.FILES.get('items_file')
+        df = pd.read_excel(file)
 
-                attach_image(item.main_image, row['Main Image'])
-                attach_image(item.image1, row['Image1'])
-                attach_image(item.image2, row['Image2'])
-                attach_image(item.image3, row['Image3'])
+        for _, row in df.iterrows():
+            sale_price = row['Sale Price'] if pd.notnull(row['Sale Price']) else None
+            sale_start_date = row['Sale Start Date'] if pd.notnull(row['Sale Start Date']) else None
+            sale_end_date = row['Sale End Date'] if pd.notnull(row['Sale End Date']) else None
 
-                item.save()
-            return render(request, "supplement_store/add_item_to_shop.html")    
-        
-        item = Item.objects.create(
-            name = request.POST.get('name'),
-            fullname = request.POST.get('fullname'),
-            category = request.POST.get('category'),
-            subcategory = request.POST.get('subcategory'),
-            description = request.POST.get('description'),
-            brand = request.POST.get('brand'),
-            price = request.POST.get('price'),
-            is_available = ('is_available' in request.POST),
-            quantity = request.POST.get('quantity'),
-            sale_price = request.POST.get('sale_price') if request.POST.get('sale_price') else None,
-            sale_start_date = request.POST.get('sale_start_date') if request.POST.get('sale_start_date') else None,
-            sale_end_date = request.POST.get('sale_end_date') if request.POST.get('sale_end_date') else None,
-            weight = request.POST.get('weight'),
-            flavor = request.POST.get('flavor'),
-            gender = request.POST.get('gender'),
-            size = request.POST.get('size'),
-            color = request.POST.get('color'),
-            is_new = ('is_new' in request.POST),
-            popularity = request.POST.get('popularity')
-        )
+            item = Item(
+                name = row['Name'],
+                fullname = row['Fullname'],
+                category = row['Category'],
+                subcategory = row['Subcategory'],
+                description = row['Description'],
+                brand = row['Brand'],
+                price = row['Price'],
+                is_available = row['Is Available?'],
+                quantity = row['Quantity'],
+                sale_price = sale_price,
+                sale_start_date = sale_start_date,
+                sale_end_date = sale_end_date,
+                weight = row['Weight'],
+                flavor = row['Flavor'],
+                gender = row['Gender'],
+                size = row['Size'],
+                color = row['Color'],
+                is_new = row['Is New?'],
+                popularity = row['Popularity']
+            )
 
-        if request.FILES.get('main_image'):
-            print(request.FILES.get('main_image'))
-            item.main_image = request.FILES.get('main_image')
-        if request.FILES.get('image1'):
-            item.image1 = request.FILES.get('image1')
-        if request.FILES.get('image2'):
-            item.image2 = request.FILES.get('image2')
-        if request.FILES.get('image3'):
-            item.image3 = request.FILES.get('image3')
+            attach_image(item.main_image, row['Main Image'])
+            attach_image(item.image1, row['Image1'])
+            attach_image(item.image2, row['Image2'])
+            attach_image(item.image3, row['Image3'])
 
-        item.save()
-
+            item.save()
     return render(request, "supplement_store/add_item_to_shop.html")
 
 @login_required
@@ -571,19 +554,18 @@ def chatting(request):
 
 @login_required
 def inbox(request):
-    if request.user.is_staff == True or request.user.is_support == True:
+    if request.user.is_staff or request.user.is_support:
         latest_message_subquery = Support.objects.filter(user=OuterRef('user')).order_by('-date').values('message')[:1]
         one_message_per_user = Support.objects.annotate(latest_message=Subquery(latest_message_subquery)).filter(message=F('latest_message'), is_closed=False)
         messages = one_message_per_user.all()
         return render(request, "supplement_store/inbox.html", {
             "messages": messages
         })
-    else: 
-        return redirect('index')
+    return redirect('index')
 
 @login_required
 def answer_inbox(request, username):
-    if request.user.is_staff == True or request.user.is_support == True:
+    if request.user.is_staff or request.user.is_support:
         user = User.objects.get(username=username)
         support_messages = Support.objects.filter(user=user, is_closed=False)
         answer_messages = SupportAnswer.objects.filter(latest_message__in=support_messages, latest_message__is_closed=False)
@@ -595,12 +577,11 @@ def answer_inbox(request, username):
             "messages": sorted_messages,
             "username": username
         })
-    else: 
-        return redirect('index')
+    return redirect('index')
 
 @login_required
 def close(request, username):
-    if request.user.is_staff == True or request.user.is_support == True:
+    if request.user.is_staff or request.user.is_support:
         user = User.objects.get(username=username)
         all_support_messages = Support.objects.filter(user=user)
         for support in all_support_messages:
@@ -610,14 +591,11 @@ def close(request, username):
         for answer in all_answer_messages:
             answer.latest_message.is_closed = True
             answer.save()
-
-        return redirect('inbox')
-    else:
-        return redirect('index')
+    return redirect('index')
 
 @login_required
 def answering(request, username):
-    if request.user.is_staff == True or request.user.is_support == True:
+    if request.user.is_staff or request.user.is_support:
         user = User.objects.get(username=username)
         latest_message = Support.objects.filter(user=user, is_closed=False).order_by('-date').first()
         response = request.POST["text"]
@@ -629,15 +607,13 @@ def answering(request, username):
         latest_message.is_answered = True
         latest_message.save()
         return redirect('answer_inbox', username=user.username)
-    else: 
-        return redirect('index')    
+    return redirect('index')    
 
 @login_required
 def load_messages(request):
     if request.method == 'GET':
         support_messages = Support.objects.filter(user=request.user, is_closed=False)
         support_answer_messages = SupportAnswer.objects.filter(latest_message__user=request.user, latest_message__is_closed=False)
-
         messages = []
 
         combined_messages = list(support_messages) + list(support_answer_messages)

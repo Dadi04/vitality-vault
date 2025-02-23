@@ -3,6 +3,7 @@ from django_recaptcha.fields import ReCaptchaField
 from django.contrib.auth.models import User
 from django.contrib.auth import get_user_model
 from supplement_store.countries import COUNTRIES
+from .models import Item
 
 User = get_user_model()
 
@@ -23,8 +24,7 @@ class RegistrationForm(forms.Form):
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'register-input', 'placeholder': 'Password', 'id': 'password', 'size': '24'}), error_messages={'required': 'Please enter your password.'})
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'register-input', 'placeholder': 'Confirm Password', 'id': 'confirm_password', 'size': '24'}), error_messages={'required': 'Please confirm your password.'})
 
-    captcha = ReCaptchaField(error_messages={'required': 'Please complete the CAPTCHA verification.'}
-)
+    captcha = ReCaptchaField(error_messages={'required': 'Please complete the CAPTCHA verification.'})
 
     def clean(self):
         cleaned_data = super(RegistrationForm, self).clean()
@@ -47,3 +47,14 @@ class RegistrationForm(forms.Form):
             if User.objects.filter(username=username).exists():
                 raise forms.ValidationError("This username is already taken.")
         return username
+    
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = [
+            'name', 'fullname', 'category', 'subcategory', 'description',
+            'brand', 'price', 'is_available', 'quantity', 'sale_price',
+            'sale_start_date', 'sale_end_date', 'weight', 'flavor', 'gender',
+            'size', 'color', 'is_new', 'popularity', 'main_image', 'image1', 
+            'image2', 'image3',
+        ]
