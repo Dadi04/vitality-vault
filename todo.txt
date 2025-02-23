@@ -1,8 +1,8 @@
 zavrsiti payment sve osim api-ajeva
 zavrsiti summary i success strane
 
-
 zavrsiti about us stranu
+
 neki random ahh bug za comment
   File "D:\David\programming\harvard\web\supplements\.venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
     raise NoReverseMatch(msg)
@@ -12,9 +12,7 @@ dodati login sa google i facebook (umesto apple)
 
 poceti index stranu
 
-
-staviti da cart bude na hover ne na click
-staviti da filter bude na instant click a ne da imam dugme "filter"
+staviti da cart ima neku tranziciju
 staviti da help ima neku tranziciju
 
 napraviti error 404 stranu ukoliko ne postoji artikal
