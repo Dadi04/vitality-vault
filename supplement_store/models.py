@@ -103,7 +103,7 @@ class Item(models.Model):
         }
 
     def __str__(self):
-        return f'{self.id}: {self.fullname}, Available: {self.is_available}'
+        return f'{self.id}: {self.fullname}, Available: {self.is_available}, Flavor: {self.flavor}'
 
 # class Sale(models.Model):
 #     item = models.ForeignKey(Item, on_delete=models.CASCADE)

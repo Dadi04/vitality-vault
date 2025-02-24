@@ -12,8 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField
-from django.db.models.functions import Coalesce
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window
+from django.db.models.functions import Coalesce, RowNumber
 from django.conf import settings
 from django.core.files import File
 
@@ -171,21 +171,21 @@ def supplements(request):
     if sort_option in ['priceasc', 'pricedesc']:
         filtered_items = filtered_items.annotate(effective_price=Coalesce('sale_price', 'price'))
         if sort_option == 'priceasc':
-            filtered_items = filtered_items.order_by('effective_price')
+            filtered_items = filtered_items.order_by('-is_available', 'effective_price')
         else:
-            filtered_items = filtered_items.order_by('-effective_price')
+            filtered_items = filtered_items.order_by('-is_available', '-effective_price')
     elif sort_option == 'pricedesc':
-        filtered_items = filtered_items.order_by('-price')
+        filtered_items = filtered_items.order_by('-is_available', '-price')
     elif sort_option == 'popasc':
-        filtered_items = filtered_items.order_by('popularity')
+        filtered_items = filtered_items.order_by('-is_available', 'popularity')
     elif sort_option == 'popdesc':
-        filtered_items = filtered_items.order_by('-popularity')
+        filtered_items = filtered_items.order_by('-is_available', '-popularity')
     elif sort_option == 'nameasc':
-        filtered_items = filtered_items.order_by('name', 'flavor')
+        filtered_items = filtered_items.order_by('-is_available', 'name', 'flavor')
     elif sort_option == 'namedesc':
-        filtered_items = filtered_items.order_by('-name', 'flavor')
+        filtered_items = filtered_items.order_by('-is_available', '-name', 'flavor')
     else:
-        filtered_items = filtered_items.order_by('name', 'flavor')
+        filtered_items = filtered_items.order_by('-is_available', 'name', 'flavor')
 
     unique_items = {}
     final_items = []
@@ -225,21 +225,21 @@ def shop_by_category(request, category):
     if sort_option in ['priceasc', 'pricedesc']:
         items_by_category = items_by_category.annotate(effective_price=Coalesce('sale_price', 'price'))
         if sort_option == 'priceasc':
-            items_by_category = items_by_category.order_by('effective_price')
+            items_by_category = items_by_category.order_by('-is_available', 'effective_price')
         else:
-            items_by_category = items_by_category.order_by('-effective_price')
+            items_by_category = items_by_category.order_by('-is_available', '-effective_price')
     elif sort_option == 'pricedesc':
-        items_by_category = items_by_category.order_by('-price')
+        items_by_category = items_by_category.order_by('-is_available', '-price')
     elif sort_option == 'popasc':
-        items_by_category = items_by_category.order_by('popularity')
+        items_by_category = items_by_category.order_by('-is_available', 'popularity')
     elif sort_option == 'popdesc':
-        items_by_category = items_by_category.order_by('-popularity')
+        items_by_category = items_by_category.order_by('-is_available', '-popularity')
     elif sort_option == 'nameasc':
-        items_by_category = items_by_category.order_by('name', 'flavor')
+        items_by_category = items_by_category.order_by('-is_available', 'name', 'flavor')
     elif sort_option == 'namedesc':
-        items_by_category = items_by_category.order_by('-name', 'flavor')
+        items_by_category = items_by_category.order_by('-is_available', '-name', 'flavor')
     else:
-        items_by_category = items_by_category.order_by('name', 'flavor')
+        items_by_category = items_by_category.order_by('-is_available', 'name', 'flavor')
 
     categories = []
     subcategories = []
@@ -283,21 +283,21 @@ def shop_by_brand(request, brand):
     if sort_option in ['priceasc', 'pricedesc']:
         items_by_brand = items_by_brand.annotate(effective_price=Coalesce('sale_price', 'price'))
         if sort_option == 'priceasc':
-            items_by_brand = items_by_brand.order_by('effective_price')
+            items_by_brand = items_by_brand.order_by('-is_available', 'effective_price')
         else:
-            items_by_brand = items_by_brand.order_by('-effective_price')
+            items_by_brand = items_by_brand.order_by('-is_available', '-effective_price')
     elif sort_option == 'pricedesc':
-        items_by_brand = items_by_brand.order_by('-price')
+        items_by_brand = items_by_brand.order_by('-is_available', '-price')
     elif sort_option == 'popasc':
-        items_by_brand = items_by_brand.order_by('popularity')
+        items_by_brand = items_by_brand.order_by('-is_available', 'popularity')
     elif sort_option == 'popdesc':
-        items_by_brand = items_by_brand.order_by('-popularity')
+        items_by_brand = items_by_brand.order_by('-is_available', '-popularity')
     elif sort_option == 'nameasc':
-        items_by_brand = items_by_brand.order_by('name', 'flavor')
+        items_by_brand = items_by_brand.order_by('-is_available', 'name', 'flavor')
     elif sort_option == 'namedesc':
-        items_by_brand = items_by_brand.order_by('-name', 'flavor')
+        items_by_brand = items_by_brand.order_by('-is_available', '-name', 'flavor')
     else:
-        items_by_brand = items_by_brand.order_by('name', 'flavor')
+        items_by_brand = items_by_brand.order_by('-is_available', 'name', 'flavor')
 
     unique_items = {}
     final_items = []
@@ -327,7 +327,18 @@ def shop_by_brand(request, brand):
     })
 
 def shop_by_itemname(request, itemname):
-    items = Item.objects.filter(fullname=itemname).distinct('flavor')
+    items = Item.objects.filter(fullname=itemname).annotate(row_number = Window(expression=RowNumber(), partition_by=[F('flavor')], order_by=F('is_available').desc())).filter(row_number = 1).order_by('-is_available')
+
+    flavor_option = request.GET.get('flavor')
+    if not flavor_option:
+        first_item = items.first()
+        if first_item:
+            flavor_option = first_item.flavor
+
+    item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option).first()
+
+    # items = items.exclude(pk=item_chosen.pk)
+
     if items:
         for item in items:
             subcategory = item.subcategory
@@ -340,8 +351,8 @@ def shop_by_itemname(request, itemname):
     items_json = json.dumps([item.serialize() for item in items], default=str)
     reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
     average_review = reviews.aggregate(Avg('rating'))['rating__avg']
-
     return render(request, "supplement_store/item.html", {
+        "item_chosen": item_chosen,
         "items": items,
         "items_json": items_json,
         "reviews": reviews,
@@ -414,9 +425,6 @@ def create_new_order(request):
     items_in_cart.delete()
 
     return render(request, "supplement_store/success.html")
-# pronaci nacin kako dobiti iteme, zavrsiti summary page
-# odraditi summary page
-# odraditi success page
 
 @login_required
 def summary(request):

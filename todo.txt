@@ -14,9 +14,16 @@ poceti index stranu
 
 staviti da cart ima neku tranziciju
 staviti da help ima neku tranziciju
+dodati na show detailed description u item tranziciju i fixovati kada se promeni flavor nakon kliktanja desc te baci na desc odmah
 
 napraviti error 404 stranu ukoliko ne postoji artikal
 
 pagination u shopu
 
 napraviti kada se klikne na artikal da uvek odvete na taj koji sam kliknuo -> get request da se posalje prema ukusu
+
+dodati stranu za povecavanje quantity-ja
+
+zvezdice kada se upisu, zatim ucitam shop se ubaguju i ne prikazu se odmah
+
+fixovati poruke u inboxu

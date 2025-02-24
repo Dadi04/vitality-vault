@@ -9,43 +9,35 @@
 {% block body %}
     <div id="item">
         <div id="slide-images">
-            {% for item in items %}
-                {% if item.flavor == items.0.flavor %}
-                    <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.main_image.name|filename }}" alt="{{ item.image3.name }}" id="mainimage" class="images" width="100px">
-                    {% if item.image1.name %}
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.image1.name|filename }}" alt="{{ item.image3.name }}" id="image1" class="images" width="100px">
-                    {% endif %}
-                    {% if item.image2.name %}
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.image2.name|filename }}" alt="{{ item.image3.name }}" id="image2" class="images" width="100px">
-                    {% endif %}
-                    {% if item.image3.name %}
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{ item.fullname }}/{{ item.image3.name|filename }}" alt="{{ item.image3.name }}" id="image3" class="images" width="100px">
-                    {% endif %}
-                {% endif %}    
-            {% endfor %}
+            <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.main_image.name|filename }}" alt="{{ item_chosen.main_image.name }}" id="mainimage" class="images" width="100px">
+            {% if item_chosen.image1.name %}
+                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image1.name|filename }}" alt="{{ item_chosen.image1.name }}" id="image1" class="images" width="100px">
+            {% endif %}
+            {% if item_chosen.image2.name %}
+                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image2.name|filename }}" alt="{{ item_chosen.image2.name }}" id="image2" class="images" width="100px">
+            {% endif %}
+            {% if item_chosen.image3.name %}
+                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image3.name|filename }}" alt="{{ item_chosen.image3.name }}" id="image3" class="images" width="100px">
+            {% endif %}
         </div>
         <div id="main-image">
-            {% for item in items %}
-                {% if item.flavor == items.0.flavor %}
-                    {% if item.is_new %}
-                        <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px">
-                    {% else %}
-                        <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px" style="display: none;">
-                    {% endif %}
-                <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="item.image3.name" id="image-slide" width="400px">
-                {% endif %}    
-            {% endfor %}
+            {% if item_chosen.is_new %}
+                <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px">
+            {% else %}
+                <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px" style="display: none;">
+            {% endif %}
+            <img src="{% static '/supplement_store/images/product_images/' %}{{item_chosen.fullname}}/{{item_chosen.main_image.name|filename}}" alt="item.image3.name" id="image-slide" width="400px">
         </div>
         <div id="other">
-            <h1>{{ items.0.fullname }}</h1>
+            <h1>{{ item_chosen.fullname }}</h1>
             <hr>
             <div id="item-content">
                 <div id="item-left">
-                    <p id="flavor">Flavor: {{ items.0.flavor }}</p>
-                    <p>Weight: {{ items.0.weight }} g</p>
-                    <p>Category: {{ items.0.category }}</p>
-                    <p>Subcategory: {{ items.0.subcategory }}</p>
-                    <p>Brand: {{ items.0.brand }}</p>
+                    <p id="flavor">Flavor: {{ item_chosen.flavor }}</p>
+                    <p>Weight: {{ item_chosen.weight }} g</p>
+                    <p>Category: {{ item_chosen.category }}</p>
+                    <p>Subcategory: {{ item_chosen.subcategory }}</p>
+                    <p>Brand: {{ item_chosen.brand }}</p>
                     <p>Average Review:
                         {% for i in 5|star_range %}
                             {% if i < average_review %}
@@ -57,54 +49,52 @@
                     </p>
                     <a href="#description">Show detailed description</a>
                 </div>
-                <form action="{% url 'shopping_cart' %}" method="post">
-                    {% csrf_token %}
-                    <div id="item-right">
+                <div id="item-right">
+                    <form action="">
                         <div id="select-menu">
                             <span>Flavor:</span>
-                            <select id="flavor-select" class="white-select">
+                            <select id="flavor-select" class="white-select" name="flavor" onchange="this.form.submit()">
                                 {% for item in items %}
-                                    <option value="{{ item.flavor }}">{{ item.flavor }}</option>
+                                    <option value="{{ item.flavor }}" {% if item.flavor == item_chosen.flavor %}selected{% endif %} >{{ item.flavor }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        {% for item in items %}
-                            {% if item.flavor == items.0.flavor %}
-                                {% if item.is_available %}
-                                    <p><i class="fa fa-circle product-icon" id="available"></i><span id="product-text"> Product available!</span></p>
-                                {% else %}
-                                    <p><i class="fa fa-circle product-icon" id="unavailable"></i><span id="product-text"> Product unavailable!</span></p>
-                                {% endif %}
-                                <div id="quantity-menu">
-                                    <span>Quantity:</span>
-                                    <div>
-                                        <button type="button" class="fa fa-minus-circle" id="minus-button" data-id="{{item.item__id}}"></button>
-                                        <input type="number" max="{{ item.quantity }}" name="quantity" value="1" id="quantity">
-                                        <button type="button" class="fa fa-plus-circle" id="plus-button" data-id="{{item.item__id}}"></button>
-                                    </div>
-                                </div>
-                                <input type="hidden" value="{{ item.id }}" name="id" id="item_id">
-                                <div id="div-price" class="{% if item.sale_price %}is_on_sale{% endif %}">
-                                    <h1 id="item-price" class="{% if item.sale_price %}on_sale{% endif %}">${{item.price}}</h1>
-                                    {% if item.sale_price %}
-                                        <h1 id="new_price">${{item.sale_price}}</h1>
-                                    {% else %}
-                                        <h1 id="new_price" style="display: none;">${{item.sale_price}}</h1>
-                                    {% endif %}
-                                </div>
-                                {% if item.sale_price%}
-                                    <p id="from-to-date">On Sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
-                                {% else %}
-                                    <p id="from-to-date" style="display: none;">On Sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
-                                {% endif %}
+                    </form>
+                    <form action="{% url 'shopping_cart' %}" method="post">
+                        {% csrf_token %}
+                        {% if item_chosen.is_available %}
+                            <p><i class="fa fa-circle product-icon" id="available"></i><span id="product-text"> Product available!</span></p>
+                        {% else %}
+                            <p><i class="fa fa-circle product-icon" id="unavailable"></i><span id="product-text"> Product unavailable!</span></p>
+                        {% endif %}
+                        <div id="quantity-menu">
+                            <span>Quantity:</span>
+                            <div>
+                                <button type="button" class="fa fa-minus-circle" id="minus-button" data-id="{{item_chosen.item__id}}"></button>
+                                <input type="number" max="{{ item_chosen.quantity }}" name="quantity" value="1" id="quantity">
+                                <button type="button" class="fa fa-plus-circle" id="plus-button" data-id="{{item_chosen.item__id}}"></button>
+                            </div>
+                        </div>
+                        <input type="hidden" value="{{ item_chosen.id }}" name="id" id="item_id">
+                        <div id="div-price" class="{% if item_chosen.sale_price %}is_on_sale{% endif %}">
+                            <h1 id="item-price" class="{% if item_chosen.sale_price %}on_sale{% endif %}">${{item_chosen.price}}</h1>
+                            {% if item_chosen.sale_price %}
+                                <h1 id="new_price">${{item_chosen.sale_price}}</h1>
+                            {% else %}
+                                <h1 id="new_price" style="display: none;">${{item_chosen.sale_price}}</h1>
                             {% endif %}
-                        {% endfor %}   
+                        </div>
+                        {% if item_chosen.sale_price%}
+                            <p id="from-to-date">On Sale from {{item_chosen.sale_start_date}} to {{item_chosen.sale_end_date}}</p>
+                        {% else %}
+                            <p id="from-to-date" style="display: none;">On Sale from {{item_chosen.sale_start_date}} to {{item_chosen.sale_end_date}}</p>
+                        {% endif %}
                         <div id="buttons">
                             <input id="cart" value="Add to Cart" type="submit">
                             <button id="wishlist" class="fa fa-heart"></button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
@@ -114,12 +104,15 @@
                 <div id="similar-items">
                     {% for item in similar_items %}
                         <div class="similar-item">
-                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}">
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor }}">
                                 <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}">
                                 <div class="desc">
                                     <h4>{{ item.name }}</h4>
                                     {% if item.sale_price %}
-                                        <h4 class="new_price price">${{item.sale_price}}</h3>
+                                        <h4 class="price">
+                                            <span class="new_price price">${{ item.price }}</span>
+                                            <span class="old_price price">${{item.sale_price}}</span>
+                                        </h4>
                                     {% else %}
                                         <h4 class="price">${{ item.price }}</h4>    
                                     {% endif %}
@@ -135,13 +128,13 @@
     {% endif %}
     <div id="description">
         <h1>Description</h1>
-        <p>{{ items.0.description|linebreaks }}</p>
+        <p>{{ item_chosen.description|linebreaks }}</p>
         <hr>
     </div>
     <div id="reviews">
         <h1>Reviews</h1>
         {% if user.is_authenticated %}
-            <form id="comment-form" action="{% url 'comment' username=user.username itemname=items.0.fullname %}" method="post">
+            <form id="comment-form" action="{% url 'comment' username=user.username itemname=item_chosen.fullname %}" method="post">
                 {% csrf_token %}
                 <textarea name="textarea" id="textarea" cols="50" rows="4" placeholder="Write a comment..." required></textarea><br>
                 Your opinion: 
@@ -188,21 +181,10 @@
 
 {% block script %}
     <script>
-        const items = {{ items_json|safe }};
         const imageSlide = document.getElementById('image-slide');
         const imageLeft = document.querySelectorAll('.images');
-        const flavorSelect = document.getElementById('flavor-select');
-        const itemPrice = document.getElementById('item-price');
-        const flavor = document.getElementById('flavor');    
-        const main_image = document.getElementById('mainimage');
-        const image1 = document.getElementById('image1');
-        const image2 = document.getElementById('image2');
-        const image3 = document.getElementById('image3');
-        const areAvailableIcons = document.querySelectorAll('.product-icon');
-        const isAvailableText = document.getElementById('product-text');
         const stars = document.querySelectorAll('.stars');
         const ratingInput = document.getElementById('rating');
-        const itemId = document.getElementById('item_id');
         
         let selectedStars = 0;
         let currentSelectedImage = null;
@@ -254,58 +236,6 @@
             });
         });
 
-        flavorSelect.addEventListener('change', function () {
-            const selectedFlavor = this.value;
-            
-            const selectedItem = items.find(item => item.flavor === selectedFlavor);
-
-            if (selectedItem) {
-                itemId.value = selectedItem.id
-                flavor.textContent = "Flavor: " + selectedFlavor;
-                imageSlide.src = selectedItem.main_image.slice(16, 1000);
-                main_image.src = selectedItem.main_image.slice(16, 1000);
-                if (selectedItem.image1) {
-                    image1.src = selectedItem.image1.slice(16, 1000);
-                }
-                if (selectedItem.image2) {
-                    image2.src = selectedItem.image2.slice(16, 1000);
-                }
-                if (selectedItem.image3) {
-                    image3.src = selectedItem.image3.slice(16, 1000);
-                }
-                itemPrice.textContent = "$" + selectedItem.price;
-    
-                if (selectedItem.is_new) {
-                    document.getElementById('is_new').style.display = 'block';
-                } else {
-                    document.getElementById('is_new').style.display = 'none';
-                }
-
-                if (selectedItem.sale_price) {
-                    document.getElementById('from-to-date').style.display = 'block';
-                    document.getElementById('new_price').style.display = 'block';
-                    itemPrice.style.opacity = '0.5';
-                    itemPrice.style.textDecoration = 'line-through'
-                } else {
-                    document.getElementById('from-to-date').style.display = 'none';
-                    document.getElementById('new_price').style.display = 'none';
-                    itemPrice.style.opacity = '1';
-                    itemPrice.style.textDecoration = 'none'
-                }
-                areAvailableIcons.forEach(isAvailableIcon => {
-                    if (selectedItem.is_available) {
-                        isAvailableText.textContent = ' Product available!';
-                        isAvailableIcon.removeAttribute('id', 'unavailable');
-                        isAvailableIcon.setAttribute('id', 'available');
-                    } else {
-                        isAvailableText.textContent = ' Product unavailable!';
-                        isAvailableIcon.removeAttribute('id', 'available');
-                        isAvailableIcon.setAttribute('id', 'unavailable');
-                    }
-                });
-            }
-        });
-
         const plusButton = document.getElementById('plus-button');
         const minusButton = document.getElementById('minus-button');
         const itemQuantity = document.getElementById('quantity');
@@ -339,7 +269,6 @@
         const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
 
         leftArrow.addEventListener("click", () => {
-            console.log(totalItems);
             if (scrollPosition > 0) {
                 scrollPosition -= itemWidth;
                 similarItems.style.transform = `translateX(-${scrollPosition}px)`;
@@ -347,7 +276,6 @@
         });
 
         rightArrow.addEventListener("click", () => {
-            console.log(totalItems);
             if (scrollPosition < maxScrollPosition) {
                 scrollPosition += itemWidth;
                 similarItems.style.transform = `translateX(-${scrollPosition}px)`;

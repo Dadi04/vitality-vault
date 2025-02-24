@@ -1194,6 +1194,9 @@ footer #third #third-third img {
 #similar #similar-items .similar-item a .desc .new_price {
   color: red;
 }
+#similar #similar-items .similar-item a .desc .old_price {
+  text-decoration: line-through;
+}
 #similar #left-arrow {
   position: absolute;
   top: 50%;
