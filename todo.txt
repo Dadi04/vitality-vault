@@ -20,10 +20,11 @@ napraviti error 404 stranu ukoliko ne postoji artikal
 
 pagination u shopu
 
-napraviti kada se klikne na artikal da uvek odvete na taj koji sam kliknuo -> get request da se posalje prema ukusu
-
 dodati stranu za povecavanje quantity-ja
 
 zvezdice kada se upisu, zatim ucitam shop se ubaguju i ne prikazu se odmah
 
 fixovati poruke u inboxu
+
+naci custom template tj ubaciti ove koje ja imam umesto account -> adapter -> chatgpt
+napraviti da register form ne trazi nista obavezno osim username, email i password

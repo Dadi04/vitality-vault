@@ -6,9 +6,10 @@
 {% endblock %}
 
 {% block body %}
+    {% load socialaccount %}
     <div id="login">
         <header>
-            <h1>Sign in</h1>
+            <h1>Login</h1>
             <p><a id="register" href="{% url 'register_view' %}">New user? Join now!</a></p>
         </header>
         <form action="{% url 'login_view' %}" method="post">
@@ -22,7 +23,9 @@
             {% if messages %}
                 <div id="error-messages">
                     {% for message in messages %}
-                        {{ message }}
+                        {% if message.tags == "error" %}
+                            {{ message }}
+                        {% endif %}
                     {% endfor %}
                 </div>
             {% endif %}
@@ -32,38 +35,36 @@
                     <label for="remember">Remember me</label>
                 </div>
                 <a id="reset_button" href="{% url 'password_reset' %}">Forgot your password?</a><br>
-                <input type="submit" value="Sign in" id="submit-login">
+                <input type="submit" value="Login" id="submit-login">
             </div>
         </form>
         <br>
     </div>
     <hr id="login-hr">
-    <div id="google-apple">
-        <button class="google-button">
-            <i class="fa fa-google"></i>Sign In with Google
-            <!-- needs fixed asap -->
-        </button>
-        <button class="apple-button">
-            <i class="fa fa-apple"></i>Sign In with Apple
-            <!-- change to facebook -->
+    <div id="google-facebook">
+        <a class="google-button" href="{% provider_login_url 'google' process='login' %}?next=/">
+            <i class="fa fa-google"></i> Login with Google
+        </a>
+        <button class="facebook-button">
+            <i class="fa fa-facebook"></i>Login In with Apple
         </button>
     </div>
 {% endblock %}
 
 {% block script %}
-<script>
-    const showPassword = document.getElementById('show_password')
-    const passwordInput = document.getElementById('password')
-    showPassword.addEventListener('click', () => {
-        if (passwordInput.type === 'password') {
-            passwordInput.type = 'text';
-            showPassword.classList.remove('fa-eye');
-            showPassword.classList.add('fa-eye-slash');
-        } else {
-            passwordInput.type = 'password';
-            showPassword.classList.add('fa-eye');
-            showPassword.classList.remove('fa-eye-slash');
-        }
-    })
-</script>
+    <script>
+        const showPassword = document.getElementById('show_password')
+        const passwordInput = document.getElementById('password')
+        showPassword.addEventListener('click', () => {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                showPassword.classList.remove('fa-eye');
+                showPassword.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                showPassword.classList.add('fa-eye');
+                showPassword.classList.remove('fa-eye-slash');
+            }
+        })
+    </script>
 {% endblock %}

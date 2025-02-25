@@ -147,7 +147,9 @@
                 <input type="submit" value="Comment">
                 {% if messages %}
                     {% for message in messages %}
-                        <p>{{ message }}</p>
+                        {% if message.tags == "error" %}
+                            <p>{{ message }}</p>
+                        {% endif %}
                     {% endfor %}
                 {% endif %}
             </form>

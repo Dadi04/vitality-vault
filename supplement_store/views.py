@@ -70,7 +70,6 @@ def register_view(request):
         form = RegistrationForm(request.POST)
 
         if form.is_valid():
-        # get the info from the user
             email = form.cleaned_data["email"]
             username = form.cleaned_data["username"]
             first = form.cleaned_data["first_name"]
@@ -86,15 +85,10 @@ def register_view(request):
             confirm_password = form.cleaned_data["confirm_password"]
             captcha = form.cleaned_data["captcha"]
 
-            # create the user
             user = User.objects.create_user(username=username, email=email, password=password, first_name=first, last_name=last, phone=phone, birth=birthday, address=address, city=city, state=state, country=country, zipcode=zipcode)
             user.is_active = False
             user.save()
 
-            # popraviti ovo tako da ne saveuje odmah user u databazu nego tek kad on klikne na mail
-            # napraviti neki password security da ne moze bas tipa 1234
-
-            # emailing logic
             mail_subject = "Activate your user account."
             message = render_to_string("supplement_store/confirmation_email.html", {
                 "user": user.username,

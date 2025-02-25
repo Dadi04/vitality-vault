@@ -6,6 +6,7 @@
 {% endblock %}
 
 {% block body %}
+    {% load socialaccount %}
     <div id="register">
         <header>
             <h1>Register</h1>
@@ -22,18 +23,18 @@
             {{ form.last_name }}
             <label for="last" class="required">*</label>
             {{ form.address }}
-            <label for="address" class="required">*</label>
+            <label for="address" class="required">&nbsp;</label>
             {{ form.city }}
-            <label for="city" class="required">*</label>
+            <label for="city" class="required">&nbsp;</label>
             {{ form.state }}
             {{ form.country }}
-            <label for="country" class="required">*</label>
+            <label for="country" class="required">&nbsp;</label>
             {{ form.zipcode }}
-            <label for="zipcode" class="required">*</label><br>
+            <label for="zipcode" class="required">&nbsp;</label><br>
             {{ form.phone }}
-            <label for="phone" class="required">*</label>
+            <label for="phone" class="required">&nbsp;</label>
             {{ form.birthday }}
-            <label for="birthday" class="required">*</label>
+            <label for="birthday" class="required"></label>
             {{ form.password }}
             <label for="password" class="required">*</label>
             {{ form.confirm_password }}
@@ -52,17 +53,14 @@
         </div>
     </div>
     <hr id="login-hr">
-    <div id="google-apple">
-        <button class="google-button">
-            <i class="fa fa-google"></i>Sign In with Google
-            <!-- needs fixed asap -->
-        </button>
-        <button class="apple-button">
-            <i class="fa fa-apple"></i>Sign In with Apple
-            <!-- change to facebook -->
+    <div id="google-facebook">
+        <a class="google-button" href="{% provider_login_url 'google' process='login' %}?next=/">
+            <i class="fa fa-google"></i> Login with Google
+        </a>
+        <button class="facebook-button">
+            <i class="fa fa-facebook"></i>Sign In with Facebook
         </button>
     </div>
-    <!-- ubaciti login sa google i facebook -->
 {% endblock %}
 
 {% block script %}

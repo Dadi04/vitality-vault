@@ -436,6 +436,7 @@ footer #third #third-third img {
   outline: none;
   margin: 5px 10px 5px 5px;
   padding: 6px;
+  cursor: pointer;
 }
 #login #reset {
   margin-top: 15px;
@@ -478,12 +479,12 @@ footer #third #third-third img {
   margin: 20px auto;
 }
 
-#google-apple {
+#google-facebook {
   width: 800px;
   text-align: center;
   margin: 0 auto;
 }
-#google-apple .google-button {
+#google-facebook .google-button {
   background-color: white;
   color: #333;
   border: 2px solid #ccc;
@@ -492,29 +493,30 @@ footer #third #third-third img {
   margin: 10px;
   font-size: 16px;
   transition: background-color 0.3s ease;
+  text-decoration: none;
 }
-#google-apple .google-button:hover {
+#google-facebook .google-button:hover {
   background-color: #f4f4f4;
 }
-#google-apple .google-button i {
+#google-facebook .google-button i {
   margin-right: 10px;
   font-size: 20px;
   color: #4285F4;
 }
-#google-apple .apple-button {
+#google-facebook .facebook-button {
   color: #fff;
-  background-color: #000;
-  border: 2px solid #000;
+  background-color: #316FF6;
+  border: 2px solid #316FF6;
   border-radius: 5px;
   padding: 10px 20px;
   margin: 10px;
   font-size: 16px;
   transition: background-color 0.3s ease;
 }
-#google-apple .apple-button:hover {
-  background-color: #333;
+#google-facebook .facebook-button:hover {
+  background-color: #335ab1;
 }
-#google-apple .apple-button i {
+#google-facebook .facebook-button i {
   margin-right: 10px;
   font-size: 20px;
   color: #ccc;
@@ -567,6 +569,7 @@ footer #third #third-third img {
   margin: 5px 5px 5px 0;
   padding: 6px;
   width: 30px;
+  cursor: pointer;
 }
 #register #bottom-register {
   display: flex;
@@ -738,6 +741,7 @@ footer #third #third-third img {
   text-align: center;
   border-radius: 20px;
   transition: background-color 0.5s;
+  cursor: pointer;
 }
 .password-reset #show_password:hover {
   background-color: #EEE;

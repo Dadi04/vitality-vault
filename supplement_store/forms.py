@@ -12,15 +12,13 @@ class RegistrationForm(forms.Form):
     username = forms.CharField(label='Username', widget=forms.TextInput(attrs={'class': 'register-input width100', 'placeholder': 'Username'}), error_messages={'required': 'Please enter your username.'})
     first_name = forms.CharField(label='First Name', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'First Name', 'size': '26'}), error_messages={'required': 'Please enter your first name.'})
     last_name = forms.CharField(label='Last Name', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Last Name', 'size': '26'}), error_messages={'required': 'Please enter your last name.'})
-    address = forms.CharField(label='Address', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Address', 'size': '26'}), error_messages={'required': 'Please enter your address.'})
-    city = forms.CharField(label='Suburb/City', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Suburb/City', 'size': '26'}), error_messages={'required': 'Please enter your city.'})
+    address = forms.CharField(label='Address', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Address', 'size': '26'}), required=False)
+    city = forms.CharField(label='Suburb/City', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Suburb/City', 'size': '26'}), required=False)
     state = forms.CharField(label='State/Province', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'State/Province', 'size': '27'}), required=False)
-    country = forms.ChoiceField(choices=COUNTRIES.items(), label='Country', widget=forms.Select(attrs={'class': 'register-input', 'id': 'country'}), error_messages={'required': 'Please choose your country'})
-    zipcode = forms.CharField(label='Zip/Postcode', widget=forms.TextInput(attrs={'class': 'register-input width100', 'placeholder': 'Zip/Postcode'}), error_messages={'required': 'Please enter your zipcode.'})
-    
-    phone = forms.CharField(label='Phone Number', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Phone Number', 'id': 'phone', 'size': '40'}), error_messages={'required': 'Please enter your phone number.'})
-    birthday = forms.DateField(label='Birthday', widget=forms.DateInput(attrs={'class': 'register-input', 'placeholder': 'Birthday', 'type': 'date'}))
-    
+    country = forms.ChoiceField(choices=COUNTRIES.items(), label='Country', widget=forms.Select(attrs={'class': 'register-input', 'id': 'country'}), required=False)
+    zipcode = forms.CharField(label='Zip/Postcode', widget=forms.TextInput(attrs={'class': 'register-input width100', 'placeholder': 'Zip/Postcode'}), required=False)
+    phone = forms.CharField(label='Phone Number', widget=forms.TextInput(attrs={'class': 'register-input', 'placeholder': 'Phone Number', 'id': 'phone', 'size': '40'}), required=False)
+    birthday = forms.DateField(label='Birthday', widget=forms.DateInput(attrs={'class': 'register-input', 'placeholder': 'Birthday', 'type': 'date'}), required=False)
     password = forms.CharField(label='Password', widget=forms.PasswordInput(attrs={'class': 'register-input', 'placeholder': 'Password', 'id': 'password', 'size': '24'}), error_messages={'required': 'Please enter your password.'})
     confirm_password = forms.CharField(label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'register-input', 'placeholder': 'Confirm Password', 'id': 'confirm_password', 'size': '24'}), error_messages={'required': 'Please confirm your password.'})
 

@@ -498,6 +498,7 @@ footer {
             outline: none;
             margin: 5px 10px 5px 5px;
             padding: 6px;
+            cursor: pointer;
         }
     }
 
@@ -548,7 +549,7 @@ footer {
     margin: 20px auto;
 }
 
-#google-apple {
+#google-facebook {
     width: 800px;
     text-align: center;
     margin: 0 auto;
@@ -562,6 +563,7 @@ footer {
         margin: 10px;
         font-size: 16px;
         transition: background-color 0.3s ease;
+        text-decoration: none;
 
         &:hover {
             background-color: #f4f4f4;
@@ -574,10 +576,10 @@ footer {
         }
     }
 
-    .apple-button {
+    .facebook-button {
         color: #fff;
-        background-color: #000;
-        border: 2px solid #000;
+        background-color: #316FF6;
+        border: 2px solid #316FF6;
         border-radius: 5px;
         padding: 10px 20px;
         margin: 10px;
@@ -585,7 +587,7 @@ footer {
         transition: background-color 0.3s ease;
 
         &:hover {
-            background-color: #333;
+            background-color: #335ab1;
         }
 
         i {
@@ -650,6 +652,7 @@ footer {
         margin: 5px 5px 5px 0;
         padding: 6px;
         width: 30px;
+        cursor: pointer;
     }
 
     #bottom-register {
@@ -842,6 +845,7 @@ footer {
         text-align: center;
         border-radius: 20px;
         transition: background-color 0.5s;
+        cursor: pointer;
 
         &:hover {
             background-color: #EEE;

@@ -20,13 +20,13 @@ def slide_show_upload_path(instance, filename):
 class User(AbstractUser):
     is_support = models.BooleanField(default=False)
     remember_me = models.BooleanField(default=True)
-    address = models.CharField(default=None)
-    city = models.CharField(default=None)
-    state = models.CharField(null=True, blank=True, default=None)
-    country = models.TextField(choices=COUNTRIES.items())
-    zipcode = models.CharField(default=None)
-    phone = models.CharField(default=None)
-    birth = models.DateField(default='1900-01-01')
+    address = models.CharField(null=True, blank=True)
+    city = models.CharField(null=True, blank=True)
+    state = models.CharField(null=True, blank=True)
+    country = models.TextField(choices=COUNTRIES.items(), null=True, blank=True)
+    zipcode = models.CharField(null=True, blank=True)
+    phone = models.CharField(null=True, blank=True)
+    birth = models.DateField(null=True, blank=True)
 
 class Item(models.Model):
     CATEGORIES = (
@@ -103,7 +103,7 @@ class Item(models.Model):
         }
 
     def __str__(self):
-        return f'{self.id}: {self.fullname}, Available: {self.is_available}, Flavor: {self.flavor}'
+        return f'{self.id}: {self.fullname}, Available: {self.is_available}, Flavor: {self.flavor}, Popularity: {self.popularity}, Quantity: {self.quantity}'
 
 # class Sale(models.Model):
 #     item = models.ForeignKey(Item, on_delete=models.CASCADE)
