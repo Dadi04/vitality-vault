@@ -353,7 +353,7 @@
 
             async function loadMessages() {
                 try {
-                    const response = await fetch('/load_messages/');
+                    const response = await fetch('load_messages');
                     if (response.ok) {
                         const data = await response.json();
                         console.log(data);

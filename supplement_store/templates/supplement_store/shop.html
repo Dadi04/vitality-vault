@@ -83,7 +83,7 @@
                                 <i class="fa fa-star gray-review"></i>
                             {% endif %}
                         {% endfor %}
-                        <span id="total-reviews">()</span>
+                        <span id="total-reviews">({{ item.total_reviews }})</span>
                         <div class="price">
                             <h3 class="{% if item.sale_price %}on_sale{% endif %}">${{ item.price }}</h3>
                             {% if item.sale_price %}

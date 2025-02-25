@@ -19,6 +19,9 @@ from django.urls import path, include
 from supplement_store import views
 
 urlpatterns = [
+    path('accounts/3rdparty/login/cancelled/', views.login_view, name='socialaccount_login_cancelled'),
+    path('accounts/login/', views.login_view, name='account_login'),
+    path('accounts/signup/', views.register_view, name='account_signup'),
     path('', include('supplement_store.urls')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),

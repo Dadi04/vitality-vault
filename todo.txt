@@ -16,15 +16,9 @@ dodati na show detailed description u item tranziciju i fixovati kada se promeni
 
 napraviti error 404 stranu ukoliko ne postoji artikal
 
-pagination u shopu
+pagination u shopu (16 itema)
+pagination u comments (5 comms)
 
 dodati stranu za povecavanje quantity-ja
 
 zvezdice kada se upisu, zatim ucitam shop se ubaguju i ne prikazu se odmah
-
-fixovati poruke u inboxu 
-Not Found: /load_messages/
-[25/Feb/2025 11:59:59] "GET /load_messages/ HTTP/1.1" 404 12908
-
-naci custom template tj ubaciti ove koje ja imam umesto account -> adapter -> chatgpt
-kada se canceluje login sa googlom i facebook da me vrati nazad na login a ne na neku random stranicu http://localhost:8000/accounts/3rdparty/login/cancelled/

@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Count
 from django.db.models.functions import Coalesce, RowNumber
 from django.conf import settings
 from django.core.files import File
@@ -159,7 +159,7 @@ def supplements(request):
     for brand in brands:
         q_objects |= Q(brand__icontains=brand)    
 
-    filtered_items = Item.objects.filter(q_objects)
+    filtered_items = Item.objects.filter(q_objects).annotate(total_reviews=Count('review'))
     
     sort_option = request.GET.get('sort', 'nameasc')
     if sort_option in ['priceasc', 'pricedesc']:
@@ -209,11 +209,11 @@ def supplements(request):
         "categories": categories_list,
         "subcategories": subcategories_list,
         "flavors": flavors_list,
-        "brands": brands_list,
+        "brands": brands_list
     })
 
 def shop_by_category(request, category):
-    items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available')
+    items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available').annotate(total_reviews=Count('review'))
 
     sort_option = request.GET.get('sort', 'nameasc')
     if sort_option in ['priceasc', 'pricedesc']:
@@ -271,7 +271,7 @@ def shop_by_category(request, category):
     })
 
 def shop_by_brand(request, brand):
-    items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available')
+    items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available').annotate(total_reviews=Count('review'))
 
     sort_option = request.GET.get('sort', 'nameasc')
     if sort_option in ['priceasc', 'pricedesc']:
