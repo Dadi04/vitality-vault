@@ -331,8 +331,6 @@ def shop_by_itemname(request, itemname):
 
     item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option).first()
 
-    # items = items.exclude(pk=item_chosen.pk)
-
     if items:
         for item in items:
             subcategory = item.subcategory

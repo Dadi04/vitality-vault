@@ -7,6 +7,7 @@
 
 {% block body %}
     {% load socialaccount %}
+    {% providers_media_js %}
     <div id="login">
         <header>
             <h1>Login</h1>
@@ -42,12 +43,12 @@
     </div>
     <hr id="login-hr">
     <div id="google-facebook">
-        <a class="google-button" href="{% provider_login_url 'google' process='login' %}?next=/">
-            <i class="fa fa-google"></i> Login with Google
+        <a href="{% provider_login_url 'google' process='login' %}?next=/" class="google-button" >
+            <i class="fa fa-google"></i>Login with Google
         </a>
-        <button class="facebook-button">
-            <i class="fa fa-facebook"></i>Login In with Apple
-        </button>
+        <a href="{% provider_login_url 'facebook' process='login' %}?next=/" class="facebook-button">
+            <i class="fa fa-facebook"></i>Login In with Facebook
+        </a>
     </div>
 {% endblock %}
 

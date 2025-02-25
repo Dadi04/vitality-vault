@@ -8,8 +8,6 @@ neki random ahh bug za comment
     raise NoReverseMatch(msg)
 django.urls.exceptions.NoReverseMatch: Reverse for 'comment' with keyword arguments '{'username': 'david', 'itemname': ''}' not found. 1 pattern(s) tried: ['comment/(?P<username>[^/]+)/(?P<itemname>[^/]+)\\Z']
 
-dodati login sa google i facebook (umesto apple)
-
 poceti index stranu
 
 staviti da cart ima neku tranziciju
@@ -24,7 +22,9 @@ dodati stranu za povecavanje quantity-ja
 
 zvezdice kada se upisu, zatim ucitam shop se ubaguju i ne prikazu se odmah
 
-fixovati poruke u inboxu
+fixovati poruke u inboxu 
+Not Found: /load_messages/
+[25/Feb/2025 11:59:59] "GET /load_messages/ HTTP/1.1" 404 12908
 
 naci custom template tj ubaciti ove koje ja imam umesto account -> adapter -> chatgpt
-napraviti da register form ne trazi nista obavezno osim username, email i password
+kada se canceluje login sa googlom i facebook da me vrati nazad na login a ne na neku random stranicu http://localhost:8000/accounts/3rdparty/login/cancelled/

@@ -482,7 +482,7 @@ footer #third #third-third img {
 #google-facebook {
   width: 800px;
   text-align: center;
-  margin: 0 auto;
+  margin: 0 auto 20px auto;
 }
 #google-facebook .google-button {
   background-color: white;
@@ -512,6 +512,7 @@ footer #third #third-third img {
   margin: 10px;
   font-size: 16px;
   transition: background-color 0.3s ease;
+  text-decoration: none;
 }
 #google-facebook .facebook-button:hover {
   background-color: #335ab1;
@@ -586,8 +587,8 @@ footer #third #third-third img {
   font-family: "Montserrat" sans-serif;
   display: inline-block;
   width: 100%;
-  max-width: 150px;
-  height: 40px;
+  max-width: 200px;
+  height: 50px;
   border: none;
   outline: none;
   background: #2f2f2f;
@@ -599,7 +600,7 @@ footer #third #third-third img {
   position: relative;
   overflow: hidden;
   transition: background-color 0.3s ease;
-  margin-left: 40px;
+  margin-left: 30px;
 }
 #register #bottom-register #submit-register:hover {
   background-color: #444;
@@ -917,6 +918,9 @@ footer #third #third-third img {
 }
 #shop #right-side .shop-right .gray-review {
   color: grey;
+}
+#shop #right-side .shop-right #total-reviews {
+  columns: #333;
 }
 #shop #right-side .shop-right .is_available_item {
   opacity: 0.5;

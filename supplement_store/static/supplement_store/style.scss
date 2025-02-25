@@ -552,7 +552,7 @@ footer {
 #google-facebook {
     width: 800px;
     text-align: center;
-    margin: 0 auto;
+    margin: 0 auto 20px auto;
 
     .google-button {
         background-color: white;
@@ -585,6 +585,7 @@ footer {
         margin: 10px;
         font-size: 16px;
         transition: background-color 0.3s ease;
+        text-decoration: none;
 
         &:hover {
             background-color: #335ab1;
@@ -671,8 +672,8 @@ footer {
             font-family: 'Montserrat' sans-serif;
             display: inline-block;
             width: 100%;
-            max-width: 150px;
-            height: 40px;
+            max-width: 200px;
+            height: 50px;
             border: none;
             outline: none;
             background: #2f2f2f;
@@ -684,7 +685,7 @@ footer {
             position: relative;
             overflow: hidden;
             transition: background-color 0.3s ease;
-            margin-left: 40px;
+            margin-left: 30px;
         
             &:hover {
                 background-color: #444;
@@ -1047,6 +1048,10 @@ footer {
                 color: grey;
             }
     
+            #total-reviews {
+                columns: #333;
+            }
+
             .is_available_item {
                 opacity: 0.5;
             }
