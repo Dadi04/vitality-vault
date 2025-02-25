@@ -104,7 +104,7 @@
                 <div id="similar-items">
                     {% for item in similar_items %}
                         <div class="similar-item">
-                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor }}">
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">
                                 <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}">
                                 <div class="desc">
                                     <h4>{{ item.name }}</h4>
@@ -134,25 +134,27 @@
     <div id="reviews">
         <h1>Reviews</h1>
         {% if user.is_authenticated %}
-            <form id="comment-form" action="{% url 'comment' username=user.username itemname=item_chosen.fullname %}" method="post">
-                {% csrf_token %}
-                <textarea name="textarea" id="textarea" cols="50" rows="4" placeholder="Write a comment..." required></textarea><br>
-                Your opinion: 
-                <i class="fa fa-star stars" data-star="1"></i>
-                <i class="fa fa-star stars" data-star="2"></i>
-                <i class="fa fa-star stars" data-star="3"></i>
-                <i class="fa fa-star stars" data-star="4"></i>
-                <i class="fa fa-star stars" data-star="5"></i>
-                <input type="hidden" name="rating" id="rating" value="">
-                <input type="submit" value="Comment">
-                {% if messages %}
-                    {% for message in messages %}
-                        {% if message.tags == "error" %}
-                            <p>{{ message }}</p>
-                        {% endif %}
-                    {% endfor %}
-                {% endif %}
-            </form>
+            {% if item_chosen %}
+                <form id="comment-form" action="{% url 'comment' username=user.username itemname=item_chosen.fullname %}" method="post">
+                    {% csrf_token %}
+                    <textarea name="textarea" id="textarea" cols="50" rows="4" placeholder="Write a comment..." required></textarea><br>
+                    Your opinion: 
+                    <i class="fa fa-star stars" data-star="1"></i>
+                    <i class="fa fa-star stars" data-star="2"></i>
+                    <i class="fa fa-star stars" data-star="3"></i>
+                    <i class="fa fa-star stars" data-star="4"></i>
+                    <i class="fa fa-star stars" data-star="5"></i>
+                    <input type="hidden" name="rating" id="rating" value="">
+                    <input type="submit" value="Comment">
+                    {% if messages %}
+                        {% for message in messages %}
+                            {% if message.tags == "error" %}
+                                <p>{{ message }}</p>
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </form>
+            {% endif %}
         {% else %}
             <textarea name="textarea" id="textarea" cols="30" rows="10" disabled>You need to be logged in in order to comment!</textarea>
         {% endif %}

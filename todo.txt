@@ -14,11 +14,9 @@ staviti da cart ima neku tranziciju
 staviti da help ima neku tranziciju
 dodati na show detailed description u item tranziciju i fixovati kada se promeni flavor nakon kliktanja desc te baci na desc odmah
 
-napraviti error 404 stranu ukoliko ne postoji artikal
-
 pagination u shopu (16 itema)
 pagination u comments (5 comms)
 
 dodati stranu za povecavanje quantity-ja
 
-zvezdice kada se upisu, zatim ucitam shop se ubaguju i ne prikazu se odmah
+popraviti filter

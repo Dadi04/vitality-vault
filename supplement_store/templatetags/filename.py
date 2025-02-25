@@ -1,5 +1,6 @@
 from django import template
 from os.path import basename
+import urllib.parse
 
 register = template.Library()
 
@@ -38,3 +39,7 @@ def multiply(value, arg):
 @register.filter
 def filter(query_params, key):
     return query_params.getlist(key)
+
+@register.filter
+def urlencode(param):
+    return urllib.parse.quote(param)

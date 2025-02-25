@@ -1692,3 +1692,24 @@ footer {
         }
     }
 }
+
+#error404 {
+    width: auto;
+    margin: 0 auto;
+    text-align: center;
+
+    h1 {
+        font-size: 100px;
+        font-weight: bold;
+        margin-bottom: 0px;
+    }
+    
+    #top {
+        font-size: 30px;
+        margin-bottom: 10px;
+    }
+
+    #bottom {
+        font-size: 20px; 
+    }
+}

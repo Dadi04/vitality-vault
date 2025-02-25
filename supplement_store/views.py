@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -149,6 +149,13 @@ def supplements(request):
     flavors = request.GET.getlist('flavor')
     brands = request.GET.getlist('brand')
 
+    review_counts = (
+        Review.objects
+        .values('item__fullname')
+        .annotate(total_reviews=Count('id'), average_rating=Avg('rating'))
+    )
+    review_data = {r['item__fullname']: r for r in review_counts}
+
     q_objects = Q()
     for category in categories:
         q_objects |= Q(category__icontains=category)
@@ -184,6 +191,19 @@ def supplements(request):
     unique_items = {}
     final_items = []
     for item in filtered_items:
+        review_info = review_data.get(item.fullname, {'total_reviews': 0, 'average_rating': None})
+        total_reviews = review_info['total_reviews']
+        average_review = review_info['average_rating']
+
+        if item.fullname not in unique_items:
+            unique_items[item.fullname] = item
+            item.total_reviews = total_reviews
+            item.average_rating = average_review
+            item.save()
+            final_items.append(item) 
+        elif item.is_available:
+            unique_items[item.fullname] = item
+
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
             final_items.append(item)
@@ -213,7 +233,14 @@ def supplements(request):
     })
 
 def shop_by_category(request, category):
-    items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available').annotate(total_reviews=Count('review'))
+    items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available')
+
+    review_counts = (
+        Review.objects
+        .values('item__fullname')
+        .annotate(total_reviews=Count('id'), average_rating=Avg('rating'))
+    )
+    review_data = {r['item__fullname']: r for r in review_counts}
 
     sort_option = request.GET.get('sort', 'nameasc')
     if sort_option in ['priceasc', 'pricedesc']:
@@ -243,10 +270,13 @@ def shop_by_category(request, category):
     final_items = []
 
     for item in items_by_category:
-        average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
+        review_info = review_data.get(item.fullname, {'total_reviews': 0, 'average_rating': None})
+        total_reviews = review_info['total_reviews']
+        average_review = review_info['average_rating']
 
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
+            item.total_reviews = total_reviews
             item.average_rating = average_review
             item.save()
             final_items.append(item) 
@@ -271,7 +301,14 @@ def shop_by_category(request, category):
     })
 
 def shop_by_brand(request, brand):
-    items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available').annotate(total_reviews=Count('review'))
+    items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available')
+
+    review_counts = (
+        Review.objects
+        .values('item__fullname')
+        .annotate(total_reviews=Count('id'), average_rating=Avg('rating'))
+    )
+    review_data = {r['item__fullname']: r for r in review_counts}
 
     sort_option = request.GET.get('sort', 'nameasc')
     if sort_option in ['priceasc', 'pricedesc']:
@@ -297,10 +334,13 @@ def shop_by_brand(request, brand):
     final_items = []
 
     for item in items_by_brand:
-        average_review = Review.objects.filter(item=Item.objects.filter(fullname=item.fullname).first()).aggregate(Avg('rating'))['rating__avg']
+        review_info = review_data.get(item.fullname, {'total_reviews': 0, 'average_rating': None})
+        total_reviews = review_info['total_reviews']
+        average_review = review_info['average_rating']
 
         if item.fullname not in unique_items:
             unique_items[item.fullname] = item
+            item.total_reviews = total_reviews
             item.average_rating = average_review
             item.save()
             final_items.append(item) 
@@ -321,7 +361,19 @@ def shop_by_brand(request, brand):
     })
 
 def shop_by_itemname(request, itemname):
-    items = Item.objects.filter(fullname=itemname).annotate(row_number = Window(expression=RowNumber(), partition_by=[F('flavor')], order_by=F('is_available').desc())).filter(row_number = 1).order_by('-is_available')
+    items = Item.objects.filter(fullname=itemname)\
+        .annotate(
+            row_number = Window(
+                expression=RowNumber(), 
+                partition_by=[F('flavor')], 
+                order_by=F('is_available').desc()
+            )
+        )\
+        .filter(row_number = 1)\
+        .order_by('-is_available')
+    
+    if not items.exists():
+        return render(request, "supplement_store/error.html")
 
     flavor_option = request.GET.get('flavor')
     if not flavor_option:
