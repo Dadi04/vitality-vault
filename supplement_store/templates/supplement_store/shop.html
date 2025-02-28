@@ -90,12 +90,19 @@
                                 <h3 class="new_price">${{item.sale_price}}</h3>
                             {% endif %}
                         </div>
-                        <form action="{% url 'shopping_cart' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ item.id }}" name="id">
-                            <input type="hidden" value="1" name="quantity">
-                            <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
-                        </form>
+                        <div id="buttons">
+                            <form action="{% url 'shopping_cart' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ item.id }}" name="id">
+                                <input type="hidden" value="1" name="quantity">
+                                <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
+                            </form>
+                            <form action="{% url 'wishlist' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ item.id }}" name="id">
+                                <button type="submit" id="wishlist" class="fa fa-heart"></button>
+                            </form>
+                        </div>
                     </div>
                 {% endfor %}
             </div>

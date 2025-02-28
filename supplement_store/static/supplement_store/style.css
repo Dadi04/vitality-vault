@@ -962,8 +962,13 @@ footer #third #third-third img {
 #shop #right-side .shop-right .item h3 {
   margin: 3px;
 }
-#shop #right-side .shop-right .item .add-to-cart {
-  width: 90%;
+#shop #right-side .shop-right .item #buttons {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+#shop #right-side .shop-right .item #buttons .add-to-cart {
+  width: 180px;
   height: 40px;
   border: none;
   outline: none;
@@ -979,8 +984,26 @@ footer #third #third-third img {
   margin: 0 auto;
   display: block;
 }
-#shop #right-side .shop-right .item .add-to-cart:hover {
+#shop #right-side .shop-right .item #buttons .add-to-cart:hover {
   background-color: #444;
+}
+#shop #right-side .shop-right .item #buttons #wishlist {
+  width: 50px;
+  height: 40px;
+  border: none;
+  outline: none;
+  background-color: #eee;
+  color: #333;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(184, 183, 183, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  display: inline-block;
+  margin-left: 10px;
+}
+#shop #right-side .shop-right .item #buttons #wishlist:hover {
+  background-color: #bbb;
 }
 
 #item {
@@ -1117,11 +1140,9 @@ footer #third #third-third img {
 #item #other #item-content #item-right #from-to-date {
   margin: 0;
 }
-#item #other #item-content #item-right #buttons {
+#item #other #item-content #item-right #cart {
   margin-top: 10px;
-}
-#item #other #item-content #item-right #buttons #cart {
-  width: 80%;
+  width: 100%;
   height: 40px;
   border: none;
   outline: none;
@@ -1135,28 +1156,29 @@ footer #third #third-third img {
   transition: background-color 0.3s ease;
   display: inline-block;
 }
-#item #other #item-content #item-right #buttons #cart:hover {
+#item #other #item-content #item-right #cart:hover {
   background-color: #444;
 }
-#item #other #item-content #item-right #buttons .not_in_stock {
-  background-color: gray !important;
+#item #other #item-content #item-right .not_in_stock {
+  background-color: gray;
 }
-#item #other #item-content #item-right #buttons #wishlist {
-  width: 10%;
+#item #other #item-content #item-right #wishlist {
+  margin-top: 10px;
+  width: 100%;
   height: 40px;
   border: none;
   outline: none;
   background-color: #eee;
   color: #333;
+  font-size: 16px;
   text-align: center;
   box-shadow: 0 6px 20px -5px rgba(184, 183, 183, 0.4);
   position: relative;
   overflow: hidden;
   transition: background-color 0.3s ease;
   display: inline-block;
-  margin-left: 10px;
 }
-#item #other #item-content #item-right #buttons #wishlist:hover {
+#item #other #item-content #item-right #wishlist:hover {
   background-color: #bbb;
 }
 

@@ -89,10 +89,17 @@
                         {% else %}
                             <p id="from-to-date" style="display: none;">On Sale from {{item_chosen.sale_start_date}} to {{item_chosen.sale_end_date}}</p>
                         {% endif %}
-                        <div id="buttons">
-                            <input id="cart" value="Add to Cart" type="submit">
-                            <button id="wishlist" class="fa fa-heart"></button>
-                        </div>
+                        <button type="submit" id="cart">
+                            Add to Cart
+                            <i class="fa fa-shopping-cart"></i>
+                        </button>
+                    </form>
+                    <form action="{% url 'wishlist' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" id="wishlist">
+                            Wishlist
+                            <i class="fa fa-heart"></i>
+                        </button>
                     </form>
                 </div>
             </div>
