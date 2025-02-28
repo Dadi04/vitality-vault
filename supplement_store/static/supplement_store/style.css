@@ -879,6 +879,7 @@ footer #third #third-third img {
   flex-direction: column;
   background-color: #ddd;
   padding-left: 10px;
+  padding-bottom: 20px;
   border-radius: 5px;
 }
 #shop .shop-filter #filter-sumbit {

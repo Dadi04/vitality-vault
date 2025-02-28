@@ -3,12 +3,9 @@ zavrsiti summary i success strane
 
 zavrsiti about us stranu
 
-neki random ahh bug za comment
-  File "D:\David\programming\harvard\web\supplements\.venv\Lib\site-packages\django\urls\resolvers.py", line 831, in _reverse_with_prefix
-    raise NoReverseMatch(msg)
-django.urls.exceptions.NoReverseMatch: Reverse for 'comment' with keyword arguments '{'username': 'david', 'itemname': ''}' not found. 1 pattern(s) tried: ['comment/(?P<username>[^/]+)/(?P<itemname>[^/]+)\\Z']
-
 poceti index stranu
+
+zavrsiti wishlist
 
 staviti da cart ima neku tranziciju
 staviti da help ima neku tranziciju

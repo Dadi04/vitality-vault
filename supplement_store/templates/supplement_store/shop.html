@@ -9,7 +9,7 @@
 {% block body %}
     <div id="shop">
         <div class="shop-filter">
-            <form action="{% url 'supplements' %}" method="get">
+            <form action="{{ request.path }}" method="get">
                 <h3 id="filter-title">Filter</h3>
                 <div>
                     <h3>Category</h3>

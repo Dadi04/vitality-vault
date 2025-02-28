@@ -12,8 +12,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Count
-from django.db.models.functions import Coalesce, RowNumber
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window
+from django.db.models.functions import RowNumber
 from django.conf import settings
 from django.core.files import File
 
@@ -24,6 +24,7 @@ import os
 import json
 import pandas as pd
 
+from .shop_utils import apply_sorting, attach_review_data, build_query_from_params
 from .forms import RegistrationForm, ItemForm
 from .countries import COUNTRIES
 from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction, TransactionItem
@@ -144,220 +145,56 @@ def clothing(request):
     })
 
 def supplements(request):
-    categories = request.GET.getlist('category')
-    subcategories = request.GET.getlist('subcategory')
-    flavors = request.GET.getlist('flavor')
-    brands = request.GET.getlist('brand')
+    q_objects = build_query_from_params(request, ['category', 'subcategory', 'flavor', 'brand'])
+    queryset = Item.objects.filter(q_objects)
 
-    review_counts = (
-        Review.objects
-        .values('item__fullname')
-        .annotate(total_reviews=Count('id'), average_rating=Avg('rating'))
-    )
-    review_data = {r['item__fullname']: r for r in review_counts}
-
-    q_objects = Q()
-    for category in categories:
-        q_objects |= Q(category__icontains=category)
-    for subcategory in subcategories:
-        q_objects |= Q(subcategory__icontains=subcategory)
-    for flavor in flavors:
-        q_objects |= Q(flavor__icontains=flavor)
-    for brand in brands:
-        q_objects |= Q(brand__icontains=brand)    
-
-    filtered_items = Item.objects.filter(q_objects).annotate(total_reviews=Count('review'))
-    
     sort_option = request.GET.get('sort', 'nameasc')
-    if sort_option in ['priceasc', 'pricedesc']:
-        filtered_items = filtered_items.annotate(effective_price=Coalesce('sale_price', 'price'))
-        if sort_option == 'priceasc':
-            filtered_items = filtered_items.order_by('-is_available', 'effective_price')
-        else:
-            filtered_items = filtered_items.order_by('-is_available', '-effective_price')
-    elif sort_option == 'pricedesc':
-        filtered_items = filtered_items.order_by('-is_available', '-price')
-    elif sort_option == 'popasc':
-        filtered_items = filtered_items.order_by('-is_available', 'popularity')
-    elif sort_option == 'popdesc':
-        filtered_items = filtered_items.order_by('-is_available', '-popularity')
-    elif sort_option == 'nameasc':
-        filtered_items = filtered_items.order_by('-is_available', 'name', 'flavor')
-    elif sort_option == 'namedesc':
-        filtered_items = filtered_items.order_by('-is_available', '-name', 'flavor')
-    else:
-        filtered_items = filtered_items.order_by('-is_available', 'name', 'flavor')
+    queryset = apply_sorting(queryset, sort_option)
 
-    unique_items = {}
-    final_items = []
-    for item in filtered_items:
-        review_info = review_data.get(item.fullname, {'total_reviews': 0, 'average_rating': None})
-        total_reviews = review_info['total_reviews']
-        average_review = review_info['average_rating']
-
-        if item.fullname not in unique_items:
-            unique_items[item.fullname] = item
-            item.total_reviews = total_reviews
-            item.average_rating = average_review
-            item.save()
-            final_items.append(item) 
-        elif item.is_available:
-            unique_items[item.fullname] = item
-
-        if item.fullname not in unique_items:
-            unique_items[item.fullname] = item
-            final_items.append(item)
-
-    items = Item.objects.filter(weight__isnull=False).order_by('name', '-is_available')
-    categories_list = []
-    subcategories_list = []
-    flavors_list = []
-    brands_list = []
-    
-    for item in items:
-        if item.category not in categories_list:
-            categories_list.append(item.category)
-        if item.subcategory not in subcategories_list:
-            subcategories_list.append(item.subcategory)    
-        if item.flavor not in flavors_list:
-            flavors_list.append(item.flavor)
-        if item.brand not in brands_list:
-            brands_list.append(item.brand)
+    items = attach_review_data(queryset)
 
     return render(request, "supplement_store/shop.html", {
-        "items": final_items,
-        "categories": categories_list,
-        "subcategories": subcategories_list,
-        "flavors": flavors_list,
-        "brands": brands_list
+        "items": items,
+        "categories": Item.objects.filter().values_list('category', flat=True).distinct(),
+        "subcategories": Item.objects.filter().values_list('subcategory', flat=True).distinct(),
+        "flavors": Item.objects.filter().values_list('flavor', flat=True).distinct(),
+        "brands": Item.objects.filter().values_list('brand', flat=True).distinct()
     })
 
 def shop_by_category(request, category):
-    items_by_category = Item.objects.filter(category=category).order_by('name', '-is_available')
-
-    review_counts = (
-        Review.objects
-        .values('item__fullname')
-        .annotate(total_reviews=Count('id'), average_rating=Avg('rating'))
-    )
-    review_data = {r['item__fullname']: r for r in review_counts}
+    base_filter = Q(category=category)
+    q_objects = build_query_from_params(request, ['category', 'subcategory', 'flavor', 'brand'])
+    queryset = Item.objects.filter(base_filter & q_objects)
 
     sort_option = request.GET.get('sort', 'nameasc')
-    if sort_option in ['priceasc', 'pricedesc']:
-        items_by_category = items_by_category.annotate(effective_price=Coalesce('sale_price', 'price'))
-        if sort_option == 'priceasc':
-            items_by_category = items_by_category.order_by('-is_available', 'effective_price')
-        else:
-            items_by_category = items_by_category.order_by('-is_available', '-effective_price')
-    elif sort_option == 'pricedesc':
-        items_by_category = items_by_category.order_by('-is_available', '-price')
-    elif sort_option == 'popasc':
-        items_by_category = items_by_category.order_by('-is_available', 'popularity')
-    elif sort_option == 'popdesc':
-        items_by_category = items_by_category.order_by('-is_available', '-popularity')
-    elif sort_option == 'nameasc':
-        items_by_category = items_by_category.order_by('-is_available', 'name', 'flavor')
-    elif sort_option == 'namedesc':
-        items_by_category = items_by_category.order_by('-is_available', '-name', 'flavor')
-    else:
-        items_by_category = items_by_category.order_by('-is_available', 'name', 'flavor')
+    queryset = apply_sorting(queryset, sort_option)
 
-    categories = []
-    subcategories = []
-    flavors = []
-    brands = []
-    unique_items = {}
-    final_items = []
-
-    for item in items_by_category:
-        review_info = review_data.get(item.fullname, {'total_reviews': 0, 'average_rating': None})
-        total_reviews = review_info['total_reviews']
-        average_review = review_info['average_rating']
-
-        if item.fullname not in unique_items:
-            unique_items[item.fullname] = item
-            item.total_reviews = total_reviews
-            item.average_rating = average_review
-            item.save()
-            final_items.append(item) 
-        elif item.is_available:
-            unique_items[item.fullname] = item
-
-        if item.category not in categories:
-            categories.append(item.category)
-        if item.subcategory not in subcategories:
-            subcategories.append(item.subcategory)
-        if item.flavor not in flavors:
-            flavors.append(item.flavor)
-        if item.brand not in brands:
-            brands.append(item.brand)
-
+    items = attach_review_data(queryset)
+ 
     return render(request, "supplement_store/shop.html", {
-        "items": final_items,
-        "categories": categories,
-        "subcategories": subcategories,
-        "flavors": flavors,
-        "brands": brands,
+        "items": items,
+        "categories": Item.objects.filter(category=category).values_list('category', flat=True).distinct(),
+        "subcategories": Item.objects.filter(category=category).values_list('subcategory', flat=True).distinct(),
+        "flavors": Item.objects.filter(category=category).values_list('flavor', flat=True).distinct(),
+        "brands": Item.objects.filter(category=category).values_list('brand', flat=True).distinct()
     })
 
 def shop_by_brand(request, brand):
-    items_by_brand = Item.objects.filter(brand=brand).order_by('name', '-is_available')
-
-    review_counts = (
-        Review.objects
-        .values('item__fullname')
-        .annotate(total_reviews=Count('id'), average_rating=Avg('rating'))
-    )
-    review_data = {r['item__fullname']: r for r in review_counts}
+    base_filter = Q(brand=brand)
+    q_objects = build_query_from_params(request, ['category', 'subcategory', 'flavor', 'brand'])
+    queryset = Item.objects.filter(base_filter & q_objects)
 
     sort_option = request.GET.get('sort', 'nameasc')
-    if sort_option in ['priceasc', 'pricedesc']:
-        items_by_brand = items_by_brand.annotate(effective_price=Coalesce('sale_price', 'price'))
-        if sort_option == 'priceasc':
-            items_by_brand = items_by_brand.order_by('-is_available', 'effective_price')
-        else:
-            items_by_brand = items_by_brand.order_by('-is_available', '-effective_price')
-    elif sort_option == 'pricedesc':
-        items_by_brand = items_by_brand.order_by('-is_available', '-price')
-    elif sort_option == 'popasc':
-        items_by_brand = items_by_brand.order_by('-is_available', 'popularity')
-    elif sort_option == 'popdesc':
-        items_by_brand = items_by_brand.order_by('-is_available', '-popularity')
-    elif sort_option == 'nameasc':
-        items_by_brand = items_by_brand.order_by('-is_available', 'name', 'flavor')
-    elif sort_option == 'namedesc':
-        items_by_brand = items_by_brand.order_by('-is_available', '-name', 'flavor')
-    else:
-        items_by_brand = items_by_brand.order_by('-is_available', 'name', 'flavor')
+    queryset = apply_sorting(queryset, sort_option)
 
-    unique_items = {}
-    final_items = []
-
-    for item in items_by_brand:
-        review_info = review_data.get(item.fullname, {'total_reviews': 0, 'average_rating': None})
-        total_reviews = review_info['total_reviews']
-        average_review = review_info['average_rating']
-
-        if item.fullname not in unique_items:
-            unique_items[item.fullname] = item
-            item.total_reviews = total_reviews
-            item.average_rating = average_review
-            item.save()
-            final_items.append(item) 
-        elif item.is_available:
-            unique_items[item.fullname] = item
-
-    categories = Item.objects.filter(brand=brand).values_list('category', flat=True).distinct()
-    subcategories = Item.objects.filter(brand=brand).values_list('subcategory', flat=True).distinct()
-    flavors = Item.objects.filter(brand=brand).values_list('flavor', flat=True).distinct()
-    brands = Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct()
+    items = attach_review_data(queryset)
 
     return render(request, "supplement_store/shop.html", {
-        "items": final_items,
-        "categories": categories,
-        "subcategories": subcategories,
-        "flavors": flavors,
-        "brands": brands,
+        "items": items,
+        "categories": Item.objects.filter(brand=brand).values_list('category', flat=True).distinct(),
+        "subcategories": Item.objects.filter(brand=brand).values_list('subcategory', flat=True).distinct(),
+        "flavors": Item.objects.filter(brand=brand).values_list('flavor', flat=True).distinct(),
+        "brands": Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct()
     })
 
 def shop_by_itemname(request, itemname):
