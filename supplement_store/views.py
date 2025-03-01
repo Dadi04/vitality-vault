@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists
 from django.db.models.functions import RowNumber
 from django.conf import settings
 from django.core.files import File
@@ -21,7 +21,6 @@ from datetime import datetime
 from decimal import Decimal
 
 import os
-import json
 import pandas as pd
 
 from .shop_utils import apply_sorting, attach_review_data, build_query_from_params
@@ -151,6 +150,9 @@ def supplements(request):
     sort_option = request.GET.get('sort', 'nameasc')
     queryset = apply_sorting(queryset, sort_option)
 
+    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+    queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+
     items = attach_review_data(queryset)
 
     return render(request, "supplement_store/shop.html", {
@@ -168,6 +170,9 @@ def shop_by_category(request, category):
 
     sort_option = request.GET.get('sort', 'nameasc')
     queryset = apply_sorting(queryset, sort_option)
+
+    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+    queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
 
     items = attach_review_data(queryset)
  
@@ -187,6 +192,9 @@ def shop_by_brand(request, brand):
     sort_option = request.GET.get('sort', 'nameasc')
     queryset = apply_sorting(queryset, sort_option)
 
+    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+    queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+
     items = attach_review_data(queryset)
 
     return render(request, "supplement_store/shop.html", {
@@ -198,13 +206,16 @@ def shop_by_brand(request, brand):
     })
 
 def shop_by_itemname(request, itemname):
+    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+
     items = Item.objects.filter(fullname=itemname)\
         .annotate(
             row_number = Window(
                 expression=RowNumber(), 
                 partition_by=[F('flavor')], 
                 order_by=F('is_available').desc()
-            )
+            ),
+            is_wishlisted=Exists(wishlist_qs)
         )\
         .filter(row_number = 1)\
         .order_by('-is_available')
@@ -218,7 +229,9 @@ def shop_by_itemname(request, itemname):
         if first_item:
             flavor_option = first_item.flavor
 
-    item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option).first()
+    item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option)\
+        .annotate(is_wishlisted=Exists(wishlist_qs))\
+        .first()
 
     if items:
         for item in items:
@@ -229,13 +242,12 @@ def shop_by_itemname(request, itemname):
         similar_items = [item for item in similar_items if item.fullname not in items_fullnames]
     else:
         similar_items = None
-    items_json = json.dumps([item.serialize() for item in items], default=str)
     reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
     average_review = reviews.aggregate(Avg('rating'))['rating__avg']
+
     return render(request, "supplement_store/item.html", {
         "item_chosen": item_chosen,
         "items": items,
-        "items_json": items_json,
         "reviews": reviews,
         "average_review": average_review,
         "similar_items": similar_items,
@@ -274,7 +286,7 @@ def add_to_wishlist(request):
         item = Item.objects.get(id=request.POST.get("id"))
         Wishlist.objects.create(user=request.user, item=item)
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
-# staviti da ukoliko je vec wishlostovano da ne moze da se wishlistuje open u shopu i u items
+# staviti da ukoliko je vec wishlistovao da ne moze da se wishlistuje opet u shopu i u items
 
 @login_required
 def remove_wishlist(request):

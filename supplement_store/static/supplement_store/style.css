@@ -1005,6 +1005,9 @@ footer #third #third-third img {
 #shop #right-side .shop-right .item #buttons #wishlist:hover {
   background-color: #bbb;
 }
+#shop #right-side .shop-right .item #buttons .wishlist-button {
+  margin: 0;
+}
 
 #item {
   width: 100%;
