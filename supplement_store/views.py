@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render, get_object_or_404
+from django.shortcuts import redirect, render
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -27,7 +27,7 @@ import pandas as pd
 from .shop_utils import apply_sorting, attach_review_data, build_query_from_params
 from .forms import RegistrationForm, ItemForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction, TransactionItem
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction, TransactionItem, Wishlist
 
 # Create your views here.
 
@@ -264,7 +264,30 @@ def reset_password(request):
 
 @login_required
 def wishlist(request):
-    return render(request, "supplement_store/wishlist.html")
+    return render(request, "supplement_store/wishlist.html", {
+        "items": Wishlist.objects.filter(user=request.user),
+    })
+
+@login_required
+def add_to_wishlist(request):
+    if request.method == 'POST':
+        item = Item.objects.get(id=request.POST.get("id"))
+        Wishlist.objects.create(user=request.user, item=item)
+    return redirect(request.META.get('HTTP_REFERER', 'index')) 
+# staviti da ukoliko je vec wishlostovano da ne moze da se wishlistuje open u shopu i u items
+
+@login_required
+def remove_wishlist(request):
+    if request.method == 'POST':
+        item = Item.objects.get(id=request.POST.get("item_id"))
+        Wishlist.objects.filter(user=request.user, item=item).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'index')) 
+
+@login_required
+def remove_wishlist_all(request):
+    if request.method == 'POST':
+        Wishlist.objects.filter(user=request.user).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'index')) 
 
 @login_required
 def create_new_order(request):

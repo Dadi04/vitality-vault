@@ -1,8 +1,8 @@
 from django.db.models import F, Sum, Case, When, DecimalField
 
-from supplement_store.models import Cart
+from supplement_store.models import Cart, Wishlist
 
-def give_items_in_cart(request):
+def give_items(request):
     if request.user.is_authenticated:
         cart_items = (
             Cart.objects.filter(in_cart=True, user=request.user)
@@ -16,6 +16,13 @@ def give_items_in_cart(request):
                 )
             )
         )
+        wishlist_items = (
+            Wishlist.objects.filter(user=request.user)
+        )
     else:
         cart_items = None
-    return {"items_in_cart": cart_items,}
+        wishlist_items = None
+    return {
+        "items_in_cart": cart_items,
+        "items_in_wishlist": wishlist_items
+    }

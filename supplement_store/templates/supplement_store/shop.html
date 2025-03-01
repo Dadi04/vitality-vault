@@ -1,6 +1,6 @@
 {% extends 'supplement_store/layout.html' %}
 {% load static %}
-{% load filename %}
+{% load custom_filters %}
 
 {% block title %}
     OstroVit
@@ -97,7 +97,7 @@
                                 <input type="hidden" value="1" name="quantity">
                                 <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
                             </form>
-                            <form action="{% url 'wishlist' %}" method="post">
+                            <form action="{% url 'add_to_wishlist' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ item.id }}" name="id">
                                 <button type="submit" id="wishlist" class="fa fa-heart"></button>

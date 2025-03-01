@@ -6,7 +6,7 @@ register = template.Library()
 
 @register.filter
 def filename(value):
-    return basename(value)
+    return basename(str(value))
 
 @register.filter
 def star_range(value):
@@ -18,19 +18,27 @@ def total_price(items):
     if items:
         for item in items:
             total += item['total_price']
-        return total
-    else:
-        return 0    
+    return total 
 
 @register.filter
 def total_items(items):
     quantity = 0
-    if items:
-        for item in items:
-            quantity += item['total_quantity']
+    if not items:
         return quantity
-    else:
-        return 0
+    
+    try:
+        if items[0].get('total_quantity'):
+            for item in items:
+                quantity += item.get('total_quantity')
+        else:
+            quantity = len(items)
+    except (AttributeError, TypeError):
+        if hasattr(items[0], 'total_quantity') and items[0].total_quantity:
+            for item in items:
+                quantity += item.total_quantity
+        else:
+            quantity = len(items)
+    return quantity
 
 @register.filter
 def multiply(value, arg):

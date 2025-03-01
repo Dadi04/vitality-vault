@@ -15,3 +15,6 @@ pagination u shopu (16 itema)
 pagination u comments (5 comms)
 
 dodati stranu za povecavanje quantity-ja
+dodati stranu za stavljanje popusta
+
+search

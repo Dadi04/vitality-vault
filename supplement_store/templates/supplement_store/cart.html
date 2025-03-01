@@ -1,6 +1,6 @@
 {% extends 'supplement_store/layout.html' %}
 {% load static %}
-{% load filename %}
+{% load custom_filters %}
 
 {% block title %}
     Shopping Cart
@@ -27,8 +27,8 @@
             <div id="main">
                 {% for item in items %}
                     <div id="item-in-cart">
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="100px">
-                        <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h5>
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item__main_image.name }}" width="100px">
+                        <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h4>
                         <form action="{% url 'remove_cart' %}" method="post">
                             {% csrf_token %}
                             <input type="hidden" value="{{ item.item__id }}" name="item_id">

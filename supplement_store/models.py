@@ -157,7 +157,9 @@ class Cart(models.Model):
 class Wishlist(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    is_wishlisted = models.BooleanField(default=False)
+
+    def __str__(self):
+        return f'{self.id}: Wishlisted item {self.item.fullname} by user {self.user.username}'
 
 class Transaction(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

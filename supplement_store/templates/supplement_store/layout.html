@@ -1,5 +1,5 @@
 {% load static %}
-{% load filename %}
+{% load custom_filters %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +35,7 @@
                     <div class="right">
                         <a href="{% url 'wishlist' %}">
                             <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
-                            <span class="counter">0</span>
+                            <span class="counter">{{ items_in_wishlist|total_items }}</span>
                             <p>Wishlist</p>
                         </a>
                     </div>

@@ -1659,6 +1659,101 @@ footer {
     }
 }
 
+#wishlist {
+    max-width: 1500px;
+    width: 100%;
+    margin: 0 auto;
+    background-color: rgba(241, 240, 240, 0.7);
+
+    #wishlist-items {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        padding: 0 20px;
+
+        #item-in-wishlist {
+            width: 100%;
+            text-align: center;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+            border-bottom: 1px solid #2f2f2f;
+
+            h4 {
+                font-size: 17px;
+                margin-bottom: 0;
+            }
+
+            h5 {
+                font-size: 15px;
+                margin-top: 0;
+            }
+
+            a {
+                text-decoration: none;
+                color: #000;
+            }
+
+            #remove-item {
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+
+            #unavailable {
+                color: red;
+            }
+
+            #available {
+                color: green;
+            }
+
+            #items-price {
+                display: flex;
+                margin-left: auto;
+                flex-direction: column;
+
+                #price-div {
+                    display: flex;
+                    justify-content: flex-end;
+
+                    .new-price {
+                        color: red;
+                        margin-right: 10px;
+                        margin-bottom: 0;
+                    }
+    
+                    .old-price {
+                        text-decoration: line-through;
+                        margin-bottom: 0;
+                    }
+                }
+                
+                #sale-date-div {
+                    p {
+                        margin: 0;
+                        padding: 0;
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    #empty-wishlist {
+        border-bottom: 1px solid #2f2f2f;
+        text-align: center;
+        padding: 30px 0 !important;
+    }
+
+    #remove-all-items {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+    }
+}
+
 #payment_main {
     display: flex;
     align-items: flex-start;
