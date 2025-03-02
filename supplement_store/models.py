@@ -85,23 +85,6 @@ class Item(models.Model):
     image2 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True, max_length=255)
     image3 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True, max_length=255)
 
-    def serialize(self):
-        return {
-            'id': self.id,
-            'fullname': self.fullname,
-            'flavor': self.flavor,
-            'price': self.price,
-            'main_image': str(self.main_image.name),
-            'image1': str(self.image1),
-            'image2': str(self.image2),
-            'is_new': self.is_new,
-            'is_available': self.is_available,
-            'sale_price': float(self.sale_price) if self.sale_price else '',
-            'sale_start_date': self.sale_start_date,
-            'sale_end_date': self.sale_end_date,
-            'quantity': self.quantity,
-        }
-
     def __str__(self):
         return f'{self.id}: {self.fullname}, Available: {self.is_available}, Flavor: {self.flavor}, Popularity: {self.popularity}, Quantity: {self.quantity}'
 
@@ -185,12 +168,3 @@ class TransactionItem(models.Model):
 
     def __str__(self):
         return f'{self.item.name} (x{self.quantity}) in Transaction {self.transaction.id}'
-
-
-
-class Coupon(models.Model):
-    code = models.CharField(max_length=50, unique=True)
-    discount = models.PositiveIntegerField()
-    usage_limit = models.PositiveIntegerField()
-    valid_from = models.DateTimeField()
-    valid_to = models.DateTimeField()

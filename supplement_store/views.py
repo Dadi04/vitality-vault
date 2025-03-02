@@ -448,6 +448,45 @@ def contact(request):
     return render(request, "supplement_store/contact.html")
 
 @login_required
+def add_sale_to_item(request):
+    if request.user.is_staff or request.user.is_support:
+        if request.method == 'POST':
+            ids = request.POST.getlist('id')
+            sale_prices = request.POST.getlist('sale-price')
+            start_dates = request.POST.getlist('sale-date-start')
+            end_dates = request.POST.getlist('sale-date-end')
+            sale_data = list(zip(ids, sale_prices, start_dates, end_dates))
+            for id, price, start, end in sale_data:
+                if price:
+                    item = Item.objects.get(id=id)
+                    item.sale_price = price
+                    item.sale_start_date = start
+                    item.sale_end_date = end
+                    item.save()
+        return render(request, "supplement_store/add_sale_to_item.html", {
+            "items": Item.objects.all().order_by('id'),
+        })
+
+    return redirect('index')
+
+@login_required
+def change_quantity_of_item(request):
+    if request.user.is_staff or request.user.is_support:
+        if request.method == 'POST':
+            ids = request.POST.getlist('id')
+            quantities = request.POST.getlist('quantity')
+            quantity_data = list(zip(ids, quantities))
+            for id, quantity in quantity_data:
+                if quantity:
+                    item = Item.objects.get(id=id)
+                    item.quantity = quantity
+                    item.save()
+        return render(request, "supplement_store/change_quantity_of_item.html", {
+            "items": Item.objects.all().order_by('id'),
+        })
+    return redirect('index')
+
+@login_required
 def add_item_to_shop(request):
     if request.user.is_staff or request.user.is_support:
         context = {
@@ -455,7 +494,7 @@ def add_item_to_shop(request):
             'brands': Item.BRANDS,
         }
         return render(request, "supplement_store/add_item_to_shop.html", context)
-    return redirect('inbox')
+    return redirect('index')
 
 def attach_image(field, image_filename):
     if pd.notnull(image_filename):
@@ -470,7 +509,7 @@ def attach_image(field, image_filename):
 @login_required
 def add_item(request):
     if not (request.user.is_staff or request.user.is_support):
-        return redirect('inbox')
+        return redirect('index')
     
     if request.method == 'POST':
         form = ItemForm(request.POST, request.FILES)
@@ -485,7 +524,7 @@ def add_item(request):
 @login_required
 def bulk_add_items(request):
     if not (request.user.is_staff or request.user.is_support):
-        return redirect('inbox')
+        return redirect('index')
 
     if request.method == 'POST' and request.FILES.get('items_file'):
         file = request.FILES.get('items_file')

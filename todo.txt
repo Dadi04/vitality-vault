@@ -5,16 +5,11 @@ zavrsiti about us stranu
 
 poceti index stranu
 
-zavrsiti wishlist
-
 staviti da cart ima neku tranziciju
 staviti da help ima neku tranziciju
 dodati na show detailed description u item tranziciju i fixovati kada se promeni flavor nakon kliktanja desc te baci na desc odmah
 
 pagination u shopu (16 itema)
 pagination u comments (5 comms)
-
-dodati stranu za povecavanje quantity-ja
-dodati stranu za stavljanje popusta
 
 search

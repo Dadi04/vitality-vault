@@ -154,8 +154,20 @@
                 </div>
                 <div class="right">
                     <a href="{% url 'add_item_to_shop' %}">
-                        <img src="{% static 'supplement_store/images/add_item_to_shop.png' %}" alt="add_item_to_shop.png" width="32px">
+                        <img src="{% static 'supplement_store/images/add_item_to_shop.png' %}" alt="add_item_to_shop" width="32px">
                         <p>Add an Item</p>
+                    </a>
+                </div>
+                <div class="right">
+                    <a href="{% url 'add_sale_to_item' %}">
+                        <img src="{% static 'supplement_store/images/add_sale_to_item.png' %}" alt="add_sale_to_item" width="32px">
+                        <p>Add a Sale</p>
+                    </a>
+                </div>
+                <div class="right">
+                    <a href="{% url 'change_quantity_of_item' %}">
+                        <img src="{% static 'supplement_store/images/change_quantity_of_item.png' %}" alt="change_quantity_of_item" width="32px">
+                        <p>Change Quantity</p>
                     </a>
                 </div>
             </div>

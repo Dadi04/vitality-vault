@@ -1,0 +1,27 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+    Change Quantity of an Item
+{% endblock %}
+
+{% block body %}
+    <div id="item-qualities">
+        {% if items %}
+            <form action="" method="post">
+            {% csrf_token %}
+                {% for item in items %}
+                    <div id="item-quantity">
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image|filename}}" alt="{{ item.main_image.name }}" width="100px">
+                        <p>{{ item.id }} {{ item.fullname }} {{ item.flavor }}</p>
+                        <p>Current quantity: {{ item.quantity }}</p>
+                        <input type="hidden" value="{{item.id}}" name="id">
+                        <input type="number" name="quantity" id="quantity" placeholder="New quantity">
+                    </div>
+                {% endfor %}
+                <input type="submit" name="quantity-submit" id="quantity-price">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

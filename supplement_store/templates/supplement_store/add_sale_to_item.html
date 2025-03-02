@@ -1,0 +1,33 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+    Add a Sale to an Item
+{% endblock %}
+
+{% block body %}
+    <div id="items-sale">
+        {% if items %}
+            <form action="" method="post">
+            {% csrf_token %}
+                {% for item in items %}
+                    {% if not item.sale_price%}
+                        <div id="item-sale">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image|filename}}" alt="{{ item.main_image.name }}" width="100px">
+                            <p>{{ item.id }} {{ item.fullname }} {{ item.flavor }}</p>
+                            <p>Current price: {{ item.price }}</p>
+                            <input type="hidden" value="{{item.id}}" name="id">
+                            <input type="number" name="sale-price" id="sale-price" placeholder="Sale Price">
+                            <label for="sale-date-start">Sale Date Start</label>
+                            <input type="date" name="sale-date-start" id="sale-date-start">
+                            <label for="sale-date-end">Sale Date End</label>
+                            <input type="date" name="sale-date-end" id="sale-date-end">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+                <input type="submit" name="sale-submit" id="sale-price">
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}
