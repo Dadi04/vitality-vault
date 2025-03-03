@@ -149,7 +149,15 @@ class Transaction(models.Model):
     items = models.ManyToManyField(Item, through='TransactionItem')
     date = models.DateTimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
-    # is_purchased = models.BooleanField(default=False)
+    email = models.EmailField(null=False, blank=False)
+    first_name = models.CharField(null=False, blank=False)
+    last_name = models.CharField(null=False, blank=False)
+    phone = models.CharField(null=False, blank=False)
+    address = models.CharField(null=False, blank=False)
+    city = models.CharField(null=False, blank=False)
+    zipcode = models.CharField(null=False, blank=False)
+    state = models.CharField(null=True, blank=True)
+    country = models.TextField(choices=COUNTRIES.items(), null=False, blank=False)
 
     def calculate_total(self):
         total = Decimal('0.00')
@@ -159,7 +167,7 @@ class Transaction(models.Model):
         self.save()
 
     def __str__(self):
-        return f'Transaction {self.id} by {self.user.username} on {self.date}'
+        return f'Transaction {self.id} by {self.user.username} on {self.date}, email sent: on {self.email}'
 
 class TransactionItem(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)

@@ -15,12 +15,52 @@
         </p>
     </div>
     <div id="one_more_check">
-        <h1>#TODO</h1>
-    </div>
-    <div id="payment_ending">
-        <form action="{% url 'create_new_order' %}">
-            <input type="submit" value="Buy">
-        </form>
+        <div id="items-summary">
+            <div id="header">
+                <h1>Items</h1>
+                <a href="{% url 'shopping_cart' %}">Edit</a>
+            </div>
+            {% for item in items %} 
+                <div id="item-summary">
+                    <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name }}" width="150px">
+                    <div id="summary-paragraphs">
+                        <div id="summary-paragraphs-top">
+                            <p>{{item.item.fullname}} x {{item.quantity}}</p>
+                            <form action="{% url 'remove_cart' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ item.item.id }}" name="item_id">
+                                <button type="submit" class="fa-solid fa-x show_cart_button_remove"></button>
+                            </form>
+                        </div>
+                        <p>Flavor: {{item.item.flavor}} </p>
+                        {% if item.item.sale_price %}
+                            <p>Price: {{item.item.sale_price}}$ x {{item.quantity}} = {{item.item.sale_price|multiply:item.quantity}}$</p>
+                        {% else %}
+                            <p>Price: {{item.item.price}}$ x {{item.quantity}} = {{item.item.price|multiply:item.quantity}}$</p>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div id="information">
+            <div id="information-top">
+                <div id="header">
+                    <h1>Contact Information</h1>
+                    <a href="{% url 'delivery_and_payment' %}">Edit</a>
+                </div>
+                <p>{{email}}</p>
+                <p>{{name}} {{surname}}</p>
+                <p>{{phone}}</p>
+                <p>{{address}}, {{city}}{% if state %}, {{state}}{% endif %}, {{country}}, {{zipcode}}</p>
+                <p>Payment method: {{payment_method}}</p>
+            </div>
+            <div id="information-bottom">
+                <h2>Total price: {{items_in_cart|total_price}}$</h2>
+                <form action="{% url 'create_new_order' %}">
+                    <input type="submit" value="Buy" id="create-new-order">
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}
 

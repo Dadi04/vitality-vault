@@ -76,7 +76,7 @@
             <div>
                 <form action="{% url 'remove_cart_all' %}" method="post">
                     {% csrf_token %}
-                    <input type="submit" value="Empty the shopping cart">
+                    <input type="submit" value="Empty the shopping cart" id="empty">
                 </form>
             </div>
             {% if not items %}
@@ -86,9 +86,9 @@
                 <form action="{% url 'delivery_and_payment' %}" method="post">
                     {% csrf_token %}
                     {% if items %}
-                        <input type="submit" value="Proceed">
+                        <input type="submit" value="Proceed" id="submit-cart">
                     {% else %}
-                        <input type="button" value="Proceed">
+                        <input type="button" value="Proceed" id="submit-cart">
                     {% endif %}
                 </form>
             </div>

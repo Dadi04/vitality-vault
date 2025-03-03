@@ -120,10 +120,16 @@ nav #bottom #brands:hover .second, nav #bottom #categories:hover .second, nav #b
   display: flex;
   align-items: center;
 }
+#show_cart .show_cart_div_nav h4 {
+  margin-left: 10px;
+}
 #show_cart .show_cart_div_nav .show_cart_button_remove {
   transition: all 0.2s;
   background-color: transparent;
   border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
 }
 #show_cart .show_cart_div_nav .show_cart_button_remove:hover {
   transform: scale(1.3);
@@ -1380,7 +1386,7 @@ footer #third #third-third img {
   border-bottom: 1px solid #2f2f2f;
 }
 #shopping-cart #main #item-in-cart #item-name {
-  margin: 0;
+  margin-left: 0;
   display: flex;
 }
 #shopping-cart #main #item-in-cart #item-submit {
@@ -1434,6 +1440,48 @@ footer #third #third-third img {
   align-items: center;
   justify-content: space-between;
   padding: 15px;
+}
+#shopping-cart #checkout #submit-cart, #shopping-cart #checkout #empty {
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 0;
+  min-height: 3rem;
+  padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+#shopping-cart #checkout #submit-cart:hover, #shopping-cart #checkout #submit-cart:focus, #shopping-cart #checkout #empty:hover, #shopping-cart #checkout #empty:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
+}
+#shopping-cart #checkout #submit-cart:hover, #shopping-cart #checkout #empty:hover {
+  transform: translateY(-1px);
+}
+#shopping-cart #checkout #submit-cart:active, #shopping-cart #checkout #empty:active {
+  background-color: #F0F0F1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
 }
 
 #wishlist {
@@ -1529,6 +1577,10 @@ footer #third #third-third img {
   height: 30px;
   margin-bottom: 5px;
 }
+#payment_main #shipping select {
+  height: 40px;
+  font-size: 15px;
+}
 #payment_main #payment {
   display: flex;
   flex-direction: column;
@@ -1539,6 +1591,7 @@ footer #third #third-third img {
   flex-direction: row;
   justify-content: space-between;
   margin-bottom: 20px;
+  align-items: center;
 }
 #payment_main #payment #sub-payment select {
   height: 40px;
@@ -1546,23 +1599,166 @@ footer #third #third-third img {
   width: 60%;
 }
 #payment_main #payment #sub-payment #submit {
-  width: 150px;
-  height: 40px;
-  border: none;
-  outline: none;
-  background: #2f2f2f;
-  color: #fff;
-  font-size: 15px;
-  border-radius: 40px;
-  text-align: center;
-  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 0;
+  min-height: 3rem;
+  padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
   position: relative;
-  overflow: hidden;
-  transition: background-color 0.3s ease;
-  display: block;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+#payment_main #payment #sub-payment #submit:hover, #payment_main #payment #sub-payment #submit:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
 }
 #payment_main #payment #sub-payment #submit:hover {
-  background-color: #444;
+  transform: translateY(-1px);
+}
+#payment_main #payment #sub-payment #submit:active {
+  background-color: #F0F0F1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+#one_more_check {
+  display: flex;
+  justify-content: space-evenly;
+}
+#one_more_check #items-summary #header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+  margin-bottom: 0;
+  align-items: flex-end;
+}
+#one_more_check #items-summary #header h1 {
+  text-align: center;
+  margin: 0 0 0 20px;
+}
+#one_more_check #items-summary #item-summary {
+  display: flex;
+}
+#one_more_check #items-summary #item-summary #summary-paragraphs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+#one_more_check #items-summary #item-summary #summary-paragraphs #summary-paragraphs-top {
+  display: flex;
+}
+#one_more_check #items-summary #item-summary #summary-paragraphs #summary-paragraphs-top .show_cart_button_remove {
+  transition: all 0.2s;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 5px;
+  margin-left: 5px;
+}
+#one_more_check #items-summary #item-summary #summary-paragraphs #summary-paragraphs-top .show_cart_button_remove:hover {
+  transform: scale(1.3);
+}
+#one_more_check #items-summary #item-summary #summary-paragraphs p {
+  margin-top: 3px;
+  margin-bottom: 3px;
+}
+#one_more_check #information {
+  display: flex;
+  flex-direction: column;
+}
+#one_more_check #information #information-top {
+  display: flex;
+  flex-direction: column;
+  height: 150px;
+  justify-content: center;
+}
+#one_more_check #information #information-top #header {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  margin-bottom: 10px;
+  align-items: flex-end;
+}
+#one_more_check #information #information-top #header h1 {
+  text-align: center;
+  margin: 0;
+}
+#one_more_check #information #information-top p {
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+#one_more_check #information #information-bottom {
+  margin-top: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 500px;
+}
+#one_more_check #information #information-bottom #create-new-order {
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.25rem;
+  box-shadow: rgba(0, 0, 0, 0.02) 0 1px 3px 0;
+  box-sizing: border-box;
+  color: rgba(0, 0, 0, 0.85);
+  cursor: pointer;
+  display: inline-flex;
+  font-family: system-ui, -apple-system, system-ui, "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  justify-content: center;
+  line-height: 1.25;
+  margin: 0;
+  min-height: 3rem;
+  padding: calc(0.875rem - 1px) calc(1.5rem - 1px);
+  position: relative;
+  text-decoration: none;
+  transition: all 250ms;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  vertical-align: baseline;
+  width: auto;
+}
+#one_more_check #information #information-bottom #create-new-order:hover, #one_more_check #information #information-bottom #create-new-order:focus {
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
+  color: rgba(0, 0, 0, 0.65);
+}
+#one_more_check #information #information-bottom #create-new-order:hover {
+  transform: translateY(-1px);
+}
+#one_more_check #information #information-bottom #create-new-order:active {
+  background-color: #F0F0F1;
+  border-color: rgba(0, 0, 0, 0.15);
+  box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
+  color: rgba(0, 0, 0, 0.65);
+  transform: translateY(0);
+}
+
+#success-purchase {
+  text-align: ce;
 }
 
 #error404 {

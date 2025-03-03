@@ -24,9 +24,9 @@ import os
 import pandas as pd
 
 from .shop_utils import apply_sorting, attach_review_data, build_query_from_params
-from .forms import RegistrationForm, ItemForm
+from .forms import RegistrationForm, ItemForm, ShippingInformationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Transaction, TransactionItem, Wishlist
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Wishlist, Transaction, TransactionItem
 
 # Create your views here.
 
@@ -339,45 +339,49 @@ def create_new_order(request):
     email.send()
 
     items_in_cart.delete()
+    request.session.pop('shipping_info', None)
 
     return render(request, "supplement_store/success.html")
 
 @login_required
 def summary(request):
     items = Cart.objects.filter(user=request.user, in_cart=True)
-    name = request.POST.get('name')
-    surname = request.POST.get('surname')
-    address = request.POST.get('address')
-    city = request.POST.get('city')
-    state = request.POST.get('state')
-    country = request.POST.get('country')
-    zipcode = request.POST.get('zipcode')
-    phone = request.POST.get('phone')
-    payment_method = request.POST.get('paymentmethod')
     if not items:
         return redirect('shopping_cart')
+    
+    if request.method == 'POST':
+        form = ShippingInformationForm(request.POST)
+        if form.is_valid():
+            request.session['shipping_info'] = form.cleaned_data
+    else:
+        initial_data = request.session.get('shipping_info', {})
+        form = ShippingInformationForm(initial=initial_data)
+
+    shipping_info = request.session.get('shipping_info', {})    
     return render(request, "supplement_store/summary.html", {
-        "name": name,
-        "surname": surname,
-        "address": address,
-        "city": city,
-        "state": state,
-        "country": country,
-        "zipcode": zipcode,
-        "phone": phone,
-        "payment_method": payment_method,
+        "email": shipping_info.get("email", ""),
+        "name": shipping_info.get("first_name", ""),
+        "surname": shipping_info.get("last_name", ""),
+        "address": shipping_info.get("address", ""),
+        "city": shipping_info.get("city", ""),
+        "state": shipping_info.get("state", ""),
+        "country": shipping_info.get("country", ""),
+        "zipcode": shipping_info.get("zipcode", ""),
+        "phone": shipping_info.get("phone", ""),
+        "payment_method": shipping_info.get("payment_method", ""),
         "items": items,
     })
-    # ovde se nalaze sam info za info za ljude i info za cart
     # treba da se upali paypal api, stripe api ili api banke u zavisnosti sta sam uzeo kada se klikne buy dugme i to je to ovo je samo provera 
-    # dodati u transaction sve licni info, payment method (paypal, stripe ili kartica)
 
 @login_required
 def delivery_and_payment(request):
     items = Cart.objects.filter(user=request.user, in_cart=True)
     if not items:
         return redirect('shopping_cart')
-    return render(request, "supplement_store/delivery_payment.html")
+    shipping_info = request.session.get('shipping_info', {})
+    form = ShippingInformationForm(initial=shipping_info)
+
+    return render(request, "supplement_store/delivery_payment.html", {"form": form})
 
 @login_required
 def shopping_cart(request):

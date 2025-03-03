@@ -56,3 +56,16 @@ class ItemForm(forms.ModelForm):
             'size', 'color', 'is_new', 'popularity', 'main_image', 'image1', 
             'image2', 'image3',
         ]
+
+class ShippingInformationForm(forms.Form):
+    email = forms.EmailField(label='Email', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Email'}), error_messages={'required': 'Please enter your email.'})
+    first_name = forms.CharField(label='First Name', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'First Name'}), error_messages={'required': 'Please enter your first name.'})
+    last_name = forms.CharField(label='Last Name', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Last Name'}), error_messages={'required': 'Please enter your last name.'})
+    phone = forms.CharField(label='Phone Number', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Phone Number'}), error_messages={'required': 'Please enter your phone number.'})
+    address = forms.CharField(label='Address', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Address'}), error_messages={'required': 'Please enter your last address.'})
+    city = forms.CharField(label='Suburb/City', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Suburb/City'}), error_messages={'required': 'Please enter your city.'})
+    zipcode = forms.CharField(label='Zip/Postcode', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Zip/Postcode'}), error_messages={'required': 'Please enter your zipcode.'})
+    state = forms.CharField(label='State/Province', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'State/Province'}), required=False)
+    country = forms.ChoiceField(choices=COUNTRIES.items(), label='Country', widget=forms.Select(attrs={'class': 'shipping-information'}), error_messages={'required': 'Please enter your country.'})
+    payment_method = forms.ChoiceField(choices=[("", "Choose a payment method"),("PayPal", "PayPal"),("Stripe", "Stripe"),("Credit Card", "Credit Card")], label='Payment Method', widget=forms.Select(attrs={'class': 'shipping-information'}), error_messages={'required': 'Please select a payment method.'}
+)

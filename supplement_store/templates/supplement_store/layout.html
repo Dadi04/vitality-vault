@@ -111,19 +111,19 @@
             </div>
         </nav>
         <div id="show_cart">
-            <h2>My Shopping Cart</h1>
-            <h4>You have {{ items_in_cart|total_items }} items in the cart</h2>
+            <h2>My Shopping Cart</h2>
+            <h4>You have {{ items_in_cart|total_items }} items in the cart</h4>
             {% if items_in_cart %}
                 <hr>
                 <div>
                     {% for item in items_in_cart %}
                         <div class="show_cart_div_nav">
                             <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="75px">
-                            <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h5>
+                            <h4>{{ item.item__name }} {{ item.item__weight }}g x {{item.quantity}}</h4>
                             <form action="{% url 'remove_cart' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ item.item__id }}" name="item_id">
-                                <button type="submit" class="fa-solid fa-x show_cart_button_remove" id="item-submit"></button>
+                                <button type="submit" class="fa-solid fa-x show_cart_button_remove"></button>
                             </form>
                         </div>
                     {% endfor %}
