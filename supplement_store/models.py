@@ -145,10 +145,18 @@ class Wishlist(models.Model):
         return f'{self.id}: Wishlisted item {self.item.fullname} by user {self.user.username}'
 
 class Transaction(models.Model):
+    STATUS_CHOICES = (
+        ('pending', 'Pending'),
+        ('paid', 'Paid'),
+        ('canceled', 'Canceled'),
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     items = models.ManyToManyField(Item, through='TransactionItem')
     date = models.DateTimeField()
     total_price = models.DecimalField(max_digits=10, decimal_places=2, default=Decimal('0.00'))
+    status = models.CharField(choices=STATUS_CHOICES, default='pending')
+    
     email = models.EmailField(null=False, blank=False)
     first_name = models.CharField(null=False, blank=False)
     last_name = models.CharField(null=False, blank=False)

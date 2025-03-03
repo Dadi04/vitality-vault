@@ -330,12 +330,52 @@ def process_payment(request):
 
 @login_required
 def payment_done(request):
+    transaction_id = request.session.get('transaction_id')
+    if not transaction_id:
+        return redirect('shopping_cart')
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction.status = 'paid'
+    transaction.save()
+
+    item_list = []
+    for t_item in transaction.transactionitem_set.all():
+        item = t_item.item
+        item.quantity -= t_item.quantity
+        item.popularity += 1
+        item.save()
+        item_list.append(f'{t_item.item.name} (x{t_item.quantity}) - ${t_item.item.price * t_item.quantity}')
+
+    item_detail = '\n'.join(item_list)
+    mail_subject = "New Order Just Arrived"
+    message = (
+        f"Dear {request.user.username},\n\n"
+        f"Your order (Transaction ID: {transaction.id}) has been confirmed.\n"
+        f"Total Price: ${transaction.total_price}\n\n"
+        f"Items ordered:\n{item_detail}\n\n"
+        "Thank you for shopping with us!"
+    )
+
+    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
+    email.send()
+
+    Cart.objects.filter(user=request.user, in_cart=True).delete()
+
+    request.session.pop('shipping_info', None)
     request.session.pop('transaction_id', None)
+
     return render(request, 'supplement_store/payment_done.html')
 
 @login_required
 def payment_canceled(request):
-    request.session.pop('transaction_id', None)
+    transaction_id = request.session.get('transaction_id')
+    if transaction_id:
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+        transaction.status = 'canceled'
+        transaction.save()
+
+        request.session.pop('shipping_info', None)
+        request.session.pop('transaction_id', None)
+        
     return render(request, 'supplement_store/payment_canceled.html')
 
 @login_required
@@ -344,10 +384,8 @@ def create_new_order(request):
     if not items_in_cart:
         return redirect('shopping_cart')
     
-    transaction = Transaction.objects.create(user=request.user, date=datetime.now())
-
+    transaction = Transaction.objects.create(user=request.user, date=datetime.now(), status='pending')
     total_price = Decimal('0.00')
-    item_list = []
 
     for cart_item in items_in_cart:
         item = cart_item.item
@@ -355,10 +393,6 @@ def create_new_order(request):
 
         TransactionItem.objects.create(transaction=transaction, item=item, quantity=quantity)
         total_price += item.price * quantity
-
-        item_list.append(f'{item.name} (x{quantity}) - ${item.price * quantity}')
-
-        Item.objects.filter(id=item.id).update(quantity=item.quantity - quantity, popularity=item.popularity + 1)
     
     transaction.total_price = total_price
     transaction.save()
@@ -374,21 +408,6 @@ def create_new_order(request):
         pass
     else:
         pass #error
-
-    item_detail = '\n'.join(item_list)
-    mail_subject = "New Order Just Arrived"
-    message = (
-        f"New order has been placed by {request.user.username}.\n"
-        f"Transaction ID: {transaction.id}\n"
-        f"Total Price: ${transaction.total_price}\n\n"
-        f"Items ordered:\n{item_detail}"
-    )
-
-    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
-    email.send()
-
-    items_in_cart.delete()
-    request.session.pop('shipping_info', None)
 
     return redirect('payment_done')
 
