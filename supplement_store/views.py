@@ -535,34 +535,40 @@ def bulk_add_items(request):
             sale_start_date = row['Sale Start Date'] if pd.notnull(row['Sale Start Date']) else None
             sale_end_date = row['Sale End Date'] if pd.notnull(row['Sale End Date']) else None
 
-            item = Item(
-                name = row['Name'],
-                fullname = row['Fullname'],
-                category = row['Category'],
-                subcategory = row['Subcategory'],
-                description = row['Description'],
-                brand = row['Brand'],
-                price = row['Price'],
-                is_available = row['Is Available?'],
-                quantity = row['Quantity'],
-                sale_price = sale_price,
-                sale_start_date = sale_start_date,
-                sale_end_date = sale_end_date,
-                weight = row['Weight'],
-                flavor = row['Flavor'],
-                gender = row['Gender'],
-                size = row['Size'],
-                color = row['Color'],
-                is_new = row['Is New?'],
-                popularity = row['Popularity']
-            )
+            existing_item = Item.objects.filter(fullname=row['Fullname'], flavor=row['Flavor']).first()
+            if existing_item:
+                additional_quantity = row['Quantity'] if pd.notnull(row['Quantity']) else 0
+                existing_item.quantity += additional_quantity
+                existing_item.save()
+            else:
+                item = Item(
+                    name = row['Name'],
+                    fullname = row['Fullname'],
+                    category = row['Category'],
+                    subcategory = row['Subcategory'],
+                    description = row['Description'],
+                    brand = row['Brand'],
+                    price = row['Price'],
+                    is_available = row['Is Available?'],
+                    quantity = row['Quantity'],
+                    sale_price = sale_price,
+                    sale_start_date = sale_start_date,
+                    sale_end_date = sale_end_date,
+                    weight = row['Weight'],
+                    flavor = row['Flavor'],
+                    gender = row['Gender'],
+                    size = row['Size'],
+                    color = row['Color'],
+                    is_new = row['Is New?'],
+                    popularity = row['Popularity']
+                )
 
-            attach_image(item.main_image, row['Main Image'])
-            attach_image(item.image1, row['Image1'])
-            attach_image(item.image2, row['Image2'])
-            attach_image(item.image3, row['Image3'])
+                attach_image(item.main_image, row['Main Image'])
+                attach_image(item.image1, row['Image1'])
+                attach_image(item.image2, row['Image2'])
+                attach_image(item.image3, row['Image3'])
 
-            item.save()
+                item.save()
     return render(request, "supplement_store/add_item_to_shop.html")
 
 @login_required

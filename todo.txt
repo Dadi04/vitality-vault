@@ -13,3 +13,13 @@ pagination u shopu (16 itema)
 pagination u comments (5 comms)
 
 search
+
+napraviti da new_item (mesec dana -> 30 dana) i sale isticu do kada im prodje datum ili da startuju kada im pocne datum
+
+kada se postavi sale na item i ukoliko se taj item nalazi nekome u wishlistu posalji mail
+
+napraviti stranu za Receive the Latest News and Exclusive Offers:
+
+napraviti da se itemi mogu dodati u cart bez accounta i da je potrebno napraviti acc tek kad se kupuje nesto -> cookies koristiti
+
+odvojiti Sale u poseban model
