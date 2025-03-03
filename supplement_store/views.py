@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.urls import reverse
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -16,6 +16,8 @@ from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, Dec
 from django.db.models.functions import RowNumber
 from django.conf import settings
 from django.core.files import File
+
+from paypal.standard.forms import PayPalPaymentsForm
 
 from datetime import datetime
 from decimal import Decimal
@@ -302,6 +304,41 @@ def remove_wishlist_all(request):
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
 
 @login_required
+def process_payment(request):
+    transaction_id = request.session.get('transaction_id')
+    if not transaction_id:
+        return redirect('shopping_cart')
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    host = request.get_host()
+
+    paypal_dict = {
+        'business': settings.PAYPAL_RECEIVER_EMAIL,
+        'amount': '%.2f' % transaction.total_price,
+        'item_name': f'Order {transaction.id}',
+        'invoice': str(transaction.id),
+        'currency_code': 'USD',
+        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+        'return_url': f'http://{host}{reverse("payment_done")}',
+        'cancel_return': f'http://{host}{reverse("payment_canceled")}',
+    }
+
+    form = PayPalPaymentsForm(initial=paypal_dict)
+    return render(request, 'supplement_store/process_payment.html', {
+        'form': form,
+        'transaction': transaction,
+    })
+
+@login_required
+def payment_done(request):
+    request.session.pop('transaction_id', None)
+    return render(request, 'supplement_store/payment_done.html')
+
+@login_required
+def payment_canceled(request):
+    request.session.pop('transaction_id', None)
+    return render(request, 'supplement_store/payment_canceled.html')
+
+@login_required
 def create_new_order(request):
     items_in_cart = Cart.objects.filter(user=request.user, in_cart=True)
     if not items_in_cart:
@@ -326,6 +363,18 @@ def create_new_order(request):
     transaction.total_price = total_price
     transaction.save()
 
+    shipping_info = request.session.get('shipping_info', {})
+    payment_method = shipping_info.get("payment_method", "").lower()
+    if payment_method == 'paypal':
+        request.session['transaction_id'] = transaction.id
+        return redirect('process_payment')
+    elif payment_method == 'stripe':
+        pass
+    elif payment_method == 'credit cart':
+        pass
+    else:
+        pass #error
+
     item_detail = '\n'.join(item_list)
     mail_subject = "New Order Just Arrived"
     message = (
@@ -341,7 +390,7 @@ def create_new_order(request):
     items_in_cart.delete()
     request.session.pop('shipping_info', None)
 
-    return render(request, "supplement_store/success.html")
+    return redirect('payment_done')
 
 @login_required
 def summary(request):

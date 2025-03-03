@@ -23,7 +23,7 @@
                             <form action="{% url 'remove_wishlist' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ item.item.id }}" name="item_id">
-                                <button type="submit" class="fa-solid fa-x" id="item-submit"></button>
+                                <button type="submit" class="fa-solid fa-x" id="item-remove"></button>
                             </form>
                         </div>
                         <div id="is_available">
@@ -57,7 +57,7 @@
         <div id="remove-all-items">
             <form action="{% url 'remove_wishlist_all' %}" method="post">
                 {% csrf_token %}
-                <input type="submit" value="Empty the wishlist">
+                <input type="submit" value="Empty the wishlist" id="empty-wishlist-button">
             </form>
         </div>
     </div>

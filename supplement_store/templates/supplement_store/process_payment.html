@@ -1,0 +1,18 @@
+{% extends 'supplement_store/layout.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}
+    Pay with PayPal
+{% endblock %}
+
+{% block body %}
+    <div id="payment-container">
+        <h1>Complete Your Payment</h1>
+        <p>Click the button below to proceed to PayPal and finalize your payment.</p>
+        {{form.render}}
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
