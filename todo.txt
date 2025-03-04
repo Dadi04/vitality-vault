@@ -1,6 +1,3 @@
-zavrsiti payment sve osim api-ajeva
-zavrsiti summary i success strane
-
 zavrsiti about us stranu
 
 poceti index stranu
@@ -23,5 +20,3 @@ napraviti stranu za Receive the Latest News and Exclusive Offers: -> novi model 
 napraviti da se itemi mogu dodati u cart bez accounta i da je potrebno napraviti acc tek kad se kupuje nesto -> cookies koristiti
 
 odvojiti Sale u poseban model
-
-fixovati filter-by kada se filtrira sa strane da se ne reloaduje strana sa svim vec sam tim koji ima da onda filtrira

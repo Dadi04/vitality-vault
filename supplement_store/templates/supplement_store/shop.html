@@ -55,15 +55,22 @@
         </div>
         <div id="right-side">
             <div id="filter-by">
-                <form action="">
+                <form action="{{ request.path }}" method="get">
+                    {% for key, values in request.GET.lists %}
+                        {% if key != 'sort' %}
+                            {% for value in values %}
+                                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                            {% endfor %}
+                        {% endif %}
+                    {% endfor %}
                     <select name="sort" id="sort" onchange="this.form.submit()">
-                        <option selected disabled>Filter by:</option>
-                        <option value="nameasc">Name - ascending</option>
-                        <option value="namedesc">Name - descending</option>
-                        <option value="priceasc">Price - ascending</option>
-                        <option value="pricedesc">Price - descending</option>
-                        <option value="popasc">Popularity - ascending</option>
-                        <option value="popdesc">Popularity - descending</option>
+                        <option disabled {% if not current_sort %}selected{% endif %}>Filter by:</option>
+                        <option value="nameasc" {% if current_sort == "nameasc" %}selected{% endif %}>Name - ascending</option>
+                        <option value="namedesc" {% if current_sort == "namedesc" %}selected{% endif %}>Name - descending</option>
+                        <option value="priceasc" {% if current_sort == "priceasc" %}selected{% endif %}>Price - ascending</option>
+                        <option value="pricedesc" {% if current_sort == "pricedesc" %}selected{% endif %}>Price - descending</option>
+                        <option value="popasc" {% if current_sort == "popasc" %}selected{% endif %}>Popularity - ascending</option>
+                        <option value="popdesc" {% if current_sort == "popdesc" %}selected{% endif %}>Popularity - descending</option>
                     </select>
                 </form>
             </div>
@@ -97,14 +104,16 @@
                                 <input type="hidden" value="1" name="quantity">
                                 <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
                             </form>
-                            {% if not item.is_wishlisted %}
-                                <form action="{% url 'add_to_wishlist' %}" method="post">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ item.id }}" name="id">
-                                    <button type="submit" id="wishlist" class="fa fa-heart"></button>
-                                </form>
-                            {% else %}
-                                <button type="button" id="wishlist" class="fa fa-check wishlist-button"></button>
+                            {% if user.is_authenticated  %}
+                                {% if not item.is_wishlisted %}
+                                    <form action="{% url 'add_to_wishlist' %}" method="post">
+                                        {% csrf_token %}
+                                        <input type="hidden" value="{{ item.id }}" name="id">
+                                        <button type="submit" id="wishlist" class="fa fa-heart"></button>
+                                    </form>
+                                {% else %}
+                                    <button type="button" id="wishlist" class="fa fa-check wishlist-button"></button>
+                                {% endif %}
                             {% endif %}
                         </div>
                     </div>

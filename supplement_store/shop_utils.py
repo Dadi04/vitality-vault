@@ -3,19 +3,27 @@ from django.db.models import Avg, Q, Count
 
 from .models import Review
 
+def build_query_from_params(request, fields):
+    q_objects = Q()
+    for field in fields:
+        values = request.GET.getlist(field)
+        if values:
+            q_objects &= Q(**{f"{field}__in": values})
+    return q_objects
+
 def apply_sorting(queryset, sort_option):
     if sort_option in ['priceasc', 'pricedesc']:
         queryset = queryset.annotate(effective_price=Coalesce('sale_price', 'price'))
         if sort_option == 'priceasc':
-            queryset = queryset.order_by('-is_available', 'effective_price')
+            queryset = queryset.order_by('-is_available', 'effective_price', 'name')
         else:
-            queryset = queryset.order_by('-is_available', '-effective_price')
+            queryset = queryset.order_by('-is_available', '-effective_price', 'name')
     elif sort_option == 'pricedesc':
-        queryset = queryset.order_by('-is_available', '-price')
+        queryset = queryset.order_by('-is_available', '-price', 'name')
     elif sort_option == 'popasc':
-        queryset = queryset.order_by('-is_available', 'popularity')
+        queryset = queryset.order_by('-is_available', 'popularity', 'name')
     elif sort_option == 'popdesc':
-        queryset = queryset.order_by('-is_available', '-popularity')
+        queryset = queryset.order_by('-is_available', '-popularity', 'name')
     elif sort_option == 'nameasc':
         queryset = queryset.order_by('-is_available', 'name', 'flavor')
     elif sort_option == 'namedesc':
@@ -46,11 +54,3 @@ def attach_review_data(queryset):
             unique_items[item.fullname] = item
 
     return final_items
-
-def build_query_from_params(request, fields):
-    q_objects = Q()
-    for field in fields:
-        values = request.GET.getlist(field)
-        if values:
-            q_objects &= Q(**{f"{field}__in": values})
-    return q_objects

@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists, BooleanField, Value
 from django.db.models.functions import RowNumber
 from django.conf import settings
 from django.core.files import File
@@ -154,8 +154,9 @@ def supplements(request):
     sort_option = request.GET.get('sort', 'nameasc')
     queryset = apply_sorting(queryset, sort_option)
 
-    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
-    queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+    if request.user.is_authenticated:
+        wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+        queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
 
     items = attach_review_data(queryset)
 
@@ -164,7 +165,8 @@ def supplements(request):
         "categories": Item.objects.filter().values_list('category', flat=True).distinct(),
         "subcategories": Item.objects.filter().values_list('subcategory', flat=True).distinct(),
         "flavors": Item.objects.filter().values_list('flavor', flat=True).distinct(),
-        "brands": Item.objects.filter().values_list('brand', flat=True).distinct()
+        "brands": Item.objects.filter().values_list('brand', flat=True).distinct(),
+        "current_sort": sort_option,
     })
 
 def shop_by_category(request, category):
@@ -175,8 +177,9 @@ def shop_by_category(request, category):
     sort_option = request.GET.get('sort', 'nameasc')
     queryset = apply_sorting(queryset, sort_option)
 
-    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
-    queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+    if request.user.is_authenticated:
+        wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+        queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
 
     items = attach_review_data(queryset)
  
@@ -185,7 +188,8 @@ def shop_by_category(request, category):
         "categories": Item.objects.filter(category=category).values_list('category', flat=True).distinct(),
         "subcategories": Item.objects.filter(category=category).values_list('subcategory', flat=True).distinct(),
         "flavors": Item.objects.filter(category=category).values_list('flavor', flat=True).distinct(),
-        "brands": Item.objects.filter(category=category).values_list('brand', flat=True).distinct()
+        "brands": Item.objects.filter(category=category).values_list('brand', flat=True).distinct(),
+        "current_sort": sort_option,
     })
 
 def shop_by_brand(request, brand):
@@ -196,8 +200,9 @@ def shop_by_brand(request, brand):
     sort_option = request.GET.get('sort', 'nameasc')
     queryset = apply_sorting(queryset, sort_option)
 
-    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
-    queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+    if request.user.is_authenticated:
+        wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+        queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
 
     items = attach_review_data(queryset)
 
@@ -206,7 +211,8 @@ def shop_by_brand(request, brand):
         "categories": Item.objects.filter(brand=brand).values_list('category', flat=True).distinct(),
         "subcategories": Item.objects.filter(brand=brand).values_list('subcategory', flat=True).distinct(),
         "flavors": Item.objects.filter(brand=brand).values_list('flavor', flat=True).distinct(),
-        "brands": Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct()
+        "brands": Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct(),
+        "current_sort": sort_option,
     })
 
 def shop_by_itemname(request, itemname):
@@ -422,8 +428,6 @@ def create_new_order(request):
             print(e)
             return redirect('index')
         return redirect(session.url, code=303)
-    elif payment_method == 'credit cart':
-        return redirect('index')
     else:
         return redirect('index')
 
@@ -478,6 +482,7 @@ def shopping_cart(request):
         if quantity is not None and quantity > item.quantity:
             return redirect('shop_by_itemname', fullname=item.fullname)
         Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
+        return redirect(request.META.get('HTTP_REFERER', 'index'))       
     cart_items = (
         Cart.objects.filter(in_cart=True, user=request.user)
         .values('item__id', 'item__name', 'item__weight', 'item__price', 'item__sale_price', 'item__main_image', 'item__fullname', 'item__quantity')
@@ -499,13 +504,13 @@ def remove_cart(request):
     if request.method == 'POST':  
         item = Item.objects.get(id=request.POST["item_id"]) 
         Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))    
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 @login_required
 def remove_cart_all(request):
     if request.method == 'POST': 
         Cart.objects.filter(user=request.user, in_cart=True).delete()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))       
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 @login_required
 def decrease_quantity(request, id):
@@ -521,7 +526,7 @@ def increase_quantity(request, id):
     if cart_item and cart_item.quantity < cart_item.item.quantity:
         cart_item.quantity += 1
         cart_item.save()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))    
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 def newsletter(request):
     return redirect(request.META.get('HTTP_REFERER', 'index'))

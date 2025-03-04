@@ -196,8 +196,8 @@ STATICFILES_DIRS = [
 DEFAULT_FILE_STORAGE = 'django.core.files.storage.FileSystemStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-REDIRECT_FIELD_NAME = '/login/'
-LOGIN_URL = '/login/'
+REDIRECT_FIELD_NAME = '/login'
+LOGIN_URL = '/login'
 
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",

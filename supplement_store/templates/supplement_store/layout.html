@@ -119,20 +119,29 @@
                     {% for item in items_in_cart %}
                         <div class="show_cart_div_nav">
                             <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="75px">
-                            <h4>{{ item.item__name }} {{ item.item__weight }}g x {{item.quantity}}</h4>
+                            <h4>{{ item.item__name }} {{ item.item__weight }}g x {{item.total_quantity}}</h4>
                             <form action="{% url 'remove_cart' %}" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{ item.item__id }}" name="item_id">
                                 <button type="submit" class="fa-solid fa-x show_cart_button_remove"></button>
                             </form>
+                            {% if item.item__sale_price %}
+                                <h4 id="show-cart-price">{{ item.item__sale_price|multiply:item.total_quantity }}$</h4>
+                            {% else %}
+                                <h4 id="show-cart-price">{{ item.item__price|multiply:item.total_quantity }}$</h4>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
                 <hr>
+            {% else %}
+            <hr>
             {% endif %}
             <div id="show_cart_footer">
-                <p>Total: ${{ items_in_cart|total_price }}</p>
-                <a href="{% url 'shopping_cart' %}"><button>Shopping Cart</button></a>
+                <h4>Total: ${{ items_in_cart|total_price }}</h4>
+                <form action="{% url 'shopping_cart' %}" method="get">
+                    <input type="submit" name="submit" id="go-to-shopping-cart" value="Go to shopping cart">
+                </form>
             </div>    
         </div>
 
@@ -229,19 +238,19 @@
             <div id="third">
                 <div id="third-first">
                     <img src="{% static 'supplement_store/images/logo.png' %}" alt="logo" width="150px">
-                    <p>&#169; 2023 Vitality Vault</p>
+                    <p>&#169; 2025 Vitality Vault</p>
                     <p><a href="">Terms of Use</a> | <a href="">Privacy Policy</a></p>
                 </div>
                 <div id="third-second">
-                    <div>
-                        <h4>Connect with Us</h4>
+                    <h3>Connect with Us</h4>
+                    <div id="social">
                         <a href=""><img src="{% static 'supplement_store/images/tiktok.webp' %}" alt="tiktok" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/instagram.png' %}" alt="instagram" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/facebook.png' %}" alt="facebook" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/twitter.webp' %}" alt="twitter" width="35px"></a>
                         <a href=""><img src="{% static 'supplement_store/images/youtube.png' %}" alt="youtube" width="35px"></a>
                     </div>
-                    <hr>
+                    <hr id="horizontal-third-second">
                     <div>
                         <p>Receive the Latest News and Exclusive Offers:</p>
                         <form action="{% url 'newsletter' %}" method="post">
@@ -252,13 +261,11 @@
                     </div>
                 </div>
                 <div id="third-third">
-                    <h4>We Accept</h4>
-                    <img src="{% static 'supplement_store/images/paypal.webp' %}" alt="paypal" width="60px">
-                    <img src="{% static 'supplement_store/images/stripe.png' %}" alt="stripe" width="60px">
-                    <img src="{% static 'supplement_store/images/visa.png' %}" alt="visa" width="60px"><br>
-                    <img src="{% static 'supplement_store/images/mastercard.png' %}" alt="mastercard" width="60px">
-                    <img src="{% static 'supplement_store/images/american-express.webp' %}" alt="american-express" width="60px">
-                    <img src="{% static 'supplement_store/images/discover.png' %}" alt="discover" width="60px">
+                    <h3>We Accept</h4>
+                    <div id="payment-third-third">
+                        <img src="{% static 'supplement_store/images/paypal.webp' %}" alt="paypal" width="80px">
+                        <img src="{% static 'supplement_store/images/stripe.png' %}" alt="stripe" width="80px">
+                    </div>
                 </div>
             </div>
         </footer>
