@@ -18,6 +18,8 @@ from django.conf import settings
 from django.core.files import File
 
 from paypal.standard.forms import PayPalPaymentsForm
+import stripe
+stripe.api_key = settings.STRIPE_SECRET_KEY
 
 from datetime import datetime
 from decimal import Decimal
@@ -288,7 +290,6 @@ def add_to_wishlist(request):
         item = Item.objects.get(id=request.POST.get("id"))
         Wishlist.objects.create(user=request.user, item=item)
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
-# staviti da ukoliko je vec wishlistovao da ne moze da se wishlistuje opet u shopu i u items
 
 @login_required
 def remove_wishlist(request):
@@ -302,31 +303,6 @@ def remove_wishlist_all(request):
     if request.method == 'POST':
         Wishlist.objects.filter(user=request.user).delete()
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
-
-@login_required
-def process_payment(request):
-    transaction_id = request.session.get('transaction_id')
-    if not transaction_id:
-        return redirect('shopping_cart')
-    transaction = get_object_or_404(Transaction, id=transaction_id)
-    host = request.get_host()
-
-    paypal_dict = {
-        'business': settings.PAYPAL_RECEIVER_EMAIL,
-        'amount': '%.2f' % transaction.total_price,
-        'item_name': f'Order {transaction.id}',
-        'invoice': str(transaction.id),
-        'currency_code': 'USD',
-        'notify_url': f'http://{host}{reverse("paypal-ipn")}',
-        'return_url': f'http://{host}{reverse("payment_done")}',
-        'cancel_return': f'http://{host}{reverse("payment_canceled")}',
-    }
-
-    form = PayPalPaymentsForm(initial=paypal_dict)
-    return render(request, 'supplement_store/process_payment.html', {
-        'form': form,
-        'transaction': transaction,
-    })
 
 @login_required
 def payment_done(request):
@@ -399,17 +375,57 @@ def create_new_order(request):
 
     shipping_info = request.session.get('shipping_info', {})
     payment_method = shipping_info.get("payment_method", "").lower()
+    request.session['transaction_id'] = transaction.id
     if payment_method == 'paypal':
-        request.session['transaction_id'] = transaction.id
-        return redirect('process_payment')
-    elif payment_method == 'stripe':
-        pass
-    elif payment_method == 'credit cart':
-        pass
-    else:
-        pass #error
+        host = request.get_host()
 
-    return redirect('payment_done')
+        paypal_dict = {
+            'business': settings.PAYPAL_RECEIVER_EMAIL,
+            'amount': '%.2f' % transaction.total_price,
+            'item_name': f'Order {transaction.id}',
+            'invoice': str(transaction.id),
+            'currency_code': 'USD',
+            'notify_url': f'http://{host}{reverse("paypal-ipn")}',
+            'return_url': f'http://{host}{reverse("payment_done")}',
+            'cancel_return': f'http://{host}{reverse("payment_canceled")}',
+        }
+
+        form = PayPalPaymentsForm(initial=paypal_dict)
+        return render(request, 'supplement_store/process_payment.html', {
+            'form': form,
+            'transaction': transaction,
+        })
+    elif payment_method == 'stripe':
+        domain = request.build_absolute_uri('/')[:-1]
+        line_items = []
+        for cart_item in items_in_cart:
+            unit_amount = int(cart_item.item.price * 100)
+            line_items.append({
+                'price_data': {
+                    'currency': 'usd',
+                    'unit_amount': unit_amount,
+                    'product_data': {
+                        'name': cart_item.item.name,
+                    },
+                },
+                'quantity': cart_item.quantity,
+            })
+        try:
+            session = stripe.checkout.Session.create(
+                payment_method_types=['card'],
+                line_items=line_items,
+                mode='payment',
+                success_url=domain + reverse('payment_done') + '?session_id={CHECKOUT_SESSION_ID}',
+                cancel_url=domain + reverse('payment_canceled'),
+            )
+        except Exception as e:
+            print(e)
+            return redirect('index')
+        return redirect(session.url, code=303)
+    elif payment_method == 'credit cart':
+        return redirect('index')
+    else:
+        return redirect('index')
 
 @login_required
 def summary(request):
