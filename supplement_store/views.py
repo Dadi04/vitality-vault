@@ -558,6 +558,15 @@ def newsletter(request):
 
 @login_required
 def send_email_to_newsletter(request):
+    if request.method == 'POST':
+        emails = Newsletter.objects.all()
+        email_title = request.POST.get('email-title')
+        email_body = request.POST.get('email-body')
+
+        for email_address in emails:
+            email = EmailMessage(email_title, email_body, to=[email_address.email])
+            email.send()
+
     return render(request, "supplement_store/newsletter.html")
 
 @login_required
