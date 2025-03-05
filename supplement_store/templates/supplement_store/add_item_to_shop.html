@@ -27,10 +27,10 @@
                     {% endfor %}
                 </select><br>
                 <textarea name="description" placeholder="Description"></textarea><br>
-                <input type="number" name="price" placeholder="Price" required>
+                <input type="number" name="price" placeholder="Price" step=".01" required>
                 <input type="checkbox" name="is_available"><span>Is Available?</span>
                 <input type="number" name="quantity" placeholder="Quantity" required><br>
-                <input type="number" name="sale_price" placeholder="Sale Price">
+                <input type="number" name="sale_price" placeholder="Sale Price" step=".01">
                 <span>Sale Start Date </span><input type="date" name="sale_start_date">
                 <span>Sale End Date </span><input type="date" name="sale_end_date"><br>
                 <input type="number" name="weight" placeholder="Weight">

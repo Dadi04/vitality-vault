@@ -107,8 +107,8 @@ def register_view(request):
                 "token": default_token_generator.make_token(user),
                 "protocol": 'https' if request.is_secure() else 'http'
             })
-            email = EmailMessage(mail_subject, message, to=[email])
-            email.send()
+            email_message = EmailMessage(mail_subject, message, to=[email])
+            email_message.send()
 
             return render(request, "supplement_store/loading.html")
     else:
@@ -578,13 +578,31 @@ def add_sale_to_item(request):
             start_dates = request.POST.getlist('sale-date-start')
             end_dates = request.POST.getlist('sale-date-end')
             sale_data = list(zip(ids, sale_prices, start_dates, end_dates))
+            user_sale_items = {}
             for id, price, start, end in sale_data:
                 if price:
-                    item = Item.objects.get(id=id)
+                    try:
+                        item = Item.objects.get(id=id)
+                    except item.DoesNotExist:
+                        continue
                     item.sale_price = price
                     item.sale_start_date = start
                     item.sale_end_date = end
                     item.save()
+                    wishlists = Wishlist.objects.filter(item=item)
+                    for wishlist in wishlists:
+                        user_email = wishlist.user.email
+                        user_sale_items.setdefault(user_email, []).append(item)
+            print(user_sale_items)
+            for email, sale_items in user_sale_items.items():
+                subject = f"{len(sale_items)} items from your wishlist are on sale"
+                body_lines = []
+                for sale_item in sale_items:
+                    line = f"{sale_item.fullname} Flavor: {sale_item.flavor} - Sale Price: {sale_item.sale_price}"
+                    body_lines.append(line)
+                body = "\n".join(body_lines)
+                email_message = EmailMessage(subject, body, to=[email])
+                email_message.send()
         return render(request, "supplement_store/add_sale_to_item.html", {
             "items": Item.objects.all().order_by('id'),
         })

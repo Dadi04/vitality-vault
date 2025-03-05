@@ -12,19 +12,24 @@
             <form action="" method="post">
             {% csrf_token %}
                 {% for item in items %}
-                    {% if not item.sale_price%}
-                        <div id="item-sale">
-                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image|filename}}" alt="{{ item.main_image.name }}" width="100px">
-                            <p>{{ item.id }} {{ item.fullname }} {{ item.flavor }}</p>
+                    <div id="item-sale">
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image|filename}}" alt="{{ item.main_image.name }}" width="100px">
+                        <p>{{ item.id }} {{ item.fullname }} {{ item.flavor }}</p>
+                        {% if item.sale_price %}
+                            <p>Current price: {{ item.sale_price }}</p>
+                        {% else%}
                             <p>Current price: {{ item.price }}</p>
-                            <input type="hidden" value="{{item.id}}" name="id">
-                            <input type="number" name="sale-price" id="sale-price" placeholder="Sale Price">
-                            <label for="sale-date-start">Sale Date Start</label>
-                            <input type="date" name="sale-date-start" id="sale-date-start">
-                            <label for="sale-date-end">Sale Date End</label>
-                            <input type="date" name="sale-date-end" id="sale-date-end">
-                        </div>
-                    {% endif %}
+                        {% endif %}
+                        {% if item.sale_price %}
+                            <p>Item already on sale from {{item.sale_start_date}} to {{item.sale_end_date}}</p>
+                        {% endif %}
+                        <input type="hidden" value="{{item.id}}" name="id">
+                        <input type="number" name="sale-price" id="sale-price" placeholder="Sale Price" step=".01">
+                        <label for="sale-date-start">Sale Date Start</label>
+                        <input type="date" name="sale-date-start" id="sale-date-start">
+                        <label for="sale-date-end">Sale Date End</label>
+                        <input type="date" name="sale-date-end" id="sale-date-end">
+                    </div>
                 {% endfor %}
                 <input type="submit" name="sale-submit" id="sale-price">
             </form>
