@@ -1,7 +1,12 @@
 from django.db.models.functions import Coalesce
 from django.db.models import Avg, Q, Count
+from django.core.files import File
+from django.conf import settings
 
 from .models import Review
+
+import pandas as pd
+import os
 
 def build_query_from_params(request, fields):
     q_objects = Q()
@@ -54,3 +59,13 @@ def attach_review_data(queryset):
             unique_items[item.fullname] = item
 
     return final_items
+
+def attach_image(field, image_filename):
+    if pd.notnull(image_filename):
+        source_dir = os.path.join(settings.BASE_DIR, 'supplement_store', 'static', 'supplement_store', 'images', 'product_images')
+        full_image_path = os.path.join(source_dir, image_filename)
+        if os.path.exists(full_image_path):
+            with open(full_image_path, 'rb') as f:
+                field.save(os.path.basename(full_image_path), File(f), save=False)
+        else:
+            print(f"Image not found: {full_image_path}")

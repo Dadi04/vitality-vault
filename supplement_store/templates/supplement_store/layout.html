@@ -179,6 +179,12 @@
                         <p>Change Quantity</p>
                     </a>
                 </div>
+                <div class="right">
+                    <a href="{% url 'send_email_to_newsletter' %}">
+                        <img src="{% static 'supplement_store/images/newsletter.png' %}" alt="newsletter" width="32px">
+                        <p>Newsletter</p>
+                    </a>
+                </div>
             </div>
         {% endif %}
         <footer>
@@ -258,6 +264,13 @@
                             <input type="email" name="email" id="email" placeholder="Email">
                             <input type="submit" id="submit">
                         </form>
+                        {% if messages %} 
+                            {% for message in messages %}
+                                {% if "newsletter_error" in message.tags %}
+                                    {{ message }}
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
                 <div id="third-third">

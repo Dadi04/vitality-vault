@@ -12,10 +12,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists, BooleanField, Value
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists
 from django.db.models.functions import RowNumber
 from django.conf import settings
-from django.core.files import File
 
 from paypal.standard.forms import PayPalPaymentsForm
 import stripe
@@ -24,21 +23,28 @@ stripe.api_key = settings.STRIPE_SECRET_KEY
 from datetime import datetime
 from decimal import Decimal
 
-import os
 import pandas as pd
 
-from .shop_utils import apply_sorting, attach_review_data, build_query_from_params
+from .shop_utils import apply_sorting, attach_review_data, build_query_from_params, attach_image
 from .forms import RegistrationForm, ItemForm, ShippingInformationForm
 from .countries import COUNTRIES
-from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Wishlist, Transaction, TransactionItem
-
-# Create your views here.
+from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Wishlist, Transaction, TransactionItem, Newsletter
 
 def index(request):
     return render(request, "supplement_store/index.html", {
         "images": SlideShowImage.objects.all().order_by('-order'),
     })
 
+def about(request):
+    return render(request, "supplement_store/about.html")
+
+def brands(request):
+    return render(request, "supplement_store/brands.html")
+
+def contact(request):
+    return render(request, "supplement_store/contact.html")
+
+""" Account logic """
 def login_view(request):
     if request.method == 'POST':
         first = request.POST.get("first")
@@ -64,7 +70,7 @@ def login_view(request):
             login(request, user)
             return redirect('index')
         else:
-            messages.error(request, "Invalid login credentials. Please try again.")
+            messages.error(request, "Invalid login credentials. Please try again.", extra_tags="login_error")
             return redirect('login_view')
         
     return render(request, "supplement_store/login.html")
@@ -131,6 +137,29 @@ def logout_view(request):
     logout(request)
     return redirect('index')
 
+@login_required
+def comment(request, username, itemname):
+    if request.method == 'POST':
+        item = Item.objects.filter(fullname=itemname).first()
+        user = User.objects.get(username=username)
+        comment = request.POST["textarea"]
+        rating = request.POST["rating"]
+        if comment and rating:
+            Review.objects.create(user=user, item=item, comment=comment, rating=rating, timestamp=datetime.now())
+            return redirect(request.META.get('HTTP_REFERER', 'index'))
+        else:
+            messages.error(request, 'Please provide a comment and a rating.', extra_tags="comment_error")
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+@login_required
+def account(request):
+    return render(request, "supplement_store/account.html")
+
+def reset_password(request):
+    return render(request, "supplement_store/reset_password.html")
+""" End of Account logic """
+
+""" Filtering logic """
 def clothing(request):
     items = Item.objects.filter(size__isnull=False).order_by('name', '-is_available')
     unique_items = {}
@@ -216,7 +245,10 @@ def shop_by_brand(request, brand):
     })
 
 def shop_by_itemname(request, itemname):
-    wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+    if request.user.is_authenticated:
+        wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+    else:
+        wishlist_qs = Wishlist.objects.none()
 
     items = Item.objects.filter(fullname=itemname)\
         .annotate(
@@ -262,28 +294,9 @@ def shop_by_itemname(request, itemname):
         "average_review": average_review,
         "similar_items": similar_items,
     })
+""" End of filtering logic """
 
-@login_required
-def comment(request, username, itemname):
-    if request.method == 'POST':
-        item = Item.objects.filter(fullname=itemname).first()
-        user = User.objects.get(username=username)
-        comment = request.POST["textarea"]
-        rating = request.POST["rating"]
-        if comment and rating:
-            Review.objects.create(user=user, item=item, comment=comment, rating=rating, timestamp=datetime.now())
-            return redirect(request.META.get('HTTP_REFERER', 'index'))
-        else:
-            messages.error(request, 'Please provide a comment and a rating.')
-    return redirect(request.META.get('HTTP_REFERER', 'index'))
-
-@login_required
-def account(request):
-    return render(request, "supplement_store/account.html")
-
-def reset_password(request):
-    return render(request, "supplement_store/reset_password.html")
-
+""" Wishlist """
 @login_required
 def wishlist(request):
     return render(request, "supplement_store/wishlist.html", {
@@ -309,56 +322,106 @@ def remove_wishlist_all(request):
     if request.method == 'POST':
         Wishlist.objects.filter(user=request.user).delete()
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
+""" End of Wishlist """
 
+""" Shopping Cart """
 @login_required
-def payment_done(request):
-    transaction_id = request.session.get('transaction_id')
-    if not transaction_id:
-        return redirect('shopping_cart')
-    transaction = get_object_or_404(Transaction, id=transaction_id)
-    transaction.status = 'paid'
-    transaction.save()
-
-    item_list = []
-    for t_item in transaction.transactionitem_set.all():
-        item = t_item.item
-        item.quantity -= t_item.quantity
-        item.popularity += 1
-        item.save()
-        item_list.append(f'{t_item.item.name} (x{t_item.quantity}) - ${t_item.item.price * t_item.quantity}')
-
-    item_detail = '\n'.join(item_list)
-    mail_subject = "New Order Just Arrived"
-    message = (
-        f"Dear {request.user.username},\n\n"
-        f"Your order (Transaction ID: {transaction.id}) has been confirmed.\n"
-        f"Total Price: ${transaction.total_price}\n\n"
-        f"Items ordered:\n{item_detail}\n\n"
-        "Thank you for shopping with us!"
+def shopping_cart(request):
+    if request.method == 'POST':
+        item_id = request.POST.get("id")
+        item = Item.objects.get(id=item_id)
+        quantity = int(request.POST.get("quantity"))
+        if not item.is_available:
+            return redirect(request.META.get('HTTP_REFERER', 'index'))
+        if quantity is not None and quantity > item.quantity:
+            return redirect('shop_by_itemname', fullname=item.fullname)
+        Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
+        return redirect(request.META.get('HTTP_REFERER', 'index'))       
+    cart_items = (
+        Cart.objects.filter(in_cart=True, user=request.user)
+        .values('item__id', 'item__name', 'item__weight', 'item__price', 'item__sale_price', 'item__main_image', 'item__fullname', 'item__quantity')
+        .annotate(total_quantity=Sum('quantity'),total_price=Sum(
+            Case(
+                When(item__sale_price__isnull=False, then=F('item__sale_price')),
+                default=F('item__price'),
+                output_field=DecimalField(),
+                ) * F('quantity')
+            )
+        )
     )
-
-    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
-    email.send()
-
-    Cart.objects.filter(user=request.user, in_cart=True).delete()
-
-    request.session.pop('shipping_info', None)
-    request.session.pop('transaction_id', None)
-
-    return render(request, 'supplement_store/payment_done.html')
+    return render(request, "supplement_store/cart.html", {
+        "items": cart_items,
+    })
+    
+@login_required    
+def remove_cart(request):
+    if request.method == 'POST':  
+        item = Item.objects.get(id=request.POST["item_id"]) 
+        Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
 @login_required
-def payment_canceled(request):
-    transaction_id = request.session.get('transaction_id')
-    if transaction_id:
-        transaction = get_object_or_404(Transaction, id=transaction_id)
-        transaction.status = 'canceled'
-        transaction.save()
+def remove_cart_all(request):
+    if request.method == 'POST': 
+        Cart.objects.filter(user=request.user, in_cart=True).delete()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
 
-        request.session.pop('shipping_info', None)
-        request.session.pop('transaction_id', None)
-        
-    return render(request, 'supplement_store/payment_canceled.html')
+@login_required
+def decrease_quantity(request, id):
+    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
+    if cart_item and cart_item.quantity > 1:
+        cart_item.quantity -= 1
+        cart_item.save()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+@login_required
+def increase_quantity(request, id):
+    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
+    if cart_item and cart_item.quantity < cart_item.item.quantity:
+        cart_item.quantity += 1
+        cart_item.save()
+    return redirect(request.META.get('HTTP_REFERER', 'index'))
+""" End of Shopping Cart """
+
+""" Purchase System """
+@login_required
+def delivery_and_payment(request):
+    items = Cart.objects.filter(user=request.user, in_cart=True)
+    if not items:
+        return redirect('shopping_cart')
+    shipping_info = request.session.get('shipping_info', {})
+    form = ShippingInformationForm(initial=shipping_info)
+
+    return render(request, "supplement_store/delivery_payment.html", {"form": form})
+
+@login_required
+def summary(request):
+    items = Cart.objects.filter(user=request.user, in_cart=True)
+    if not items:
+        return redirect('shopping_cart')
+    
+    if request.method == 'POST':
+        form = ShippingInformationForm(request.POST)
+        if form.is_valid():
+            request.session['shipping_info'] = form.cleaned_data
+    else:
+        initial_data = request.session.get('shipping_info', {})
+        form = ShippingInformationForm(initial=initial_data)
+
+    shipping_info = request.session.get('shipping_info', {})    
+    return render(request, "supplement_store/summary.html", {
+        "email": shipping_info.get("email", ""),
+        "name": shipping_info.get("first_name", ""),
+        "surname": shipping_info.get("last_name", ""),
+        "address": shipping_info.get("address", ""),
+        "city": shipping_info.get("city", ""),
+        "state": shipping_info.get("state", ""),
+        "country": shipping_info.get("country", ""),
+        "zipcode": shipping_info.get("zipcode", ""),
+        "phone": shipping_info.get("phone", ""),
+        "payment_method": shipping_info.get("payment_method", ""),
+        "items": items,
+    })
 
 @login_required
 def create_new_order(request):
@@ -432,113 +495,70 @@ def create_new_order(request):
         return redirect('index')
 
 @login_required
-def summary(request):
-    items = Cart.objects.filter(user=request.user, in_cart=True)
-    if not items:
+def payment_done(request):
+    transaction_id = request.session.get('transaction_id')
+    if not transaction_id:
         return redirect('shopping_cart')
-    
-    if request.method == 'POST':
-        form = ShippingInformationForm(request.POST)
-        if form.is_valid():
-            request.session['shipping_info'] = form.cleaned_data
-    else:
-        initial_data = request.session.get('shipping_info', {})
-        form = ShippingInformationForm(initial=initial_data)
+    transaction = get_object_or_404(Transaction, id=transaction_id)
+    transaction.status = 'paid'
+    transaction.save()
 
-    shipping_info = request.session.get('shipping_info', {})    
-    return render(request, "supplement_store/summary.html", {
-        "email": shipping_info.get("email", ""),
-        "name": shipping_info.get("first_name", ""),
-        "surname": shipping_info.get("last_name", ""),
-        "address": shipping_info.get("address", ""),
-        "city": shipping_info.get("city", ""),
-        "state": shipping_info.get("state", ""),
-        "country": shipping_info.get("country", ""),
-        "zipcode": shipping_info.get("zipcode", ""),
-        "phone": shipping_info.get("phone", ""),
-        "payment_method": shipping_info.get("payment_method", ""),
-        "items": items,
-    })
-    # treba da se upali paypal api, stripe api ili api banke u zavisnosti sta sam uzeo kada se klikne buy dugme i to je to ovo je samo provera 
+    item_list = []
+    for t_item in transaction.transactionitem_set.all():
+        item = t_item.item
+        item.quantity -= t_item.quantity
+        item.popularity += 1
+        item.save()
+        item_list.append(f'{t_item.item.name} (x{t_item.quantity}) - ${t_item.item.price * t_item.quantity}')
 
-@login_required
-def delivery_and_payment(request):
-    items = Cart.objects.filter(user=request.user, in_cart=True)
-    if not items:
-        return redirect('shopping_cart')
-    shipping_info = request.session.get('shipping_info', {})
-    form = ShippingInformationForm(initial=shipping_info)
-
-    return render(request, "supplement_store/delivery_payment.html", {"form": form})
-
-@login_required
-def shopping_cart(request):
-    if request.method == 'POST':
-        item_id = request.POST.get("id")
-        item = Item.objects.get(id=item_id)
-        quantity = int(request.POST.get("quantity"))
-        if not item.is_available:
-            return redirect(request.META.get('HTTP_REFERER', 'index'))
-        if quantity is not None and quantity > item.quantity:
-            return redirect('shop_by_itemname', fullname=item.fullname)
-        Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
-        return redirect(request.META.get('HTTP_REFERER', 'index'))       
-    cart_items = (
-        Cart.objects.filter(in_cart=True, user=request.user)
-        .values('item__id', 'item__name', 'item__weight', 'item__price', 'item__sale_price', 'item__main_image', 'item__fullname', 'item__quantity')
-        .annotate(total_quantity=Sum('quantity'),total_price=Sum(
-            Case(
-                When(item__sale_price__isnull=False, then=F('item__sale_price')),
-                default=F('item__price'),
-                output_field=DecimalField(),
-                ) * F('quantity')
-            )
-        )
+    item_detail = '\n'.join(item_list)
+    mail_subject = "New Order Just Arrived"
+    message = (
+        f"Dear {request.user.username},\n\n"
+        f"Your order (Transaction ID: {transaction.id}) has been confirmed.\n"
+        f"Total Price: ${transaction.total_price}\n\n"
+        f"Items ordered:\n{item_detail}\n\n"
+        "Thank you for shopping with us!"
     )
-    return render(request, "supplement_store/cart.html", {
-        "items": cart_items,
-    })
-    
-@login_required    
-def remove_cart(request):
-    if request.method == 'POST':  
-        item = Item.objects.get(id=request.POST["item_id"]) 
-        Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))
+
+    email = EmailMessage(mail_subject, message, to=['dadica.petkovic@gmail.com', request.user.email])
+    email.send()
+
+    Cart.objects.filter(user=request.user, in_cart=True).delete()
+
+    request.session.pop('shipping_info', None)
+    request.session.pop('transaction_id', None)
+
+    return render(request, 'supplement_store/payment_done.html')
 
 @login_required
-def remove_cart_all(request):
-    if request.method == 'POST': 
-        Cart.objects.filter(user=request.user, in_cart=True).delete()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))
+def payment_canceled(request):
+    transaction_id = request.session.get('transaction_id')
+    if transaction_id:
+        transaction = get_object_or_404(Transaction, id=transaction_id)
+        transaction.status = 'canceled'
+        transaction.save()
 
-@login_required
-def decrease_quantity(request, id):
-    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
-    if cart_item and cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))
+        request.session.pop('shipping_info', None)
+        request.session.pop('transaction_id', None)
+        
+    return render(request, 'supplement_store/payment_canceled.html')
+""" End of Purchase System """
 
-@login_required
-def increase_quantity(request, id):
-    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
-    if cart_item and cart_item.quantity < cart_item.item.quantity:
-        cart_item.quantity += 1
-        cart_item.save()
-    return redirect(request.META.get('HTTP_REFERER', 'index'))
-
+""" Admin/support tools """
 def newsletter(request):
+    email = request.POST.get('email')
+    if email:
+        newsletter_exist = Newsletter.objects.filter(email=email)
+        if not newsletter_exist:
+            Newsletter.objects.create(email=email)
+        else:
+            messages.error(request, 'Email is already registered for newslatter.', extra_tags="newsletter_error")
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 
-def about(request):
-    return render(request, "supplement_store/about.html")
-
-def brands(request):
-    return render(request, "supplement_store/brands.html")
-
-def contact(request):
-    return render(request, "supplement_store/contact.html")
+@login_required
+def send_email_to_newsletter(request):
+    return render(request, "supplement_store/newsletter.html")
 
 @login_required
 def add_sale_to_item(request):
@@ -588,16 +608,6 @@ def add_item_to_shop(request):
         }
         return render(request, "supplement_store/add_item_to_shop.html", context)
     return redirect('index')
-
-def attach_image(field, image_filename):
-    if pd.notnull(image_filename):
-        source_dir = os.path.join(settings.BASE_DIR, 'supplement_store', 'static', 'supplement_store', 'images', 'product_images')
-        full_image_path = os.path.join(source_dir, image_filename)
-        if os.path.exists(full_image_path):
-            with open(full_image_path, 'rb') as f:
-                field.save(os.path.basename(full_image_path), File(f), save=False)
-        else:
-            print(f"Image not found: {full_image_path}")
 
 @login_required
 def add_item(request):
@@ -663,7 +673,9 @@ def bulk_add_items(request):
 
                 item.save()
     return render(request, "supplement_store/add_item_to_shop.html")
+""" End of admin/support tools """
 
+""" Messaging system """
 @login_required
 def chatting(request):
     if request.method == 'POST':
@@ -758,6 +770,7 @@ def load_messages(request):
 
         return JsonResponse({'messages': messages})
     return JsonResponse({'error': 'Invalid request method'}, status=400)
+""" End of messaging system """
 
 class CustomPasswordResetView(PasswordResetView):
     def form_valid(self, form):

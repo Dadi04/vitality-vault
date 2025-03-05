@@ -18,5 +18,4 @@ kada se postavi sale na item i ukoliko se taj item nalazi nekome u wishlistu pos
 napraviti stranu za Receive the Latest News and Exclusive Offers: -> novi model u models.py 
 
 napraviti da se itemi mogu dodati u cart bez accounta i da je potrebno napraviti acc tek kad se kupuje nesto -> cookies koristiti
-
-odvojiti Sale u poseban model
+fixovati remember me -> cookies ili session

@@ -24,7 +24,7 @@
             {% if messages %}
                 <div id="error-messages">
                     {% for message in messages %}
-                        {% if message.tags == "error" %}
+                        {% if "login_error" in message.tags %}
                             {{ message }}
                         {% endif %}
                     {% endfor %}

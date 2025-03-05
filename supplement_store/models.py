@@ -88,6 +88,7 @@ class Item(models.Model):
     def __str__(self):
         return f'{self.id}: {self.fullname}, Available: {self.is_available}, Flavor: {self.flavor}, Popularity: {self.popularity}, Quantity: {self.quantity}'
 
+# korektnije resenje -> uradicu ako me ne bude mrzelo
 # class Sale(models.Model):
 #     item = models.ForeignKey(Item, on_delete=models.CASCADE)
 #     sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
@@ -184,3 +185,9 @@ class TransactionItem(models.Model):
 
     def __str__(self):
         return f'{self.item.name} (x{self.quantity}) in Transaction {self.transaction.id}'
+    
+class Newsletter(models.Model):
+    email = models.EmailField(blank=False, null=False)
+
+    def __str__(self):
+        return f'ID: {self.id}, email: {self.email} registered for newsletter'

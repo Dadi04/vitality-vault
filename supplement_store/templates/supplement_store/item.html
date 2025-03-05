@@ -94,20 +94,22 @@
                             <i class="fa fa-shopping-cart"></i>
                         </button>
                     </form>
-                    {% if not item_chosen.is_wishlisted %}
-                        <form action="{% url 'add_to_wishlist' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ item_chosen.id }}" name="id" id="item_id">
-                            <button type="submit" id="wishlist">
-                                Wishlist
-                                <i class="fa fa-heart"></i>
+                    {% if user.is_authenticated %}
+                        {% if not item_chosen.is_wishlisted %}
+                            <form action="{% url 'add_to_wishlist' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ item_chosen.id }}" name="id" id="item_id">
+                                <button type="submit" id="wishlist">
+                                    Wishlist
+                                    <i class="fa fa-heart"></i>
+                                </button>
+                            </form>
+                        {% else %}
+                            <button type="button" id="wishlist">
+                                Wishlisted
+                                <i class="fa fa-check"></i>
                             </button>
-                        </form>
-                    {% else %}
-                        <button type="button" id="wishlist">
-                            Wishlisted
-                            <i class="fa fa-check"></i>
-                        </button>
+                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -153,25 +155,29 @@
                 <form id="comment-form" action="{% url 'comment' username=user.username itemname=item_chosen.fullname %}" method="post">
                     {% csrf_token %}
                     <textarea name="textarea" id="textarea" cols="50" rows="4" placeholder="Write a comment..." required></textarea><br>
-                    Your opinion: 
-                    <i class="fa fa-star stars" data-star="1"></i>
-                    <i class="fa fa-star stars" data-star="2"></i>
-                    <i class="fa fa-star stars" data-star="3"></i>
-                    <i class="fa fa-star stars" data-star="4"></i>
-                    <i class="fa fa-star stars" data-star="5"></i>
-                    <input type="hidden" name="rating" id="rating" value="">
-                    <input type="submit" value="Comment">
-                    {% if messages %}
-                        {% for message in messages %}
-                            {% if message.tags == "error" %}
-                                <p>{{ message }}</p>
+                    <div id="stars-div">
+                        <div>
+                            Your opinion: 
+                            <i class="fa fa-star stars" data-star="1"></i>
+                            <i class="fa fa-star stars" data-star="2"></i>
+                            <i class="fa fa-star stars" data-star="3"></i>
+                            <i class="fa fa-star stars" data-star="4"></i>
+                            <i class="fa fa-star stars" data-star="5"></i>
+                            <input type="hidden" name="rating" id="rating" value="">
+                            {% if messages %}
+                                {% for message in messages %}
+                                    {% if "comment_error" in message.tags %}
+                                        <p>{{ message }}</p>
+                                    {% endif %}
+                                {% endfor %}
                             {% endif %}
-                        {% endfor %}
-                    {% endif %}
+                        </div>
+                        <input type="submit" value="Comment" id="comment-submit">
+                    </div>
                 </form>
             {% endif %}
         {% else %}
-            <textarea name="textarea" id="textarea" cols="30" rows="10" disabled>You need to be logged in in order to comment!</textarea>
+            <textarea name="textarea" id="textarea" cols="50" rows="4" disabled>You need to be logged in in order to comment!</textarea>
         {% endif %}
         <hr>
         <div id="comments">
