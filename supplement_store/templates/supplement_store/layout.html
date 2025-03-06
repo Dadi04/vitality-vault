@@ -198,48 +198,37 @@
                         <th>User account</th>
                     </tr>
                     <tr>
-                        <td><a href="">About</a></td>
-                        <td><a href="">Contact</a></td>
+                        <td><a href="{% url 'about' %}">About</a></td>
+                        <td><a href="{% url 'contact' %}">Contact</a></td>
                         <td><a href="">How to register?</a></td>
-                        <td><a href="">Register/Sign in</a></td>
+                        <td><a href="{% url 'login_view' %}">Register/Sign in</a></td>
                     </tr>
                     <tr>
                         <td><a href="">Terms of purchase</a></td>
                         <td><a href="">Site map</a></td>
                         <td><a href="">How to sign in?</a></td>
-                        <td><a href="">Purchase history</a></td>
+                        <td><a href="{% url 'account' %}">Purchase history</a></td>
                     </tr>
                     <tr>
                         <td><a href="">Payment of delivery and shipment of goods</a></td>
-                        <td><a href="">Brands</a></td>
+                        <td><a href="{% url 'brands' %}">Brands</a></td>
                         <td><a href="">How to order a product?</a></td>
-                        <td><a href="">Shopping cart</a></td>
+                        <td><a href="{% url 'shopping_cart' %}">Shopping cart</a></td>
                     </tr>
                     <tr>
                         <td><a href="">Complaints</a></td>
                         <td><a href="">Great Deals</a></td>
                         <td><a href="">Payment methods</a></td>
-                        <td><a href="">Wishlist</a></td>
+                        <td><a href="{% url 'wishlist' %}">Wishlist</a></td>
                     </tr>
                 </table>
             </div>
             <hr>
             <div id="second">
                 <h3>Featured brands</h3>
-                <img src="{% static 'supplement_store/images/ironmaxx.png' %}" alt="ironmaxx" width="100px">
-                <img src="{% static 'supplement_store/images/ostrovit.png' %}" alt="ostrovit" width="100px">
-                <img src="{% static 'supplement_store/images/biotechusa.png' %}" alt="biotechusa" width="100px">
-                <img src="{% static 'supplement_store/images/amix.png' %}" alt="amix" width="100px">
-                <img src="{% static 'supplement_store/images/myprotein.png' %}" alt="myprotein" width="100px">
-                <img src="{% static 'supplement_store/images/BSN.png' %}" alt="BSN" width="100px">
-                <img src="{% static 'supplement_store/images/optimum-nutrition.png' %}" alt="optimum-nutrition" width="100px">
-                <img src="{% static 'supplement_store/images/scitec-nutrition.png' %}" alt="scitec-nutrition" width="100px">
-                <img src="{% static 'supplement_store/images/gorilla-mind.png' %}" alt="gorilla-mind" width="100px">
-                <img src="{% static 'supplement_store/images/htlt.png' %}" alt="htlt" width="100px">
-                <img src="{% static 'supplement_store/images/quest-nutrition.webp' %}" alt="quest-nutrition" width="100px">
-                <img src="{% static 'supplement_store/images/gymshark.png' %}" alt="gymshark" width="100px">
-                <img src="{% static 'supplement_store/images/under-armour.png' %}" alt="under-armour" width="100px">
-                <img src="{% static 'supplement_store/images/retaliation.webp' %}" alt="retaliation" width="100px">
+                {% for brand_key, brand_value in brands_list %}
+                    <img src="{% static 'supplement_store/images/' %}{{brand_value}}.png" alt="{{brand_value}}" width="100px">
+                {% endfor %}
             </div>
             <div id="third">
                 <div id="third-first">

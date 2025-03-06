@@ -2455,3 +2455,24 @@ footer {
         font-size: 20px; 
     }
 }
+
+#brands {
+    #brands-title {
+        text-align: center;
+        margin-bottom: 0;
+    }
+    
+    #brands-main {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+        align-items: center;
+        gap: 10px;
+
+        #brand {
+            display: flex;
+            width: 400px;
+            justify-content: center;
+        }
+    }
+}

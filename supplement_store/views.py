@@ -668,11 +668,9 @@ def change_quantity_of_item(request):
 @login_required
 def add_item_to_shop(request):
     if request.user.is_staff or request.user.is_support:
-        context = {
+        return render(request, "supplement_store/add_item_to_shop.html", {
             'categories': Item.CATEGORIES,
-            'brands': Item.BRANDS,
-        }
-        return render(request, "supplement_store/add_item_to_shop.html", context)
+        })
     return redirect('index')
 
 @login_required

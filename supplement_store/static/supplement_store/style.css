@@ -2126,4 +2126,21 @@ footer #third #third-third #payment-third-third {
   font-size: 20px;
 }
 
+#brands #brands-title {
+  text-align: center;
+  margin-bottom: 0;
+}
+#brands #brands-main {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  gap: 10px;
+}
+#brands #brands-main #brand {
+  display: flex;
+  width: 400px;
+  justify-content: center;
+}
+
 /*# sourceMappingURL=style.css.map */

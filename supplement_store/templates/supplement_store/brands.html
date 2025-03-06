@@ -6,5 +6,14 @@
 {% endblock %}
 
 {% block body %}
-    TO DO Brands
+    <div id="brands">
+        <h1 id="brands-title">Brands</h1>
+        <div id="brands-main">
+            {% for brand_key, brand_value in brands_list %}
+                <div id="brand">
+                    <a href="{% url 'shop_by_brand' brand=brand_value %}"><img src="{% static '/supplement_store/images/' %}{{brand_value}}.png" alt="{{brand_key}}" width="200px"></a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
 {% endblock %}

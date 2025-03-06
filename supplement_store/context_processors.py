@@ -1,6 +1,6 @@
 from django.db.models import F, Sum, Case, When, DecimalField
 
-from supplement_store.models import Cart, Wishlist
+from supplement_store.models import Cart, Wishlist, Item
 
 def give_items(request):
     if request.user.is_authenticated:
@@ -25,6 +25,7 @@ def give_items(request):
         cart_items = None
         wishlist_items = None
     return {
+        "brands_list": Item.BRANDS,
         "items_in_cart": cart_items,
         "items_in_wishlist": wishlist_items
     }

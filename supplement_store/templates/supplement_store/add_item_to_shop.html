@@ -22,7 +22,7 @@
                 <input type="text" name="subcategory" placeholder="Subcategory" required>
                 <select name="brand" id="brand" required>
                     <option value="brand" disabled selected>Brand</option>
-                    {% for value, label in brands %}
+                    {% for value, label in brands_list %}
                         <option value="{{ value }}">{{ label }}</option>
                     {% endfor %}
                 </select><br>
