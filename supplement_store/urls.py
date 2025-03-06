@@ -43,7 +43,7 @@ urlpatterns = [
     path('answer/<str:username>', views.answer_inbox, name="answer_inbox"),
     path('answering/<str:username>', views.answering, name="answering"),
     path('close/<str:username>', views.close, name="close"),
-
+    path('search_items', views.search_items, name="search_items"),
     path('clothing', views.clothing, name="clothing"),
     path('supplements', views.supplements, name="supplements"),
     path('brand/<str:brand>', views.shop_by_brand, name="shop_by_brand"),

@@ -333,6 +333,21 @@ def shop_by_itemname(request, itemname):
         "count": count,
         "total_reviews": all_reviews.count(),
     })
+
+def search_items(request):
+    query = request.GET.get('q', '')
+    if query:
+        items = list(
+            Item.objects.filter(
+                Q(name__icontains=query) |
+                Q(brand__icontains=query) |
+                Q(category__icontains=query)
+            ).values('id', 'name', 'brand', 'price')
+        )
+    else:
+        items = []
+    return JsonResponse({'items': items})
+    
 """ End of filtering logic """
 
 """ Wishlist """
@@ -668,9 +683,7 @@ def change_quantity_of_item(request):
 @login_required
 def add_item_to_shop(request):
     if request.user.is_staff or request.user.is_support:
-        return render(request, "supplement_store/add_item_to_shop.html", {
-            'categories': Item.CATEGORIES,
-        })
+        return render(request, "supplement_store/add_item_to_shop.html")
     return redirect('index')
 
 @login_required

@@ -26,6 +26,7 @@ def give_items(request):
         wishlist_items = None
     return {
         "brands_list": Item.BRANDS,
+        "categories_list": Item.CATEGORIES,
         "items_in_cart": cart_items,
         "items_in_wishlist": wishlist_items
     }

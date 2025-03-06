@@ -15,7 +15,7 @@
                 <input type="text" name="fullname" placeholder="Fullname" required><br>
                 <select name="category" id="category" required>
                     <option value="category" disabled selected>Category</option>
-                    {% for value, label in categories %}
+                    {% for value, label in categories_list %}
                         <option value="{{ value }}">{{ label }}</option>
                     {% endfor %}
                 </select>

@@ -30,17 +30,17 @@ nav #top {
   gap: 35px;
   color: white;
 }
-nav #top #search {
+nav #top #search-div {
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
 }
-nav #top #search .fa-search {
+nav #top #search-div .fa-search {
   margin-right: 5px;
 }
-nav #top #search input {
+nav #top #search-div #search-bar {
   padding: 5px;
   border: none;
   outline: none;

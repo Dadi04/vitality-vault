@@ -16,9 +16,12 @@
         <nav>
             <div id="top">
                 <a href="{% url 'index' %}"><img src="{% static 'supplement_store/images/logo-main.png' %}" alt="logo" width="150px"></a>
-                <div id="search">
+                <div id="search-div">
                     <i class="fa fa-search fa-solid"></i>
-                    <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search" autocomplete="off">
+                    <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search-bar" autocomplete="off">
+                </div>
+                <div id="search-results">
+
                 </div>
                 {% if user.is_authenticated  %}
                     <div class="right">
@@ -61,20 +64,9 @@
                     <li><a href="{% url 'index' %}">Home</a></li>
                     <li id="brands"><a href="{% url 'brands' %}">Brands</a>
                         <ul class="second">
-                            <li><a href="{% url 'shop_by_brand' brand='IronMaxx' %}">IronMaxx</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='OstroVit' %}">OstroVit</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='BioTechUSA' %}">BioTechUSA</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='AmiX' %}">AmiX</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Myprotein' %}">Myprotein</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='BSN' %}">BSN</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Optimum Nutrition' %}">Optimum Nutrition</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Scitec Nutrition' %}">Scitec Nutrition</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Gorilla Mind' %}">Gorilla Mind</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='HTLT' %}">HTLT</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Quest Nutrition' %}">Quest Nutrition</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Gymshark' %}">Gymshark</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Under Armour' %}">Under Armour</a></li>
-                            <li><a href="{% url 'shop_by_brand' brand='Retaliation Project' %}">Retaliation Project</a></li>
+                            {% for brand_key, brand_value in brands_list %}
+                                <li><a href="{% url 'shop_by_brand' brand=brand_key %}">{{brand_key}}</a></li>    
+                            {% endfor %}
                             <hr>
                         </ul>
                     </li>
@@ -434,6 +426,32 @@
                         showCartDiv.style.visibility = 'hidden';
                     }
                 }
+            });
+
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('search-bar');
+                const resultsContainer = document.getElementById('search-results');
+
+                searchInput.addEventListener('input', function() {
+                    const query = this.value;
+
+                    fetch(`/search_items?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            resultsContainer.innerHTML = '';
+
+                            data.items.forEach(item => {
+                                let itemDiv = document.createElement('div');
+                                itemDiv.classList.add('search-item');
+                                itemDiv.textContent = `${item.name} - ${item.brand} - $${item.price}`;
+                                resultsContainer.appendChild(itemDiv);
+                            })
+                        })
+                        .catch(error => {
+                            console.error('Error fetching search results:', error);
+                        });
+                });
             });
         </script>
 
