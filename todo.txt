@@ -1,13 +1,12 @@
-zavrsiti about us stranu
+-- Dizajniranje stvari --
 
-poceti index stranu
-
+sve nebitne strane
 staviti da cart ima neku tranziciju
 staviti da help ima neku tranziciju
 dodati na show detailed description u item tranziciju i fixovati kada se promeni flavor nakon kliktanja desc te baci na desc odmah
 
-pagination u shopu (16 itema)
-pagination u comments (5 comms)
+
+-- Tehnicke stvari --
 
 search
 

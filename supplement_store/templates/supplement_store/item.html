@@ -184,7 +184,7 @@
             {% if reviews %}
                 {% for review in reviews %}
                     <div class="each-review">
-                        <p id="review-username">{{review.user.username}} </p>
+                        <p id="review-username">{{review.user.username}}</p>
                         <p id="review-timestamp">on {{review.timestamp}}</p>
                         {% for i in 5|star_range %}
                             {% if i < review.rating %}
@@ -197,6 +197,12 @@
                     </div>
                     <hr>
                 {% endfor %}
+
+                {% if total_reviews > count %}
+                    <div id="load-more-comments">
+                        <a href="?count={{count|add:'5'}}#comments" id="load-more-comments-button">Load more comments</a>
+                    </div>
+                {% endif %}
             {% else %}
                 <div>No comments and reviews yet</div>
             {% endif %}

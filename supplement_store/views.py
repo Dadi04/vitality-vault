@@ -15,6 +15,7 @@ from django.http import JsonResponse
 from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists
 from django.db.models.functions import RowNumber
 from django.conf import settings
+from django.core.paginator import Paginator
 
 from paypal.standard.forms import PayPalPaymentsForm
 import stripe
@@ -189,13 +190,23 @@ def supplements(request):
 
     items = attach_review_data(queryset)
 
+    paginator = Paginator(items, 12)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    query_params = request.GET.copy()
+    if 'page' in query_params:
+        query_params.pop('page')
+    query_params = query_params.urlencode()
+
     return render(request, "supplement_store/shop.html", {
-        "items": items,
+        "items": page_obj,
         "categories": Item.objects.filter().values_list('category', flat=True).distinct(),
         "subcategories": Item.objects.filter().values_list('subcategory', flat=True).distinct(),
         "flavors": Item.objects.filter().values_list('flavor', flat=True).distinct(),
         "brands": Item.objects.filter().values_list('brand', flat=True).distinct(),
         "current_sort": sort_option,
+        "query_params": query_params,
     })
 
 def shop_by_category(request, category):
@@ -211,14 +222,24 @@ def shop_by_category(request, category):
         queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
 
     items = attach_review_data(queryset)
+
+    paginator = Paginator(items, 12)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    query_params = request.GET.copy()
+    if 'page' in query_params:
+        query_params.pop('page')
+    query_params = query_params.urlencode()
  
     return render(request, "supplement_store/shop.html", {
-        "items": items,
+        "items": page_obj,
         "categories": Item.objects.filter(category=category).values_list('category', flat=True).distinct(),
         "subcategories": Item.objects.filter(category=category).values_list('subcategory', flat=True).distinct(),
         "flavors": Item.objects.filter(category=category).values_list('flavor', flat=True).distinct(),
         "brands": Item.objects.filter(category=category).values_list('brand', flat=True).distinct(),
         "current_sort": sort_option,
+        "query_params": query_params,
     })
 
 def shop_by_brand(request, brand):
@@ -235,13 +256,23 @@ def shop_by_brand(request, brand):
 
     items = attach_review_data(queryset)
 
+    paginator = Paginator(items, 12)
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+
+    query_params = request.GET.copy()
+    if 'page' in query_params:
+        query_params.pop('page')
+    query_params = query_params.urlencode()
+
     return render(request, "supplement_store/shop.html", {
-        "items": items,
+        "items": page_obj,
         "categories": Item.objects.filter(brand=brand).values_list('category', flat=True).distinct(),
         "subcategories": Item.objects.filter(brand=brand).values_list('subcategory', flat=True).distinct(),
         "flavors": Item.objects.filter(brand=brand).values_list('flavor', flat=True).distinct(),
         "brands": Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct(),
         "current_sort": sort_option,
+        "query_params": query_params,
     })
 
 def shop_by_itemname(request, itemname):
@@ -284,8 +315,14 @@ def shop_by_itemname(request, itemname):
         similar_items = [item for item in similar_items if item.fullname not in items_fullnames]
     else:
         similar_items = None
-    reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
-    average_review = reviews.aggregate(Avg('rating'))['rating__avg']
+    all_reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
+    try:
+        count = int(request.GET.get('count', 5))
+    except ValueError:
+        count = 5
+    reviews = all_reviews[:count]
+
+    average_review = all_reviews.aggregate(Avg('rating'))['rating__avg']
 
     return render(request, "supplement_store/item.html", {
         "item_chosen": item_chosen,
@@ -293,6 +330,8 @@ def shop_by_itemname(request, itemname):
         "reviews": reviews,
         "average_review": average_review,
         "similar_items": similar_items,
+        "count": count,
+        "total_reviews": all_reviews.count(),
     })
 """ End of filtering logic """
 
