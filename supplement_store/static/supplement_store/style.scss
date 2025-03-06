@@ -1,3 +1,4 @@
+@use "sass:color";
 body {
     background-color: #fff;
     margin: 0;
@@ -2473,6 +2474,151 @@ footer {
             display: flex;
             width: 400px;
             justify-content: center;
+        }
+    }
+}
+
+
+$primary-color: #bbbbbb;
+$secondary-color: orange;
+$text-color: #333;
+$background-color: #f4f4f4;
+$box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+#about {
+    width: 100%;
+    color: $text-color;
+
+    #section1 {
+        text-align: center;
+        padding: 3rem 0;
+        background: linear-gradient(
+            135deg,
+            color.scale($primary-color, $lightness: 20%),
+            color.scale($primary-color, $lightness: 40%)
+        );
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        p {
+            font-size: 1rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        #box-section {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 2rem;
+
+        .box {
+            background-color: #fff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: $box-shadow;
+            flex: 1 1 300px;
+            max-width: 300px;
+
+            .circle1 {
+                background-color: $secondary-color;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1rem;
+            
+                .circle2 {
+                    background-color: color.scale($secondary-color, $lightness: -10%);
+                    width: 60px;
+                    height: 60px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                
+                    .circle3 {
+                        background-color: color.scale($secondary-color, $lightness: 20%);
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                
+                        p {
+                            color: #fff;
+                            font-weight: bold;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+            
+                .under-box {
+                    h3 {
+                        font-size: 1.25rem;
+                        margin-bottom: 0.5rem;
+                    }
+                    p {
+                        font-size: 0.95rem;
+                    }
+                }
+            }
+        }
+    }
+
+    #section2, #section3 {
+        padding: 3rem 0;
+        
+        #left2, #right3 {
+            flex: 1;
+            padding: 1rem;
+            
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 1rem;
+            }
+            
+            p {
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+        }
+    }
+  
+    #section2 {
+        background-color: #fff;
+
+        #left2 {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            p {
+                width: 80%;
+            }
+        }
+    }
+
+    #section3 {
+        background-color: color.scale($background-color, $lightness: 10%);
+
+        #right3 {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+
+            p {
+                width: 80%;
+                text-align: right;
+            }
         }
     }
 }
