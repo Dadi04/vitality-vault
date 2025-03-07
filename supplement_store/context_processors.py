@@ -2,6 +2,8 @@ from django.db.models import F, Sum, Case, When, DecimalField
 
 from supplement_store.models import Cart, Wishlist, Item
 
+from .countries import COUNTRIES
+
 def give_items(request):
     if request.user.is_authenticated:
         cart_items = (
@@ -27,6 +29,7 @@ def give_items(request):
     return {
         "brands_list": Item.BRANDS,
         "categories_list": Item.CATEGORIES,
+        "countries_list": COUNTRIES.items(),
         "items_in_cart": cart_items,
         "items_in_wishlist": wishlist_items
     }

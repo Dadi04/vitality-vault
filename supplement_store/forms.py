@@ -67,5 +67,4 @@ class ShippingInformationForm(forms.Form):
     zipcode = forms.CharField(label='Zip/Postcode', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'Zip/Postcode'}), error_messages={'required': 'Please enter your zipcode.'})
     state = forms.CharField(label='State/Province', widget=forms.TextInput(attrs={'class': 'shipping-information', 'placeholder': 'State/Province'}), required=False)
     country = forms.ChoiceField(choices=COUNTRIES.items(), label='Country', widget=forms.Select(attrs={'class': 'shipping-information'}), error_messages={'required': 'Please enter your country.'})
-    payment_method = forms.ChoiceField(choices=[("", "Choose a payment method"),("PayPal", "PayPal"),("Stripe", "Stripe"),("Credit Card", "Credit Card")], label='Payment Method', widget=forms.Select(attrs={'class': 'shipping-information'}), error_messages={'required': 'Please select a payment method.'}
-)
+    payment_method = forms.ChoiceField(choices=[("", "Choose a payment method"),("PayPal", "PayPal"),("Stripe", "Stripe")], label='Payment Method', widget=forms.Select(attrs={'class': 'shipping-information'}), error_messages={'required': 'Please select a payment method.'})

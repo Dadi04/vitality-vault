@@ -154,12 +154,28 @@ def comment(request, username, itemname):
 
 @login_required
 def account(request):
+    transactions = Transaction.objects.filter(user=request.user)
     return render(request, "supplement_store/account.html", {
-        "transactions": Transaction.objects.filter(user=request.username),
+        "transactions": transactions,
+        "user": request.user,
+        "items": TransactionItem.objects.filter(transaction__in=transactions),
     })
 
-def reset_password(request):
-    return render(request, "supplement_store/reset_password.html")
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        user = User.objects.get(username=request.user.username)
+        user.email = request.POST.get('email', '')
+        user.address = request.POST.get('address', '')
+        user.city = request.POST.get('city', '')
+        user.state = request.POST.get('state', '')
+        user.country = request.POST.get('country', '')
+        user.zipcode = request.POST.get('zipcode', '')
+        user.phone = request.POST.get('phone', '')
+        user.birth = request.POST.get('birth', '')
+        user.save()
+
+    return redirect('account')
 """ End of Account logic """
 
 """ Filtering logic """
@@ -572,6 +588,8 @@ def payment_done(request):
     for t_item in transaction.transactionitem_set.all():
         item = t_item.item
         item.quantity -= t_item.quantity
+        if item.quantity == 0:
+            item.is_available = False
         item.popularity += 1
         item.save()
         item_list.append(f'{t_item.item.name} (x{t_item.quantity}) - ${t_item.item.price * t_item.quantity}')

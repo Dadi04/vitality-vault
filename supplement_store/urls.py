@@ -12,6 +12,7 @@ urlpatterns = [
     path('register', views.register_view, name="register_view"),
     path('logout', views.logout_view, name="logout_view"),
     path('account', views.account, name="account"),
+    path('edit_profile', views.edit_profile, name="edit_profile"),
     path('wishlist', views.wishlist, name="wishlist"),
     path('add_to_wishlist', views.add_to_wishlist, name="add_to_wishlist"),
     path('remove_wishlist', views.remove_wishlist, name="remove_wishlist"),
@@ -50,7 +51,7 @@ urlpatterns = [
     path('category/<str:category>', views.shop_by_category, name="shop_by_category"),
     path('<str:itemname>', views.shop_by_itemname, name="shop_by_itemname"),
     path('comment/<str:username>/<str:itemname>', views.comment, name="comment"),
-
+    
     path('password_reset/', CustomPasswordResetView.as_view(
         template_name='supplement_store/password_reset_templates/password_reset_form.html', 
         email_template_name='supplement_store/password_reset_templates/password_reset_email.html', 
