@@ -154,7 +154,9 @@ def comment(request, username, itemname):
 
 @login_required
 def account(request):
-    return render(request, "supplement_store/account.html")
+    return render(request, "supplement_store/account.html", {
+        "transactions": Transaction.objects.filter(user=request.username),
+    })
 
 def reset_password(request):
     return render(request, "supplement_store/reset_password.html")
@@ -462,24 +464,25 @@ def summary(request):
         initial_data = request.session.get('shipping_info', {})
         form = ShippingInformationForm(initial=initial_data)
 
-    shipping_info = request.session.get('shipping_info', {})    
+    shipping_info = request.session.get('shipping_info')    
     return render(request, "supplement_store/summary.html", {
-        "email": shipping_info.get("email", ""),
-        "name": shipping_info.get("first_name", ""),
-        "surname": shipping_info.get("last_name", ""),
-        "address": shipping_info.get("address", ""),
-        "city": shipping_info.get("city", ""),
+        "email": shipping_info.get("email"),
+        "name": shipping_info.get("first_name"),
+        "surname": shipping_info.get("last_name"),
+        "address": shipping_info.get("address"),
+        "city": shipping_info.get("city"),
         "state": shipping_info.get("state", ""),
-        "country": shipping_info.get("country", ""),
-        "zipcode": shipping_info.get("zipcode", ""),
-        "phone": shipping_info.get("phone", ""),
-        "payment_method": shipping_info.get("payment_method", ""),
+        "country": shipping_info.get("country"),
+        "zipcode": shipping_info.get("zipcode"),
+        "phone": shipping_info.get("phone"),
+        "payment_method": shipping_info.get("payment_method"),
         "items": items,
     })
 
 @login_required
 def create_new_order(request):
     items_in_cart = Cart.objects.filter(user=request.user, in_cart=True)
+    shipping_info = request.session.get('shipping_info')
     if not items_in_cart:
         return redirect('shopping_cart')
     
@@ -494,9 +497,17 @@ def create_new_order(request):
         total_price += item.price * quantity
     
     transaction.total_price = total_price
+    transaction.email = shipping_info.get("email")
+    transaction.first_name = shipping_info.get("first_name")
+    transaction.last_name = shipping_info.get("last_name")
+    transaction.phone = shipping_info.get("phone")
+    transaction.address = shipping_info.get("address")
+    transaction.city = shipping_info.get("city")
+    transaction.zipcode = shipping_info.get("zipcode")
+    transaction.state = shipping_info.get("state", "")
+    transaction.country = shipping_info.get("country")
     transaction.save()
 
-    shipping_info = request.session.get('shipping_info', {})
     payment_method = shipping_info.get("payment_method", "").lower()
     request.session['transaction_id'] = transaction.id
     if payment_method == 'paypal':
