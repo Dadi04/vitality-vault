@@ -43,6 +43,12 @@ def brands(request):
     return render(request, "supplement_store/brands.html")
 
 def contact(request):
+    if request.method == 'POST':
+        email_title = request.POST.get('email-title')
+        email_body = request.POST.get('email-body')
+        email_address = request.POST.get('email-address')
+        email = EmailMessage(email_title, email_body, from_email=email_address ,to=['dadica.petkovic@gmail.com'])
+        email.send()
     return render(request, "supplement_store/contact.html")
 
 """ Account logic """
