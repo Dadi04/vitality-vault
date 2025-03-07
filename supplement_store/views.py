@@ -342,7 +342,7 @@ def search_items(request):
                 Q(name__icontains=query) |
                 Q(brand__icontains=query) |
                 Q(category__icontains=query)
-            ).values('id', 'name', 'brand', 'price')
+            ).order_by('-popularity')[:5].values('id', 'fullname', 'name', 'brand', 'flavor', 'price', 'main_image')
         )
     else:
         items = []

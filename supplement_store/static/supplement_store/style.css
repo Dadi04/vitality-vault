@@ -30,17 +30,17 @@ nav #top {
   gap: 35px;
   color: white;
 }
-nav #top #search-div {
+nav #top #search-div #search-main {
   display: flex;
   align-items: center;
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
 }
-nav #top #search-div .fa-search {
+nav #top #search-div #search-main .fa-search {
   margin-right: 5px;
 }
-nav #top #search-div #search-bar {
+nav #top #search-div #search-main #search-bar {
   padding: 5px;
   border: none;
   outline: none;
@@ -74,6 +74,30 @@ nav #top .right .counter {
   border-radius: 100%;
   position: absolute;
   font-size: 15px;
+}
+nav #search-results {
+  padding: 10px 0;
+  width: 880px;
+  margin-left: 18%;
+  z-index: 1000;
+  position: absolute;
+  background-color: #111;
+  border-top: #fff 1px solid;
+}
+nav #search-results .search-item {
+  margin-left: 5%;
+  display: flex;
+  height: 100px;
+  align-items: center;
+}
+nav #search-results .search-item .item-link {
+  display: flex;
+  align-items: center;
+  color: #fff;
+  text-decoration: none;
+}
+nav #search-results .search-item .item-link span {
+  margin-left: 10px;
 }
 nav #bottom {
   width: 100%;

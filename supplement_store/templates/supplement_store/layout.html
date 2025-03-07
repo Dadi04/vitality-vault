@@ -17,11 +17,10 @@
             <div id="top">
                 <a href="{% url 'index' %}"><img src="{% static 'supplement_store/images/logo-main.png' %}" alt="logo" width="150px"></a>
                 <div id="search-div">
-                    <i class="fa fa-search fa-solid"></i>
-                    <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search-bar" autocomplete="off">
-                </div>
-                <div id="search-results">
-
+                    <div id="search-main">
+                        <i class="fa fa-search fa-solid"></i>
+                        <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search-bar" autocomplete="off">
+                    </div>
                 </div>
                 {% if user.is_authenticated  %}
                     <div class="right">
@@ -58,6 +57,9 @@
                         </a>
                     </div>
                 {% endif %}
+            </div>
+            <div id="search-results" style="visibility: hidden;">
+
             </div>
             <div id="bottom">
                 <ul id="first">
@@ -442,15 +444,50 @@
                             resultsContainer.innerHTML = '';
 
                             data.items.forEach(item => {
+                                var baseImageName = item.main_image.split('/').pop();
+                                console.log(baseImageName)
+
+                                let itemImage = document.createElement('img');
+                                itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
+                                itemImage.alt = `${baseImageName}`;
+                                itemImage.style.height = '100px';
+                                itemImage.style.width = '100px';
+
+                                let itemSpan = document.createElement('span');
+                                itemSpan.textContent = `${item.fullname}, Flavor: ${item.flavor}`;
+
+                                let itemLink = document.createElement('a');
+                                itemLink.href = `/${item.fullname}?flavor=${item.flavor}`;
+                                itemLink.appendChild(itemImage);
+                                itemLink.appendChild(itemSpan);
+                                itemLink.classList.add('item-link');
+
                                 let itemDiv = document.createElement('div');
                                 itemDiv.classList.add('search-item');
-                                itemDiv.textContent = `${item.name} - ${item.brand} - $${item.price}`;
+                                itemDiv.appendChild(itemLink);
                                 resultsContainer.appendChild(itemDiv);
-                            })
+                            });
+                            if (resultsContainer.innerHTML.trim() === '') {
+                                resultsContainer.style.visibility = 'hidden';
+                            } else {
+                                resultsContainer.style.visibility = 'visible';
+                            }
                         })
                         .catch(error => {
                             console.error('Error fetching search results:', error);
                         });
+                });
+
+                document.addEventListener('click', function(event) {
+                    const clickedInside = searchInput.contains(event.target) || resultsContainer.contains(event.target);
+
+                    if (!clickedInside) {
+                        resultsContainer.style.visibility = 'hidden';
+                    } else if (searchInput.contains(event.target)) {
+                        if (resultsContainer.innerHTML.trim() !== '') {
+                            resultsContainer.style.visibility = 'visible';
+                        }
+                    }
                 });
             });
         </script>
