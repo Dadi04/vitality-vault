@@ -777,6 +777,7 @@ def bulk_add_items(request):
                     is_new = row['Is New?'],
                     popularity = row['Popularity']
                 )
+                item.save()
 
                 attach_image(item.main_image, row['Main Image'])
                 attach_image(item.image1, row['Image1'])

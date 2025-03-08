@@ -79,6 +79,7 @@ class Item(models.Model):
     size = models.CharField(max_length=3, null=True, blank=True)
     color = models.CharField(max_length=10, null=True, blank=True)
     is_new = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=timezone.now)
     popularity = models.IntegerField(default=0)
     main_image = models.ImageField(upload_to=item_image_upload_path, max_length=255)
     image1 = models.ImageField(upload_to=item_image_upload_path, blank=True, null=True, max_length=255)
