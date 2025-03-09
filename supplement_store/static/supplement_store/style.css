@@ -258,7 +258,7 @@ footer #first table {
 }
 footer #first table th, footer #first table td {
   padding: 10px 0;
-  text-align: left;
+  text-align: center;
 }
 footer #first table th {
   width: 25%;
@@ -489,6 +489,10 @@ footer #third #third-third #payment-third-third {
   z-index: 1000;
   bottom: 1%;
   right: 1%;
+  transition: transform 0.3s ease;
+}
+#support-icon:hover {
+  transform: scale(1.1);
 }
 
 #login {
@@ -730,7 +734,6 @@ footer #third #third-third #payment-third-third {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px 0;
   width: 100%;
   border: 1px solid #ccc;
   background-color: #fff;
@@ -739,7 +742,7 @@ footer #third #third-third #payment-third-third {
 #slide-show #image-slider {
   position: relative;
   width: 100%;
-  height: 720px;
+  height: 680px;
   overflow: hidden;
 }
 #slide-show #image-slider .slides {
@@ -819,6 +822,50 @@ footer #third #third-third #payment-third-third {
 }
 #slide-show #under-slide-show ul .is_active {
   color: rgba(0, 0, 0, 0.6);
+}
+
+#is-new h1, #is-on-sale h1, #trending-items h1 {
+  text-align: center;
+}
+
+#shop-all-supplements h1 {
+  text-align: center;
+}
+#shop-all-supplements p {
+  text-align: center;
+  margin: 0;
+  font-size: 18px;
+}
+#shop-all-supplements #shop-all-supplements-button {
+  width: 200px;
+  padding: 10px;
+  border: none;
+  outline: none;
+  background: #2f2f2f;
+  color: #fff;
+  font-size: 15px;
+  border-radius: 5px;
+  text-align: center;
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+  display: block;
+  margin: 15px auto 30px auto;
+}
+#shop-all-supplements #shop-all-supplements-button:hover {
+  background-color: #444;
+}
+
+#success-stories #success-stories-left {
+  width: 700px;
+  margin-left: 20px;
+}
+#success-stories #success-stories-left h1 {
+  margin-bottom: 0;
+}
+#success-stories #success-stories-left h3 {
+  margin-top: 5px;
 }
 
 .password-reset {
@@ -1034,10 +1081,14 @@ footer #third #third-third #payment-third-third {
 #shop #right-side .shop-right .item {
   max-width: calc(25% - 30px);
   width: 100%;
-  height: 400px;
+  height: 350px;
   text-align: center;
   position: relative;
   box-sizing: border-box;
+  transition: 0.25s box-shadow ease-in-out;
+}
+#shop #right-side .shop-right .item:hover {
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
 }
 #shop #right-side .shop-right .item .new {
   position: absolute;

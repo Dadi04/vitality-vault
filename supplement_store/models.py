@@ -6,20 +6,14 @@ from decimal import Decimal
 
 from .countries import COUNTRIES
 
-# Create your models here.
-
 def item_image_upload_path(instance, filename):
     return f'supplement_store/static/supplement_store/images/product_images/{instance.fullname}/{instance.id}_{filename}'
 
 def slide_show_upload_path(instance, filename):
     return f'supplement_store/static/supplement_store/images/slide_show_images/{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}_{filename}'
 
-# napriti da se is new skida nakon 1 meseca
-# napraviti da se sale stavi na sale start date i da se skine na sale end date
-
 class User(AbstractUser):
     is_support = models.BooleanField(default=False)
-    remember_me = models.BooleanField(default=True)
     address = models.CharField(null=True, blank=True)
     city = models.CharField(null=True, blank=True)
     state = models.CharField(null=True, blank=True)
@@ -40,8 +34,6 @@ class Item(models.Model):
         ('Weight Loss', 'Weight Loss'),
         ('Vitamins and Minerals','Vitamins and Minerals'),
         ('Meal Replacements','Meal Replacements'),
-        ('Clothing','Clothing'),
-        ('Workout Accessories','Workout Accessories'),
     )
     BRANDS = (
         ('IronMaxx','IronMaxx'),
@@ -55,9 +47,6 @@ class Item(models.Model):
         ('Gorilla Mind','Gorilla Mind'),
         ('HTLT','HTLT'),
         ('Quest Nutrition','Quest Nutrition'),
-        ('Gymshark','Gymshark'),
-        ('Under Armour','Under Armour'),
-        ('Retaliation Project','Retaliation Project'),
     )
 
     name = models.CharField(max_length=40)

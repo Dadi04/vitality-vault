@@ -289,26 +289,35 @@
         const leftArrow = document.getElementById('left-arrow');
         const rightArrow = document.getElementById('right-arrow');
         const similarItems = document.getElementById('similar-items');
-        const itemWidth = 300;
-        const visibleItems = 4;
-        const totalItems = document.querySelectorAll('.similar-item').length;
-        const totalScrollWidth = totalItems * itemWidth;
-        let scrollPosition = 0;
 
-        const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
+        if (similarItems) {
+            const itemWidth = 300;
+            const visibleItems = 4;
+            const totalItems = document.querySelectorAll('.similar-item').length;
+            const totalScrollWidth = totalItems * itemWidth;
+            let scrollPosition = 0;
+            
+            const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
 
-        leftArrow.addEventListener("click", () => {
-            if (scrollPosition > 0) {
-                scrollPosition -= itemWidth;
-                similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+            if (leftArrow && rightArrow) {
+                leftArrow.addEventListener("click", () => {
+                    if (scrollPosition > 0) {
+                        scrollPosition -= itemWidth;
+                        similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+                    }
+                });
+
+                rightArrow.addEventListener("click", () => {
+                    if (scrollPosition < maxScrollPosition) {
+                        scrollPosition += itemWidth;
+                        similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+                    }
+                });
             }
-        });
+        }
 
-        rightArrow.addEventListener("click", () => {
-            if (scrollPosition < maxScrollPosition) {
-                scrollPosition += itemWidth;
-                similarItems.style.transform = `translateX(-${scrollPosition}px)`;
-            }
-        });
+        if (window.location.hash === '#description') {
+            history.replaceState(null, null, window.location.pathname);
+        }
     </script>
 {% endblock %}

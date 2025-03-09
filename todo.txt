@@ -1,11 +1,6 @@
 -- Dizajniranje stvari --
 
-sve nebitne strane
-staviti da cart ima neku tranziciju
-staviti da help ima neku tranziciju
-dodati na show detailed description u item tranziciju i fixovati kada se promeni flavor nakon kliktanja desc te baci na desc odmah
-
-
--- Tehnicke stvari --
-
-fixovati remember me -> cookies ili session
+index
+staviti da cart, search-bar i chatting ima neku tranziciju
+responsive
+dodati milion itema

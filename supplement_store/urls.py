@@ -45,7 +45,6 @@ urlpatterns = [
     path('answering/<str:username>', views.answering, name="answering"),
     path('close/<str:username>', views.close, name="close"),
     path('search_items', views.search_items, name="search_items"),
-    path('clothing', views.clothing, name="clothing"),
     path('supplements', views.supplements, name="supplements"),
     path('brand/<str:brand>', views.shop_by_brand, name="shop_by_brand"),
     path('category/<str:category>', views.shop_by_category, name="shop_by_category"),

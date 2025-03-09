@@ -292,13 +292,16 @@ footer {
 
         table {
             width: 100%;
+            
             th, td {
                 padding: 10px 0;
-                text-align: left;
+                text-align: center;
             }
+
             th {
                 width: 25%;
             }
+
             td {
                 width: 25%;
                 a {
@@ -563,6 +566,11 @@ footer {
     z-index: 1000;
     bottom: 1%;
     right: 1%;
+    transition: transform 0.3s ease;
+
+    &:hover {
+        transform: scale(1.1);
+    }
 }   
 
 #login {
@@ -840,7 +848,6 @@ footer {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 10px 0;
     width: 100%;
 	border: 1px solid #ccc;
 	background-color: #fff;
@@ -849,7 +856,7 @@ footer {
     #image-slider {
         position: relative;
         width: 100%;
-        height: 720px;
+        height: 680px;
         overflow: hidden;
     
         .slides {
@@ -941,6 +948,63 @@ footer {
             }
         }
     }
+}
+
+#is-new, #is-on-sale, #trending-items {
+    h1 {
+        text-align: center;
+    }
+}
+
+#shop-all-supplements {
+    h1 {
+        text-align: center;
+    }
+
+    p {
+        text-align: center;
+        margin: 0;
+        font-size: 18px;
+    }
+
+    #shop-all-supplements-button {
+        width: 200px;
+        padding: 10px;
+        border: none;
+        outline: none;
+        background: #2f2f2f;
+        color: #fff;
+        font-size: 15px;
+        border-radius: 5px;
+        text-align: center;
+        box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+        position: relative;
+        overflow: hidden;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin: 15px auto 30px auto;
+
+        &:hover {
+            background-color: #444;
+        }
+    }
+}
+
+#success-stories {
+
+    #success-stories-left {
+        width: 700px;
+        margin-left: 20px;
+
+        h1 {
+            margin-bottom: 0;
+        }
+
+        h3 {
+            margin-top: 5px;
+        }
+    }
+    
 }
 
 .password-reset {
@@ -1184,10 +1248,15 @@ footer {
             .item {
                 max-width: calc(25% - 30px);
                 width: 100%; 
-                height: 400px;
+                height: 350px;
                 text-align: center;
                 position: relative;
                 box-sizing: border-box;
+                transition: 0.25s box-shadow ease-in-out;
+
+                &:hover {
+                    box-shadow: 0 6px 20px -5px rgba(0,0,0,0.4);
+                }
     
                 .new {
                     position: absolute;

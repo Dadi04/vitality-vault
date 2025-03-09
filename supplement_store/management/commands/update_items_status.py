@@ -10,11 +10,20 @@ class Command(BaseCommand):
         today = timezone.now().date()
         items = Item.objects.all()
         for item in items:
-            if item.created_at and today >= (item.created_at.date() + timedelta(days=30)):
-                if item.is_new:
-                    item.is_new = False
-                    self.stdout.write(f'Item {item.id} status "new" is removed')
-                    item.save(update_fields=['is_new'])
+            if item.created_at:
+                expiry_date = item.created_at.date() + timedelta(days=30)
+                if today < expiry_date:
+                    remaining_days = (expiry_date - today).days
+                    self.stdout.write(
+                        f'Item {item.id} will have "is_new" removed in {remaining_days} days'
+                    )
+                else:
+                    if item.is_new:
+                        item.is_new = False
+                        self.stdout.write(
+                            f'Item {item.id} status "new" is removed'
+                        )
+                        item.save(update_fields=['is_new'])
 
             if item.sale_start_date and item.sale_end_date:
                 if not (item.sale_start_date <= today <= item.sale_end_date):

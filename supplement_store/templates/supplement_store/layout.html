@@ -87,18 +87,6 @@
                             <hr>
                         </ul>
                     </li>
-                    <li id="clothing"><a href="{% url 'clothing' %}">Clothing & Accessories</a>
-                        <ul class="second">
-                            <li><a href="">Tanks, T-Shirts & Shirts</a></li>
-                            <li><a href="">Hoodies & Sweatshirts</a></li>
-                            <li><a href="">Pants & Shorts</a></li>
-                            <li><a href="">Hats & Headbands</a></li>
-                            <li><a href="">Belts, Straps, Wraps & Grips</a></li>
-                            <li><a href="">Bags & Shakers</a></li>
-                            <li><a href="">Other Gym Equipment</a></li>
-                            <hr>
-                        </ul>
-                    </li>
                     <li><a href="{% url 'about' %}">About</a></li>
                     <li><a href="{% url 'contact' %}">Contact</a></li>
                 </ul>
@@ -317,77 +305,67 @@
                 }
             });
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('search-bar');
-                const resultsContainer = document.getElementById('search-results');
+            const searchInput = document.getElementById('search-bar');
+            const resultsContainer = document.getElementById('search-results');
+            searchInput.addEventListener('input', function() {
+                const query = this.value;
 
-                searchInput.addEventListener('input', function() {
-                    const query = this.value;
+                fetch(`/search_items?q=${encodeURIComponent(query)}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        resultsContainer.innerHTML = '';
 
-                    fetch(`/search_items?q=${encodeURIComponent(query)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            resultsContainer.innerHTML = '';
+                        data.items.forEach(item => {
+                            var baseImageName = item.main_image.split('/').pop();
+                            console.log(baseImageName)
 
-                            data.items.forEach(item => {
-                                var baseImageName = item.main_image.split('/').pop();
-                                console.log(baseImageName)
+                            let itemImage = document.createElement('img');
+                            itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
+                            itemImage.alt = `${baseImageName}`;
+                            itemImage.style.height = '100px';
+                            itemImage.style.width = '100px';
 
-                                let itemImage = document.createElement('img');
-                                itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
-                                itemImage.alt = `${baseImageName}`;
-                                itemImage.style.height = '100px';
-                                itemImage.style.width = '100px';
+                            let itemSpan = document.createElement('span');
+                            itemSpan.textContent = `${item.fullname}, Flavor: ${item.flavor}`;
 
-                                let itemSpan = document.createElement('span');
-                                itemSpan.textContent = `${item.fullname}, Flavor: ${item.flavor}`;
+                            let itemLink = document.createElement('a');
+                            itemLink.href = `/${item.fullname}?flavor=${item.flavor}`;
+                            itemLink.appendChild(itemImage);
+                            itemLink.appendChild(itemSpan);
+                            itemLink.classList.add('item-link');
 
-                                let itemLink = document.createElement('a');
-                                itemLink.href = `/${item.fullname}?flavor=${item.flavor}`;
-                                itemLink.appendChild(itemImage);
-                                itemLink.appendChild(itemSpan);
-                                itemLink.classList.add('item-link');
-
-                                let itemDiv = document.createElement('div');
-                                itemDiv.classList.add('search-item');
-                                itemDiv.appendChild(itemLink);
-                                resultsContainer.appendChild(itemDiv);
-                            });
-                            if (resultsContainer.innerHTML.trim() === '') {
-                                resultsContainer.style.visibility = 'hidden';
-                            } else {
-                                resultsContainer.style.visibility = 'visible';
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error fetching search results:', error);
+                            let itemDiv = document.createElement('div');
+                            itemDiv.classList.add('search-item');
+                            itemDiv.appendChild(itemLink);
+                            resultsContainer.appendChild(itemDiv);
                         });
-                });
-
-                document.addEventListener('click', function(event) {
-                    const clickedInside = searchInput.contains(event.target) || resultsContainer.contains(event.target);
-
-                    if (!clickedInside) {
-                        resultsContainer.style.visibility = 'hidden';
-                    } else if (searchInput.contains(event.target)) {
-                        if (resultsContainer.innerHTML.trim() !== '') {
+                        if (resultsContainer.innerHTML.trim() === '') {
+                            resultsContainer.style.visibility = 'hidden';
+                        } else {
                             resultsContainer.style.visibility = 'visible';
                         }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching search results:', error);
+                    });
+            });
+
+            document.addEventListener('click', function(event) {
+                const clickedInside = searchInput.contains(event.target) || resultsContainer.contains(event.target);
+
+                if (!clickedInside) {
+                    resultsContainer.style.visibility = 'hidden';
+                } else if (searchInput.contains(event.target)) {
+                    if (resultsContainer.innerHTML.trim() !== '') {
+                        resultsContainer.style.visibility = 'visible';
                     }
-                });
+                }
             });
 
             {% if not user.is_superuser %}
                 const supportChat = document.getElementById('support-chat');
                 const supportIcon = document.getElementById('support-icon');
-                const minimize = document.getElementById('minimize');
-                const supportMessage = document.getElementById('text-field');
-                const form = document.getElementById('form');
-                const messageInput = document.getElementById('message-input');
-                const sender = document.getElementById('sender');
-
                 let messagesLoaded = false;
-
                 supportIcon.addEventListener('click', () => {
                     supportChat.style.display = 'block';
                     document.getElementById('text-field').focus();
@@ -400,45 +378,51 @@
 
                 }); 
             
+                const minimize = document.getElementById('minimize');    
                 minimize.addEventListener('click', () => {
                     supportChat.style.display = 'none';
                     supportIcon.style.display = 'block';
                 });
 
-                form.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    
-                    const messageText = supportMessage.value;
-                    if (messageText.trim() === '') {
-                        return;
-                    }
-
-                    const message = {
-                        sender: sender.value,
-                        message: messageText,
-                        type: 'support',
-                    }
-
-                    try {
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/x-www-form-urlencoded',
-                                'X-CSRFToken': getCookie('csrftoken'),
-                            },
-                            body: `text-field=${encodeURIComponent(messageText)}`,
-                        });
-
-                        if (response.ok) {
-                            supportMessage.value = '';
-                            displayMessage(message)
-                        } else {
-                            console.error('Failed to send message to server');
+                const form = document.getElementById('form');
+                const sender = document.getElementById('sender');
+                const supportMessage = document.getElementById('text-field');
+                if (form) {
+                    form.addEventListener('submit', async (e) => {
+                        e.preventDefault();
+                        
+                        const messageText = supportMessage.value;
+                        if (messageText.trim() === '') {
+                            return;
                         }
-                    } catch (error) {
-                        console.error('Error sending message:', error);
-                    }
-                });
+
+                        const message = {
+                            sender: sender.value,
+                            message: messageText,
+                            type: 'support',
+                        }
+
+                        try {
+                            const response = await fetch(form.action, {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                    'X-CSRFToken': getCookie('csrftoken'),
+                                },
+                                body: `text-field=${encodeURIComponent(messageText)}`,
+                            });
+
+                            if (response.ok) {
+                                supportMessage.value = '';
+                                displayMessage(message)
+                            } else {
+                                console.error('Failed to send message to server');
+                            }
+                        } catch (error) {
+                            console.error('Error sending message:', error);
+                        }
+                    });
+                }
             {% endif %}
 
             async function loadMessages() {

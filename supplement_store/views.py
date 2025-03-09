@@ -57,7 +57,6 @@ def login_view(request):
         first = request.POST.get('first')
         password = request.POST.get('password')
         remember = request.POST.get('remember')
-
         if '@' in first:
             user = User.objects.get(email=first)
         else:
@@ -65,13 +64,9 @@ def login_view(request):
 
         if user is not None:
             if remember:
-                user.remember_me = True
-                user.save()
                 request.session.set_expiry(1209600)
                 request.session.modified = True
             else:
-                user.remember_me = False
-                user.save()
                 request.session.set_expiry(0)
                 request.session.modified = True
             
@@ -189,22 +184,6 @@ def edit_profile(request):
 """ End of Account logic """
 
 """ Filtering logic """
-def clothing(request):
-    items = Item.objects.filter(size__isnull=False).order_by('name', '-is_available')
-    unique_items = {}
-    final_items = []
-
-    for item in items:
-        if item.fullname not in unique_items:
-            unique_items[item.fullname] = item
-            final_items.append(item) 
-        elif item.is_available:
-            unique_items[item.name] = item
-
-    return render(request, "supplement_store/shop.html", {
-        "items": final_items,
-    })
-
 def supplements(request):
     q_objects = build_query_from_params(request, ['category', 'subcategory', 'flavor', 'brand'])
     queryset = Item.objects.filter(q_objects)
@@ -221,7 +200,7 @@ def supplements(request):
 
     items = attach_review_data(queryset)
 
-    paginator = Paginator(items, 12)
+    paginator = Paginator(items, 16)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -257,7 +236,7 @@ def shop_by_category(request, category):
 
     items = attach_review_data(queryset)
 
-    paginator = Paginator(items, 12)
+    paginator = Paginator(items, 16)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
@@ -293,7 +272,7 @@ def shop_by_brand(request, brand):
 
     items = attach_review_data(queryset)
 
-    paginator = Paginator(items, 12)
+    paginator = Paginator(items, 16)
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
 
