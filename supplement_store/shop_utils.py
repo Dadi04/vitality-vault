@@ -3,7 +3,7 @@ from django.db.models import Avg, Q, Count
 from django.core.files import File
 from django.conf import settings
 
-from .models import Review
+from .models import Review, Item, Cart, Wishlist
 
 import pandas as pd
 import os
@@ -69,3 +69,31 @@ def attach_image(field, image_filename):
                 field.save(os.path.basename(full_image_path), File(f), save=False)
         else:
             print(f"Image not found: {full_image_path}")
+
+def merge_carts(request, user):
+    session_cart = request.session.get("cart", {})
+
+    for item_id, session_qty in session_cart.items():
+        try:
+            item = Item.objects.get(id=item_id)
+        except Item.DoesNotExist:  
+            continue
+
+        cart_entry, created = Cart.objects.get_or_create(user=user, item=item, in_cart=True, defaults={'quantity':session_qty})
+        if not created:
+            cart_entry.quantity += session_qty
+            cart_entry.save()
+    request.session["cart"] = {}
+
+def merge_wishlists(request, user):
+    session_wishlist = request.session.get("wishlist", [])
+
+    for item_id in session_wishlist:
+        try:
+            item = Item.objects.get(id=item_id)
+        except Item.DoesNotExist:
+            continue
+
+        if not Wishlist.objects.filter(user=user, item=item).exists():
+            Wishlist.objects.create(user=user, item=item)
+    request.session["wishlist"] = []

@@ -24,8 +24,30 @@ def give_items(request):
             Wishlist.objects.filter(user=request.user)
         )
     else:
-        cart_items = None
-        wishlist_items = None
+        session_cart = request.session.get("cart", {})
+        cart_items = []
+        for item_id_str, quantity in session_cart.items():
+            try:
+                item = Item.objects.get(id=item_id_str)
+            except Item.DoesNotExist:
+                continue
+            unit_price = item.sale_price if item.sale_price is not None else item.price
+            total_price = unit_price * quantity
+            cart_items.append({
+                "item__id": item.id,
+                "item__name": item.name,
+                "item__weight": item.weight,
+                "item__price": item.price,
+                "item__sale_price": item.sale_price,
+                "item__main_image": item.main_image.url if item.main_image else None,
+                "item__fullname": item.fullname,
+                "item__quantity": item.quantity,
+                "quantity": quantity,
+                "total_quantity": quantity,
+                "total_price": total_price,
+            })
+        wishlist_session = request.session.get("wishlist", [])
+        wishlist_items = Item.objects.filter(id__in=wishlist_session)    
     return {
         "brands_list": Item.BRANDS,
         "categories_list": Item.CATEGORIES,

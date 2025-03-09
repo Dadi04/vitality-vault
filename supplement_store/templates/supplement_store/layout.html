@@ -29,19 +29,19 @@
                             <p>Account</p>
                         </a>
                     </div> 
-                    <div class="right" id="shopping_cart_div">  
-                        <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
-                        <span class="counter" id="counting">{{ items_in_cart|total_items }}</span>
-                        <p id="shopping_cart_text">Cart</p>
-                    </div>
-                    <div class="right">
-                        <a href="{% url 'wishlist' %}">
-                            <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
-                            <span class="counter">{{ items_in_wishlist|total_items }}</span>
-                            <p>Wishlist</p>
-                        </a>
-                    </div>
                 {% endif %}
+                <div class="right" id="shopping_cart_div">  
+                    <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
+                    <span class="counter" id="counting">{{ items_in_cart|total_items }}</span>
+                    <p id="shopping_cart_text">Cart</p>
+                </div>
+                <div class="right">
+                    <a href="{% url 'wishlist' %}">
+                        <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
+                        <span class="counter">{{ items_in_wishlist|total_items }}</span>
+                        <p>Wishlist</p>
+                    </a>
+                </div>
                 {% if user.is_authenticated  %}
                     <div class="right">
                         <a href="{% url 'logout_view' %}">
@@ -301,18 +301,93 @@
             <img src="{% static 'supplement_store/images/support.png' %}" alt="support" width="80px" id="support-icon">
         {% endif %}
         <script>
-            const supportChat = document.getElementById('support-chat');
-            const supportIcon = document.getElementById('support-icon');
-            const minimize = document.getElementById('minimize');
-            const supportMessage = document.getElementById('text-field');
-            const form = document.getElementById('form');
-            const messageInput = document.getElementById('message-input');
-            const chatDiv = document.getElementById('chat');
-            const sender = document.getElementById('sender');
+            const cartIcon = document.getElementById('shopping_cart_icon')
+            const cartParagraph = document.getElementById('shopping_cart_text')
+            const showCartDiv = document.getElementById('show_cart');
+            const counter = document.getElementById('counting');
+            document.addEventListener('click', function(event) {
+                if (event.target == cartIcon || event.target == cartParagraph || event.target == counter) {
+                    showCartDiv.style.visibility = (showCartDiv.style.visibility == 'visible') ? 'hidden' : 'visible';
+                } else if (!showCartDiv.contains(event.target)) {
 
-            let messagesLoaded = false;
+                    if (showCartDiv.style.visibility == 'visible') {
+
+                        showCartDiv.style.visibility = 'hidden';
+                    }
+                }
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                const searchInput = document.getElementById('search-bar');
+                const resultsContainer = document.getElementById('search-results');
+
+                searchInput.addEventListener('input', function() {
+                    const query = this.value;
+
+                    fetch(`/search_items?q=${encodeURIComponent(query)}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            resultsContainer.innerHTML = '';
+
+                            data.items.forEach(item => {
+                                var baseImageName = item.main_image.split('/').pop();
+                                console.log(baseImageName)
+
+                                let itemImage = document.createElement('img');
+                                itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
+                                itemImage.alt = `${baseImageName}`;
+                                itemImage.style.height = '100px';
+                                itemImage.style.width = '100px';
+
+                                let itemSpan = document.createElement('span');
+                                itemSpan.textContent = `${item.fullname}, Flavor: ${item.flavor}`;
+
+                                let itemLink = document.createElement('a');
+                                itemLink.href = `/${item.fullname}?flavor=${item.flavor}`;
+                                itemLink.appendChild(itemImage);
+                                itemLink.appendChild(itemSpan);
+                                itemLink.classList.add('item-link');
+
+                                let itemDiv = document.createElement('div');
+                                itemDiv.classList.add('search-item');
+                                itemDiv.appendChild(itemLink);
+                                resultsContainer.appendChild(itemDiv);
+                            });
+                            if (resultsContainer.innerHTML.trim() === '') {
+                                resultsContainer.style.visibility = 'hidden';
+                            } else {
+                                resultsContainer.style.visibility = 'visible';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching search results:', error);
+                        });
+                });
+
+                document.addEventListener('click', function(event) {
+                    const clickedInside = searchInput.contains(event.target) || resultsContainer.contains(event.target);
+
+                    if (!clickedInside) {
+                        resultsContainer.style.visibility = 'hidden';
+                    } else if (searchInput.contains(event.target)) {
+                        if (resultsContainer.innerHTML.trim() !== '') {
+                            resultsContainer.style.visibility = 'visible';
+                        }
+                    }
+                });
+            });
 
             {% if not user.is_superuser %}
+                const supportChat = document.getElementById('support-chat');
+                const supportIcon = document.getElementById('support-icon');
+                const minimize = document.getElementById('minimize');
+                const supportMessage = document.getElementById('text-field');
+                const form = document.getElementById('form');
+                const messageInput = document.getElementById('message-input');
+                const sender = document.getElementById('sender');
+
+                let messagesLoaded = false;
+
                 supportIcon.addEventListener('click', () => {
                     supportChat.style.display = 'block';
                     document.getElementById('text-field').focus();
@@ -383,6 +458,7 @@
                 }
             }
 
+            const chatDiv = document.getElementById('chat');
             function displayMessage(message) {
                 const messageDiv = document.createElement('div');
                 messageDiv.classList.add('message-div');
@@ -413,83 +489,6 @@
                 const parts = value.split(`; ${name}=`);
                 if (parts.length === 2) return parts.pop().split(';').shift();
             }
-
-            const cartIcon = document.getElementById('shopping_cart_icon')
-            const cartParagraph = document.getElementById('shopping_cart_text')
-            const showCartDiv = document.getElementById('show_cart');
-            const counter = document.getElementById('counting');
-            document.addEventListener('click', function(event) {
-                if (event.target == cartIcon || event.target == cartParagraph || event.target == counter) {
-                    showCartDiv.style.visibility = (showCartDiv.style.visibility == 'visible') ? 'hidden' : 'visible';
-                } else if (!showCartDiv.contains(event.target)) {
-
-                    if (showCartDiv.style.visibility == 'visible') {
-
-                        showCartDiv.style.visibility = 'hidden';
-                    }
-                }
-            });
-
-
-            document.addEventListener('DOMContentLoaded', function() {
-                const searchInput = document.getElementById('search-bar');
-                const resultsContainer = document.getElementById('search-results');
-
-                searchInput.addEventListener('input', function() {
-                    const query = this.value;
-
-                    fetch(`/search_items?q=${encodeURIComponent(query)}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            resultsContainer.innerHTML = '';
-
-                            data.items.forEach(item => {
-                                var baseImageName = item.main_image.split('/').pop();
-                                console.log(baseImageName)
-
-                                let itemImage = document.createElement('img');
-                                itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
-                                itemImage.alt = `${baseImageName}`;
-                                itemImage.style.height = '100px';
-                                itemImage.style.width = '100px';
-
-                                let itemSpan = document.createElement('span');
-                                itemSpan.textContent = `${item.fullname}, Flavor: ${item.flavor}`;
-
-                                let itemLink = document.createElement('a');
-                                itemLink.href = `/${item.fullname}?flavor=${item.flavor}`;
-                                itemLink.appendChild(itemImage);
-                                itemLink.appendChild(itemSpan);
-                                itemLink.classList.add('item-link');
-
-                                let itemDiv = document.createElement('div');
-                                itemDiv.classList.add('search-item');
-                                itemDiv.appendChild(itemLink);
-                                resultsContainer.appendChild(itemDiv);
-                            });
-                            if (resultsContainer.innerHTML.trim() === '') {
-                                resultsContainer.style.visibility = 'hidden';
-                            } else {
-                                resultsContainer.style.visibility = 'visible';
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error fetching search results:', error);
-                        });
-                });
-
-                document.addEventListener('click', function(event) {
-                    const clickedInside = searchInput.contains(event.target) || resultsContainer.contains(event.target);
-
-                    if (!clickedInside) {
-                        resultsContainer.style.visibility = 'hidden';
-                    } else if (searchInput.contains(event.target)) {
-                        if (resultsContainer.innerHTML.trim() !== '') {
-                            resultsContainer.style.visibility = 'visible';
-                        }
-                    }
-                });
-            });
         </script>
 
         {% block script %}

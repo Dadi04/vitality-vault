@@ -12,7 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.contrib.auth.forms import SetPasswordForm
 from django.http import JsonResponse
-from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists
+from django.db.models import Subquery, OuterRef, F, Avg, Sum, Q, Case, When, DecimalField, Window, Exists, BooleanField
 from django.db.models.functions import RowNumber
 from django.conf import settings
 from django.core.paginator import Paginator
@@ -26,7 +26,7 @@ from decimal import Decimal
 
 import pandas as pd
 
-from .shop_utils import apply_sorting, attach_review_data, build_query_from_params, attach_image
+from .shop_utils import apply_sorting, attach_review_data, build_query_from_params, attach_image, merge_carts, merge_wishlists
 from .forms import RegistrationForm, ItemForm, ShippingInformationForm
 from .countries import COUNTRIES
 from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, Cart, Wishlist, Transaction, TransactionItem, Newsletter
@@ -54,9 +54,9 @@ def contact(request):
 """ Account logic """
 def login_view(request):
     if request.method == 'POST':
-        first = request.POST.get("first")
-        password = request.POST.get("password")
-        remember = request.POST.get("remember")
+        first = request.POST.get('first')
+        password = request.POST.get('password')
+        remember = request.POST.get('remember')
 
         if '@' in first:
             user = User.objects.get(email=first)
@@ -74,7 +74,10 @@ def login_view(request):
                 user.save()
                 request.session.set_expiry(0)
                 request.session.modified = True
+            
             login(request, user)
+            merge_carts(request, user)
+            merge_wishlists(request, user)
             return redirect('index')
         else:
             messages.error(request, "Invalid login credentials. Please try again.", extra_tags="login_error")
@@ -136,6 +139,8 @@ def activate_email(request, uidb64, token):
         user.save()
         
         login(request, user)
+        merge_carts(request, user)
+        merge_wishlists(request, user)
         return redirect('index')
     return redirect('register_view')
 
@@ -163,7 +168,6 @@ def account(request):
     transactions = Transaction.objects.filter(user=request.user)
     return render(request, "supplement_store/account.html", {
         "transactions": transactions,
-        "user": request.user,
         "items": TransactionItem.objects.filter(transaction__in=transactions),
     })
 
@@ -211,6 +215,9 @@ def supplements(request):
     if request.user.is_authenticated:
         wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
         queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+    else: 
+        wishlist_session = request.session.get("wishlist", [])
+        queryset = queryset.annotate(is_wishlisted=Case(When(id__in=wishlist_session, then=True), default=False, output_field=BooleanField()))
 
     items = attach_review_data(queryset)
 
@@ -244,6 +251,9 @@ def shop_by_category(request, category):
     if request.user.is_authenticated:
         wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
         queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+    else: 
+        wishlist_session = request.session.get("wishlist", [])
+        queryset = queryset.annotate(is_wishlisted=Case(When(id__in=wishlist_session, then=True), default=False, output_field=BooleanField()))
 
     items = attach_review_data(queryset)
 
@@ -277,6 +287,9 @@ def shop_by_brand(request, brand):
     if request.user.is_authenticated:
         wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
         queryset = queryset.annotate(is_wishlisted=Exists(wishlist_qs))
+    else: 
+        wishlist_session = request.session.get("wishlist", [])
+        queryset = queryset.annotate(is_wishlisted=Case(When(id__in=wishlist_session, then=True), default=False, output_field=BooleanField()))
 
     items = attach_review_data(queryset)
 
@@ -302,20 +315,34 @@ def shop_by_brand(request, brand):
 def shop_by_itemname(request, itemname):
     if request.user.is_authenticated:
         wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
-    else:
-        wishlist_qs = Wishlist.objects.none()
-
-    items = Item.objects.filter(fullname=itemname)\
-        .annotate(
-            row_number = Window(
-                expression=RowNumber(), 
-                partition_by=[F('flavor')], 
-                order_by=F('is_available').desc()
-            ),
-            is_wishlisted=Exists(wishlist_qs)
-        )\
-        .filter(row_number = 1)\
-        .order_by('-is_available')
+        items = Item.objects.filter(fullname=itemname)\
+            .annotate(
+                row_number = Window(
+                    expression=RowNumber(), 
+                    partition_by=[F('flavor')], 
+                    order_by=F('is_available').desc()
+                ),
+                is_wishlisted=Exists(wishlist_qs)
+            )\
+            .filter(row_number = 1)\
+            .order_by('-is_available')
+    else: 
+        wishlist_session = request.session.get("wishlist", [])
+        items = Item.objects.filter(fullname=itemname)\
+            .annotate(
+                row_number=Window(
+                    expression=RowNumber(), 
+                    partition_by=[F('flavor')], 
+                    order_by=F('is_available').desc()
+                ),
+                is_wishlisted=Case(
+                    When(id__in=wishlist_session, then=True),
+                    default=False,
+                    output_field=BooleanField()
+                )
+            )\
+            .filter(row_number=1)\
+            .order_by('-is_available')
     
     if not items.exists():
         return render(request, "supplement_store/error.html")
@@ -326,19 +353,32 @@ def shop_by_itemname(request, itemname):
         if first_item:
             flavor_option = first_item.flavor
 
-    item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option)\
-        .annotate(is_wishlisted=Exists(wishlist_qs))\
-        .first()
+    if request.user.is_authenticated:
+        wishlist_qs = Wishlist.objects.filter(user=request.user, item=OuterRef('pk'))
+        item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option)\
+            .annotate(is_wishlisted=Exists(wishlist_qs))\
+            .first()
+    else:
+        session_wishlist_ids = request.session.get("wishlist", [])
+        item_chosen = Item.objects.filter(fullname=itemname, flavor=flavor_option)\
+            .annotate(
+                is_wishlisted=Case(
+                    When(id__in=session_wishlist_ids, then=True),
+                    default=False,
+                    output_field=BooleanField()
+                )
+            )\
+            .first()
 
     if items:
-        for item in items:
-            subcategory = item.subcategory
+        subcategory = items.first().subcategory
         similar_items = Item.objects.filter(subcategory=subcategory).distinct('fullname')
 
         items_fullnames = set(item.fullname for item in items)
         similar_items = [item for item in similar_items if item.fullname not in items_fullnames]
     else:
         similar_items = None
+
     all_reviews = Review.objects.filter(item=Item.objects.filter(fullname=itemname).first()).order_by('-timestamp')
     try:
         count = int(request.GET.get('count', 5))
@@ -375,89 +415,187 @@ def search_items(request):
 """ End of filtering logic """
 
 """ Wishlist """
-@login_required
 def wishlist(request):
+    if request.user.is_authenticated:
+        items = Wishlist.objects.filter(user=request.user)
+    else:
+        wishlist_ids = request.session.get("wishlist", [])
+        items = []
+        for item_id in wishlist_ids:
+            try:
+                item = Item.objects.get(id=item_id)
+                wishlist_item = Wishlist(item=item)
+                items.append(wishlist_item)
+            except Item.DoesNotExist:
+                continue
     return render(request, "supplement_store/wishlist.html", {
-        "items": Wishlist.objects.filter(user=request.user),
+        "items": items,
     })
 
-@login_required
 def add_to_wishlist(request):
     if request.method == 'POST':
-        item = Item.objects.get(id=request.POST.get("id"))
-        Wishlist.objects.create(user=request.user, item=item)
+        item_id = request.POST.get('id')
+        try:
+            item = Item.objects.get(id=item_id)
+        except Item.DoesNotExist:
+            return redirect(request.META.get('HTTP_REFERER', 'index')) 
+
+        if request.user.is_authenticated:
+            Wishlist.objects.create(user=request.user, item=item)
+        else:
+            wishlist_session = request.session.get("wishlist", [])
+            if item_id not in wishlist_session:
+                wishlist_session.append(item_id)
+                request.session["wishlist"] = wishlist_session
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
 
-@login_required
 def remove_wishlist(request):
     if request.method == 'POST':
-        item = Item.objects.get(id=request.POST.get("item_id"))
-        Wishlist.objects.filter(user=request.user, item=item).delete()
+        item_id = request.POST.get("item_id")
+        if request.user.is_authenticated:
+            try:
+                item = Item.objects.get(id=item_id)
+                Wishlist.objects.filter(user=request.user, item=item).delete()
+            except Item.DoesNotExist:
+                pass
+        else:
+            wishlist_session = request.session.get("wishlist", [])
+            if item_id in wishlist_session:
+                wishlist_session.remove(item_id)
+                request.session["wishlist"] = wishlist_session        
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
 
-@login_required
 def remove_wishlist_all(request):
     if request.method == 'POST':
-        Wishlist.objects.filter(user=request.user).delete()
+        if request.user.is_authenticated:
+            Wishlist.objects.filter(user=request.user).delete()
+        else:
+            del request.session["wishlist"]
     return redirect(request.META.get('HTTP_REFERER', 'index')) 
 """ End of Wishlist """
 
 """ Shopping Cart """
-@login_required
 def shopping_cart(request):
     if request.method == 'POST':
         item_id = request.POST.get("id")
         item = Item.objects.get(id=item_id)
-        quantity = int(request.POST.get("quantity"))
+        try:
+            quantity = int(request.POST.get("quantity"))
+        except (ValueError, TypeError):
+            quantity = 1
         if not item.is_available:
             return redirect(request.META.get('HTTP_REFERER', 'index'))
-        if quantity is not None and quantity > item.quantity:
+        if quantity > item.quantity:
             return redirect('shop_by_itemname', fullname=item.fullname)
-        Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
+        
+        if request.user.is_authenticated:
+            Cart.objects.create(user=request.user, item=item, quantity=quantity, in_cart=True)
+        else:
+            cart = request.session.get("cart", {})
+            key = str(item_id)
+            cart[key] = cart.get(key, 0) + quantity
+            request.session["cart"] = cart
+
         return redirect(request.META.get('HTTP_REFERER', 'index'))       
-    cart_items = (
-        Cart.objects.filter(in_cart=True, user=request.user)
-        .values('item__id', 'item__name', 'item__weight', 'item__price', 'item__sale_price', 'item__main_image', 'item__fullname', 'item__quantity')
-        .annotate(total_quantity=Sum('quantity'),total_price=Sum(
-            Case(
-                When(item__sale_price__isnull=False, then=F('item__sale_price')),
-                default=F('item__price'),
-                output_field=DecimalField(),
-                ) * F('quantity')
+    
+    if request.user.is_authenticated:
+        cart_items = (
+            Cart.objects.filter(in_cart=True, user=request.user)
+            .values('item__id', 'item__name', 'item__weight', 'item__price', 'item__sale_price', 'item__main_image', 'item__fullname', 'item__quantity')
+            .annotate(total_quantity=Sum('quantity'), total_price=Sum(
+                Case(
+                    When(item__sale_price__isnull=False, then=F('item__sale_price')),
+                        default=F('item__price'),
+                        output_field=DecimalField(),
+                    ) * F('quantity')
+                )
             )
         )
-    )
-    return render(request, "supplement_store/cart.html", {
-        "items": cart_items,
-    })
+        context = {"items": cart_items}
+    else:
+        session_cart = request.session.get("cart", {})
+        cart_items = []
+        for id_str, qty in session_cart.items():
+            try:
+                item = Item.objects.get(id=id_str)
+                total_price = (item.sale_price if item.sale_price is not None else item.price) * qty
+                cart_items.append({
+                    "item__id": item.id,
+                    "item__name": item.name,
+                    "item__weight": item.weight,
+                    "item__price": item.price,
+                    "item__sale_price": item.sale_price,
+                    "item__main_image": item.main_image.url if item.main_image else None,
+                    "item__fullname": item.fullname,
+                    "item__quantity": item.quantity,
+                    "total_quantity": qty,
+                    "total_price": total_price,
+                })
+            except Item.DoesNotExist:
+                continue
+        context = {"items": cart_items}
+    return render(request, "supplement_store/cart.html", context)
     
-@login_required    
 def remove_cart(request):
     if request.method == 'POST':  
-        item = Item.objects.get(id=request.POST["item_id"]) 
-        Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
+        item_id = request.POST.get("item_id")
+        if request.user.is_authenticated:
+            try:
+                item = Item.objects.get(id=item_id)
+                Cart.objects.filter(item=item, user=request.user, in_cart=True).delete()
+            except Item.DoesNotExist:
+                pass
+        else:
+            session_cart = request.session.get("cart", {})
+            if item_id in session_cart:
+                del session_cart[item_id]
+                request.session["cart"] = session_cart
+
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 
-@login_required
 def remove_cart_all(request):
     if request.method == 'POST': 
-        Cart.objects.filter(user=request.user, in_cart=True).delete()
+        if request.user.is_authenticated:
+            Cart.objects.filter(user=request.user, in_cart=True).delete()
+        else:
+            del request.session["cart"]
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 
-@login_required
 def decrease_quantity(request, id):
-    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
-    if cart_item and cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
+    if request.user.is_authenticated:
+        cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
+        if cart_item and cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+    else:
+        session_cart = request.session.get("cart", {})
+        item_key = str(id)
+        if item_key in session_cart:
+            if session_cart[item_key] > 1:
+                session_cart[item_key] -= 1
+            else:
+                del session_cart[item_key]
+            request.session["cart"] = session_cart
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 
-@login_required
 def increase_quantity(request, id):
-    cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
-    if cart_item and cart_item.quantity < cart_item.item.quantity:
-        cart_item.quantity += 1
-        cart_item.save()
+    if request.user.is_authenticated:
+        cart_item = Cart.objects.filter(item__id=id, user=request.user).first()
+        if cart_item and cart_item.quantity < cart_item.item.quantity:
+            cart_item.quantity += 1
+            cart_item.save()
+    else:
+        session_cart = request.session.get("cart", {})
+        item_key = str(id)
+        try:
+            item = Item.objects.get(id=id)
+        except Item.DoesNotExist:
+            return redirect(request.META.get('HTTP_REFERER', 'index'))
+        current_qty = session_cart.get(item_key, 0)
+        if current_qty < item.quantity:
+            session_cart[item_key] = current_qty + 1
+            request.session["cart"] = session_cart
+
     return redirect(request.META.get('HTTP_REFERER', 'index'))
 """ End of Shopping Cart """
 

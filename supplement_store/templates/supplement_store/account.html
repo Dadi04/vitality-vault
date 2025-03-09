@@ -12,20 +12,20 @@
             <h1>Edit Profile</h1>
             <form action="{% url 'edit_profile' %}" method="post">
                 {% csrf_token %}
-                <label for="username">Username</label><input type="text" name="username" id="input" value="{{user.username}}" disabled><br>
-                <label for="email">Email</label><input type="text" name="email" id="input" value="{{user.email}}"><br>
-                <label for="address">Address</label><input type="text" name="address" id="input" value="{{user.address}}"><br>
-                <label for="city">City</label><input type="text" name="city" id="input" value="{{user.city}}">
-                <label for="state">State</label><input type="text" name="state" id="input" value="{% if user.state %}{{user.state}}{% endif %}"><br>
+                <label for="username">Username</label><input type="text" name="username" id="input" value="{{request.user.username}}" disabled><br>
+                <label for="email">Email</label><input type="text" name="email" id="input" value="{{request.user.email}}"><br>
+                <label for="address">Address</label><input type="text" name="address" id="input" value="{{request.user.address}}"><br>
+                <label for="city">City</label><input type="text" name="city" id="input" value="{{request.user.city}}">
+                <label for="state">State</label><input type="text" name="state" id="input" value="{% if request.user.state %}{{request.user.state}}{% endif %}"><br>
                 <label for="country">Country</label>
                 <select name="country" id="input">
                     {% for country_key, country_value in countries_list %}
-                        <option value="{{country_key}}" {% if user.country == country_key %}selected{% endif %}>{{country_value}}</option>
+                        <option value="{{country_key}}" {% if request.user.country == country_key %}selected{% endif %}>{{country_value}}</option>
                     {% endfor %}
                 </select>
-                <label for="zipcode">Zipcode</label><input type="text" name="zipcode" id="input" value="{{user.zipcode}}"><br>
-                <label for="phone">Phone</label><input type="text" name="phone" id="input" value="{{user.phone}}"><br>
-                <label for="birth">Date of birth</label><input type="date" name="birth" id="input" value="{{user.birth|date:'Y-m-d'}}"><br>
+                <label for="zipcode">Zipcode</label><input type="text" name="zipcode" id="input" value="{{request.user.zipcode}}"><br>
+                <label for="phone">Phone</label><input type="text" name="phone" id="input" value="{{request.user.phone}}"><br>
+                <label for="birth">Date of birth</label><input type="date" name="birth" id="input" value="{{request.user.birth|date:'Y-m-d'}}"><br>
                 <input type="submit" id="edit-profile-submit-button">
             </form>
         </div>

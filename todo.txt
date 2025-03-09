@@ -8,7 +8,5 @@ dodati na show detailed description u item tranziciju i fixovati kada se promeni
 
 -- Tehnicke stvari --
 
-napraviti da new_item (mesec dana -> 30 dana) i sale isticu do kada im prodje datum ili da startuju kada im pocne datum
-
 napraviti da se itemi mogu dodati u cart bez accounta i da je potrebno napraviti acc tek kad se kupuje nesto -> cookies koristiti
 fixovati remember me -> cookies ili session

@@ -104,16 +104,14 @@
                                 <input type="hidden" value="1" name="quantity">
                                 <input class="add-to-cart" value="Add to cart" type="submit" {% if not item.is_available %}disabled{% endif %}>
                             </form>
-                            {% if user.is_authenticated  %}
-                                {% if not item.is_wishlisted %}
-                                    <form action="{% url 'add_to_wishlist' %}" method="post">
-                                        {% csrf_token %}
-                                        <input type="hidden" value="{{ item.id }}" name="id">
-                                        <button type="submit" id="wishlist" class="fa fa-heart"></button>
-                                    </form>
-                                {% else %}
-                                    <button type="button" id="wishlist" class="fa fa-check wishlist-button"></button>
-                                {% endif %}
+                            {% if not item.is_wishlisted %}
+                                <form action="{% url 'add_to_wishlist' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ item.id }}" name="id">
+                                    <button type="submit" id="wishlist" class="fa fa-heart"></button>
+                                </form>
+                            {% else %}
+                                <button type="button" id="wishlist" class="fa fa-check wishlist-button"></button>
                             {% endif %}
                         </div>
                     </div>

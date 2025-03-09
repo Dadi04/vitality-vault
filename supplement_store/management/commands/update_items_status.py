@@ -18,7 +18,6 @@ class Command(BaseCommand):
 
             if item.sale_start_date and item.sale_end_date:
                 if not (item.sale_start_date <= today <= item.sale_end_date):
-                    print(item)
                     if item.sale_price is not None:
                         item.sale_price = None
                         item.sale_start_date = None
