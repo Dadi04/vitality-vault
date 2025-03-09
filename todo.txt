@@ -8,5 +8,4 @@ dodati na show detailed description u item tranziciju i fixovati kada se promeni
 
 -- Tehnicke stvari --
 
-napraviti da se itemi mogu dodati u cart bez accounta i da je potrebno napraviti acc tek kad se kupuje nesto -> cookies koristiti
 fixovati remember me -> cookies ili session

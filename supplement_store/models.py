@@ -89,13 +89,6 @@ class Item(models.Model):
     def __str__(self):
         return f'{self.id}: {self.fullname}, Available: {self.is_available}, Flavor: {self.flavor}, Popularity: {self.popularity}, Quantity: {self.quantity}'
 
-# korektnije resenje -> uradicu ako me ne bude mrzelo
-# class Sale(models.Model):
-#     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-#     sale_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-#     sale_start_date = models.DateField(null=True, blank=True)
-#     sale_end_date = models.DateField(null=True, blank=True)
-
 class Support(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     date = models.DateTimeField(default=timezone.now)

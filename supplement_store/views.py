@@ -165,7 +165,7 @@ def comment(request, username, itemname):
 
 @login_required
 def account(request):
-    transactions = Transaction.objects.filter(user=request.user)
+    transactions = Transaction.objects.filter(user=request.user).order_by('-date')
     return render(request, "supplement_store/account.html", {
         "transactions": transactions,
         "items": TransactionItem.objects.filter(transaction__in=transactions),
