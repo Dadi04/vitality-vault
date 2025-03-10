@@ -7,12 +7,12 @@
 {% endblock %}
 
 {% block body %}
-    <div id="heading">
-        <p>
-            <a href="{% url 'shopping_cart' %}">1. Shopping Cart</a> → 
-            <a href="{% url 'delivery_and_payment' %}">2. Delivery and payment</a> →
-            <a href="{% url 'summary' %}">3. Summary</a>
-        </p>
+    <div id="heading" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="{% url 'shopping_cart' %}">1. Shopping Cart</a></li>
+            <li><a href="{% url 'delivery_and_payment' %}">2. Delivery and payment</a></li>
+            <li><a href="{% url 'summary' %}">3. Summary</a></li>
+        </ol>
     </div>
     <div id="one_more_check">
         <div id="items-summary">

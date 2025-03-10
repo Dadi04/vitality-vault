@@ -12,19 +12,21 @@
             <div id="wishlist-items">
                 {% for item in items %}
                     <div id="item-in-wishlist">
-                        <a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">
-                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name|filename }}" width="100px">
-                        </a>    
-                        <div id="item-info">
-                            <h4><a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">{{ item.item.fullname }}</a></h4>
-                            <h5><a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">Flavor: {{ item.item.flavor }}</a></h5>
-                        </div>
-                        <div id="remove-item">
-                            <form action="{% url 'remove_wishlist' %}" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{ item.item.id }}" name="item_id">
-                                <button type="submit" class="fa-solid fa-x" id="item-remove"></button>
-                            </form>
+                        <div id="img-name-delete">
+                            <a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">
+                                <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name|filename }}" width="100px">
+                            </a>    
+                            <div id="item-info">
+                                <h4><a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">{{ item.item.fullname }}</a></h4>
+                                <h5><a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">Flavor: {{ item.item.flavor }}</a></h5>
+                            </div>
+                            <div id="remove-item">
+                                <form action="{% url 'remove_wishlist' %}" method="post">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ item.item.id }}" name="item_id">
+                                    <button type="submit" class="fa-solid fa-x" id="item-remove"></button>
+                                </form>
+                            </div>
                         </div>
                         <div id="is_available">
                             {% if item.item.is_available %}

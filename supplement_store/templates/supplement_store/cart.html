@@ -7,12 +7,12 @@
 {% endblock %}
 
 {% block body %}
-    <div id="heading">
-        <p>
-            <a href="{% url 'shopping_cart' %}">1. Shopping Cart</a> → 
-            <span>2. Delivery and payment</span> →
-            <span>3. Summary</span>
-        </p>
+    <div id="heading" aria-label="Breadcrumb">
+        <ol>
+            <li><a href="{% url 'shopping_cart' %}">1. Shopping Cart</a></li>
+            <li><span>2. Delivery and payment</span></li>
+            <li><span>3. Summary</span></li>
+        </ol>
     </div>
     <div id="shopping-cart">
         <div id="header">
@@ -27,13 +27,15 @@
             <div id="main">
                 {% for item in items %}
                     <div id="item-in-cart">
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item__main_image.name|filename }}" width="100px">
-                        <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h4>
-                        <form action="{% url 'remove_cart' %}" method="post">
-                            {% csrf_token %}
-                            <input type="hidden" value="{{ item.item__id }}" name="item_id">
-                            <button type="submit" class="fa-solid fa-x" id="item-submit"></button>
-                        </form>
+                        <div id="main-left">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item__main_image.name|filename }}" width="100px">
+                            <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h4>
+                            <form action="{% url 'remove_cart' %}" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{ item.item__id }}" name="item_id">
+                                <button type="submit" class="fa-solid fa-x" id="item-submit"></button>
+                            </form>
+                        </div>
                         <div id="main-right">
                             <h3 id="item-quantity">
                                 <form action="{% url 'decrease_quantity' id=item.item__id %}" method="post">
@@ -47,10 +49,13 @@
                                 </form>
                             </h3>
                             {% if item.item__sale_price %}
+                                <h3 id="item-price-responsive">Price: ${{ item.item__sale_price }}</h3>
                                 <h3 id="item-price">${{ item.item__sale_price }}</h3>
                             {% else %}
+                                <h3 id="item-price-responsive">Price: ${{ item.item__price }}</h3>
                                 <h3 id="item-price">${{ item.item__price }}</h3>
                             {% endif %}
+                            <h3 id="item-total-responsive">Total: ${{ item.total_price }}</h3>
                             <h3 id="item-total">${{ item.total_price }}</h3>
                         </div>
                     </div>

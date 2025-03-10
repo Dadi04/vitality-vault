@@ -43,10 +43,11 @@
                     {% for transaction in transactions %}
                         <div id="order">
                             <p>Transaction with ID: {{transaction.id}} made on {{transaction.date}} with status {{transaction.status}}</p>
+                            <p>Total cost: ${{transaction.total_price}}</p>
                             {% for transaction_item in transaction.transactionitem_set.all %}  
                                 <div id="items-ordered">
                                     <img src="{% static '/supplement_store/images/product_images/' %}{{transaction_item.item.fullname}}/{{transaction_item.item.main_image.name|filename}}" alt="{{ transaction_item.item.main_image.name|filename }}" width="100px">
-                                    <span>{{transaction_item.item.fullname}}</span>
+                                    <span>{{transaction_item.item.fullname}} x {{transaction_item.quantity}}</span>
                                 </div>
                             {% endfor %}
                             <hr>

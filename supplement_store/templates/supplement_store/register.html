@@ -15,31 +15,43 @@
         </header>
         <form action="{% url 'register_view' %}" method="post">
             {% csrf_token %}
-            {{ form.email }}
-            <label for="email" class="required">*</label><br>
-            {{ form.username }}
-            <label for="username" class="required">*</label><br>
-            {{ form.first_name }}
-            <label for="first" class="required">*</label>
-            {{ form.last_name }}
-            <label for="last" class="required">*</label>
+            <div>
+                {{ form.email }}
+                <label for="email" class="required">*</label><br class="repsonsive-br">
+            </div>
+            <div>
+                {{ form.username }}
+                <label for="username" class="required">*</label><br class="repsonsive-br">
+            </div>
+            <div>
+                {{ form.first_name }}
+                <label for="first" class="required">*</label>
+            </div>
+            <div>
+                {{ form.last_name }}
+                <label for="last" class="required">*</label>
+            </div>
             {{ form.address }}
-            <label for="address" class="required">&nbsp;</label>
+            <label for="address" class="required responsive-label">&nbsp;</label>
             {{ form.city }}
-            <label for="city" class="required">&nbsp;</label>
+            <label for="city" class="required responsive-label">&nbsp;</label>
             {{ form.state }}
             {{ form.country }}
-            <label for="country" class="required">&nbsp;</label>
+            <label for="country" class="required responsive-label">&nbsp;</label>
             {{ form.zipcode }}
-            <label for="zipcode" class="required">&nbsp;</label><br>
+            <label for="zipcode" class="required responsive-label">&nbsp;</label><br class="repsonsive-br">
             {{ form.phone }}
-            <label for="phone" class="required">&nbsp;</label>
+            <label for="phone" class="required responsive-label">&nbsp;</label>
             {{ form.birthday }}
-            <label for="birthday" class="required"></label>
-            {{ form.password }}
-            <label for="password" class="required">*</label>
-            {{ form.confirm_password }}
-            <label for="confirm-password" class="required">*</label><button type="button" class="fa fa-eye" id="show_password"></button><br>
+            <label for="birthday" class="required responsive-label"></label>
+            <div>
+                {{ form.password }}
+                <label for="password" class="required">*</label>
+            </div>
+            <div>
+                {{ form.confirm_password }}
+                <label for="confirm-password" class="required">*</label><button type="button" class="fa fa-eye" id="show_password"></button><br class="repsonsive-br">
+            </div>
             <div id="bottom-register">
                 {{ form.captcha }}
                 <input type="submit" id="submit-register">
@@ -53,8 +65,8 @@
             {% endfor %}
         </div>
     </div>
-    <hr id="login-hr">
-    <div id="google-facebook">
+    <hr class="login-hr">
+    <div class="google-facebook">
         <a href="{% provider_login_url 'google' process='login' %}?next=/" class="google-button">
             <i class="fa fa-google"></i>Register with Google
         </a>

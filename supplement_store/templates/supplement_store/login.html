@@ -31,18 +31,20 @@
                 </div>
             {% endif %}
             <div id="reset">
-                <div id="remember">
-                    <input type="checkbox" name="remember" checked>
-                    <label for="remember">Remember me</label>
+                <div id="reset-main">
+                    <div id="remember">
+                        <input type="checkbox" name="remember" checked>
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <a id="reset_button" href="{% url 'password_reset' %}">Forgot your password?</a>
                 </div>
-                <a id="reset_button" href="{% url 'password_reset' %}">Forgot your password?</a><br>
                 <input type="submit" value="Login" id="submit-login">
             </div>
         </form>
         <br>
     </div>
     <hr id="login-hr">
-    <div id="google-facebook">
+    <div class="google-facebook">
         <a href="{% provider_login_url 'google' process='login' %}?next=/" class="google-button" >
             <i class="fa fa-google"></i>Login with Google
         </a>
