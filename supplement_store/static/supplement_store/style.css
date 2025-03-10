@@ -36,6 +36,10 @@ nav #top #search-div #search-main {
   border: 1px solid #ccc;
   padding: 10px;
   border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+nav #top #search-div #search-main:hover {
+  border-color: #fff;
 }
 nav #top #search-div #search-main .fa-search {
   margin-right: 5px;
@@ -55,6 +59,10 @@ nav #top .right {
   display: inline-block;
   margin-left: 25px;
   text-align: center;
+  transition: transform 0.3s ease;
+}
+nav #top .right:hover {
+  transform: scale(1.05);
 }
 nav #top .right p {
   margin: 0;
@@ -76,19 +84,28 @@ nav #top .right .counter {
   font-size: 15px;
 }
 nav #search-results {
-  padding: 10px 0;
   width: 880px;
   margin-left: 18%;
   z-index: 1000;
   position: absolute;
   background-color: #111;
   border-top: #fff 1px solid;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+nav #search-results.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 nav #search-results .search-item {
   margin-left: 5%;
   display: flex;
   height: 100px;
   align-items: center;
+  padding: 10px 0;
 }
 nav #search-results .search-item .item-link {
   display: flex;
@@ -112,21 +129,30 @@ nav #bottom #first li {
   padding-right: 20px;
   padding: 10px;
 }
-nav #bottom #first a {
+nav #bottom #first li a {
   padding: 10px;
   text-decoration: none;
   color: #333;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+nav #bottom #first li a:hover {
+  color: #111;
+  transform: translateY(-2px);
 }
 nav #bottom .second {
   width: 100%;
-  display: none;
   position: absolute;
   top: 153px;
-  z-index: 1;
   right: 0;
+  z-index: 1;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease;
+  height: auto;
 }
 nav #bottom #brands:hover .second, nav #bottom #categories:hover .second, nav #bottom #clothing:hover .second, nav #bottom .second:hover {
-  display: block;
+  opacity: 1;
+  visibility: visible;
 }
 
 #show_cart {
@@ -137,8 +163,16 @@ nav #bottom #brands:hover .second, nav #bottom #categories:hover .second, nav #b
   right: 18%;
   background-color: #8a8a8a;
   padding: 5px;
-  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 1000;
+}
+#show_cart.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 #show_cart h2 {
   text-align: center;
@@ -359,7 +393,10 @@ footer #third #third-third #payment-third-third {
 }
 
 #support-chat {
-  display: none;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(20px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
   z-index: 1000;
   position: fixed;
   bottom: 1%;
@@ -369,6 +406,11 @@ footer #third #third-third #payment-third-third {
   width: 350px;
   height: 500px;
   border: orange 1px solid;
+}
+#support-chat.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
 }
 #support-chat #header {
   display: flex;
@@ -735,7 +777,6 @@ footer #third #third-third #payment-third-third {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  border: 1px solid #ccc;
   background-color: #fff;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
 }
@@ -824,8 +865,67 @@ footer #third #third-third #payment-third-third {
   color: rgba(0, 0, 0, 0.6);
 }
 
-#is-new h1, #is-on-sale h1, #trending-items h1 {
+.index-section {
+  display: flex;
+  position: relative;
+}
+.index-section .index-items-main {
+  width: 90%;
+  height: 450px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.index-section .index-items-main h1 {
   text-align: center;
+}
+.index-section .index-items-main .index-items {
+  margin-left: 10px;
+  display: flex;
+  gap: 0 10px;
+  transition: transform 0.3s ease;
+}
+.index-section .index-items-main .index-items .index-item {
+  min-width: 280px;
+  text-align: center;
+  box-sizing: border-box;
+  padding-top: 10px;
+  transition: 0.25s box-shadow ease-in-out;
+}
+.index-section .index-items-main .index-items .index-item:hover {
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
+}
+.index-section .index-items-main .index-items .index-item a {
+  text-decoration: none;
+  color: #000;
+}
+.index-section .index-items-main .index-items .index-item a img {
+  width: 280px;
+  height: 280px;
+}
+.index-section .index-items-main .index-items .index-item h5 {
+  margin: 0;
+}
+.index-section .index-items-main .index-items .index-item p {
+  margin-top: 2px;
+  font-size: 15px;
+}
+.index-section .left-arrow {
+  position: absolute;
+  top: 50%;
+  left: 1%;
+  outline: 0;
+  border: 0;
+  z-index: 100;
+  cursor: pointer;
+}
+.index-section .right-arrow {
+  position: absolute;
+  top: 50%;
+  right: 1%;
+  outline: 0;
+  border: 0;
+  z-index: 100;
+  cursor: pointer;
 }
 
 #shop-all-supplements h1 {
@@ -857,15 +957,80 @@ footer #third #third-third #payment-third-third {
   background-color: #444;
 }
 
+#success-stories {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
 #success-stories #success-stories-left {
-  width: 700px;
-  margin-left: 20px;
+  max-width: 50%;
 }
 #success-stories #success-stories-left h1 {
-  margin-bottom: 0;
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+  color: #1a1a1a;
 }
 #success-stories #success-stories-left h3 {
-  margin-top: 5px;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  color: #555;
+}
+#success-stories #success-stories-left p {
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #666;
+  margin-bottom: 2rem;
+}
+#success-stories #success-stories-left #button-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+#success-stories #success-stories-left #button-group #btn-black {
+  display: inline-block;
+  background-color: #000;
+  color: #fff;
+  padding: 12px 24px;
+  border-radius: 30px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+#success-stories #success-stories-left #button-group #btn-black:hover {
+  background-color: #333;
+}
+#success-stories #success-stories-left #button-group #btn-green {
+  display: inline-block;
+  color: orange;
+  text-decoration: none;
+  font-weight: bold;
+  position: relative;
+}
+#success-stories #success-stories-left #button-group #btn-green::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 2px;
+  background-color: orange;
+  transform: scaleX(0);
+  transition: transform 0.3s ease;
+}
+#success-stories #success-stories-left #button-group #btn-green:hover::after {
+  transform: scaleX(1);
+}
+#success-stories #success-stories-right {
+  display: flex;
+  gap: 10px;
+}
+#success-stories #success-stories-right img {
+  width: 120px;
+  height: auto;
+  border-radius: 12px;
+  object-fit: cover;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .password-reset {
@@ -1085,6 +1250,7 @@ footer #third #third-third #payment-third-third {
   text-align: center;
   position: relative;
   box-sizing: border-box;
+  padding-top: 10px;
   transition: 0.25s box-shadow ease-in-out;
 }
 #shop #right-side .shop-right .item:hover {
@@ -1169,6 +1335,7 @@ footer #third #third-third #payment-third-third {
   list-style: none;
   width: 100%;
   justify-content: center;
+  margin-top: 20px;
 }
 #shop #right-side #pagination .page-item {
   display: inline-block;
@@ -1394,6 +1561,11 @@ footer #third #third-third #payment-third-third {
   text-align: center;
   box-sizing: border-box;
   margin-right: 20px;
+  transition: 0.25s box-shadow ease-in-out;
+  padding: 10px 0;
+}
+#similar #similar-items .similar-item:hover {
+  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
 }
 #similar #similar-items .similar-item a {
   text-decoration: none;
@@ -2222,10 +2394,13 @@ footer #third #third-third #payment-third-third {
   width: 100%;
   color: #333;
 }
+#about #about-us-img {
+  position: absolute;
+}
 #about #section1 {
   text-align: center;
   padding: 3rem 0;
-  background: linear-gradient(135deg, rgb(200.6, 200.6, 200.6), rgb(214.2, 214.2, 214.2));
+  position: relative;
 }
 #about #section1 h1 {
   font-size: 2.5rem;
@@ -2236,6 +2411,9 @@ footer #third #third-third #payment-third-third {
   font-size: 1rem;
   line-height: 1.5;
   margin-bottom: 1.5rem;
+}
+#about #section1 #section1-top {
+  color: white;
 }
 #about #section1 #box-section {
   display: flex;
@@ -2308,7 +2486,10 @@ footer #third #third-third #payment-third-third {
   line-height: 1.6;
 }
 #about #section2 {
+  margin-top: 30px;
   background-color: #fff;
+  display: flex;
+  align-items: center;
 }
 #about #section2 #left2 {
   display: flex;
@@ -2318,8 +2499,16 @@ footer #third #third-third #payment-third-third {
 #about #section2 #left2 p {
   width: 80%;
 }
+#about #section2 #section2-img {
+  border: 1px black solid;
+  border-radius: 10px;
+  margin-right: 30px;
+}
 #about #section3 {
+  margin: 30px 0;
   background-color: rgb(245.1, 245.1, 245.1);
+  display: flex;
+  align-items: center;
 }
 #about #section3 #right3 {
   display: flex;
@@ -2329,6 +2518,11 @@ footer #third #third-third #payment-third-third {
 #about #section3 #right3 p {
   width: 80%;
   text-align: right;
+}
+#about #section3 #section3-img {
+  border: 1px black solid;
+  border-radius: 10px;
+  margin-left: 30px;
 }
 
 #account #edit-profile {

@@ -13,7 +13,7 @@
                 {% for item in items %}
                     <div id="item-in-wishlist">
                         <a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">
-                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name }}" width="100px">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name|filename }}" width="100px">
                         </a>    
                         <div id="item-info">
                             <h4><a href="{% url 'shop_by_itemname' itemname=item.item.fullname %}?flavor={{ item.item.flavor|urlencode }}">{{ item.item.fullname }}</a></h4>

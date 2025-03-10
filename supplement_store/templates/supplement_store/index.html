@@ -25,12 +25,43 @@
             </ul>
         </div>
     </div>
-    <div id="is-new">
-        <h1>New on Vitality Vault</h1>
-    </div>
-    <div id="is-on-sale">
-        <h1>Supplements on Sale</h1>
-    </div>
+    {% if new_items %}
+        <div class="index-section">
+            <img src="{% static '/supplement_store/images/left.svg' %}" alt="left1" width="50px" class="left-arrow" id="left-arrow-new">
+            <div class="index-items-main">
+                <h1>New on Vitality Vault</h1>
+                <div class="index-items" id="new-items">
+                    {% for item in new_items %}
+                        <div class="index-item new-item">
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
+                            <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
+                            <p><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">Flavor: {{ item.flavor }}</a></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <img src="{% static '/supplement_store/images/right.svg' %}" alt="right1" width="50px" class="right-arrow" id="right-arrow-new">
+        </div>
+    {% endif %}
+    {% if items_on_sale %}
+        <div class="index-section">
+            <img src="{% static '/supplement_store/images/left.svg' %}" alt="left1" width="50px" class="left-arrow" id="left-arrow-sale">
+            <div class="index-items-main">
+                <h1>Supplements on Sale</h1>
+                <div class="index-items" id="sale-items">
+                    {% for item in items_on_sale %}
+                        <div class="index-item sale-item">
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
+                            <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
+                            <p><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">Flavor: {{ item.flavor }}</a></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <img src="{% static '/supplement_store/images/right.svg' %}" alt="right1" width="50px" class="right-arrow" id="right-arrow-sale">
+        </div>
+        <hr>
+    {% endif %}
     <div id="shop-all-supplements">
         <h1>Vitality Vault is Built for The Strongest</h1>
         <p>You don't want to be ordinary. That's why you're here.</p>
@@ -39,15 +70,40 @@
         <p>Together, we can create healthier and longer lives.</p>
         <a href="{% url 'supplements' %}" id="shop-all-supplements-button">SHOP ALL SUPPLEMENTS</a>
     </div>
-    <div id="trending-items">
-        <h1>Trending Supplements</h1>
-    </div>
+    {% if popular_items %}
+        <hr>
+        <div class="index-section">
+            <img src="{% static '/supplement_store/images/left.svg' %}" alt="left1" width="50px" class="left-arrow" id="left-arrow-popular">
+            <div class="index-items-main">
+                <h1>Trending Supplements</h1>
+                <div class="index-items" id="popular-items">
+                    {% for item in popular_items %}
+                        <div class="index-item popular-item">
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
+                            <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
+                            <p><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">Flavor: {{ item.flavor }}</a></p>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <img src="{% static '/supplement_store/images/right.svg' %}" alt="right1" width="50px" class="right-arrow" id="right-arrow-popular">
+        </div>
+    {% endif %}
     <div id="success-stories">
         <div id="success-stories-left">
             <h1>Vitality Vault Success Stories</h1>
             <h3>Amazing Before & After Results</h3>
             <p>Our success is your success. Hear from a few of the hundreds of low-carb and keto success stories our readers have sent us.</p>
-            <a href="">View All Stories</a><br><a href="">Submit your Story</a>
+            <div id="button-group">
+                <a href="" id="btn-black">View All Stories</a>
+                <a href="" id="btn-green">Submit your Story</a>
+            </div>
+        </div>
+        <div id="success-stories-right">
+            <img src="{% static '/supplement_store/images/success_story1.png' %}" alt="success_story1.png">
+            <img src="{% static '/supplement_store/images/success_story2.png' %}" alt="success_story2.png">
+            <img src="{% static '/supplement_store/images/success_story3.png' %}" alt="success_story3.png">
+            <img src="{% static '/supplement_store/images/success_story4.png' %}" alt="success_story4.png">
         </div>
     </div>
 {% endblock %}
@@ -145,6 +201,96 @@
                 });
             }
             updateDotStyles();
+
+            const leftArrowNew = document.getElementById('left-arrow-new');
+            const rightArrowNew = document.getElementById('right-arrow-new');
+            const indexItemsNew = document.getElementById('new-items');
+
+            if (indexItemsNew) {
+                const itemWidth = 290;
+                const visibleItems = 5;
+                const totalItems = document.querySelectorAll('.new-item').length;
+                const totalScrollWidth = totalItems * itemWidth;
+                let scrollPosition = 0;
+                
+                const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
+
+                if (leftArrowNew && rightArrowNew) {
+                    leftArrowNew.addEventListener("click", () => {
+                        if (scrollPosition > 0) {
+                            scrollPosition -= itemWidth;
+                            indexItemsNew.style.transform = `translateX(-${scrollPosition}px)`;
+                        }
+                    });
+
+                    rightArrowNew.addEventListener("click", () => {
+                        if (scrollPosition < maxScrollPosition) {
+                            scrollPosition += itemWidth;
+                            indexItemsNew.style.transform = `translateX(-${scrollPosition}px)`;
+                        }
+                    });
+                }
+            }
+
+            const leftArrowSale = document.getElementById('left-arrow-sale');
+            const rightArrowSale = document.getElementById('right-arrow-sale');
+            const indexItemsSale = document.getElementById('sale-items');
+
+            if (indexItemsSale) {
+                const itemWidth = 290;
+                const visibleItems = 5;
+                const totalItems = document.querySelectorAll('.sale-item').length;
+                const totalScrollWidth = totalItems * itemWidth;
+                let scrollPosition = 0;
+                
+                const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
+
+                if (leftArrowSale && rightArrowSale) {
+                    leftArrowSale.addEventListener("click", () => {
+                        if (scrollPosition > 0) {
+                            scrollPosition -= itemWidth;
+                            indexItemsSale.style.transform = `translateX(-${scrollPosition}px)`;
+                        }
+                    });
+
+                    rightArrowSale.addEventListener("click", () => {
+                        if (scrollPosition < maxScrollPosition) {
+                            scrollPosition += itemWidth;
+                            indexItemsSale.style.transform = `translateX(-${scrollPosition}px)`;
+                        }
+                    });
+                }
+            }
+
+            const leftArrowPopular = document.getElementById('left-arrow-popular');
+            const rightArrowPopular = document.getElementById('right-arrow-popular');
+            const indexItemsPopular = document.getElementById('popular-items');
+
+            if (indexItemsPopular) {
+                const itemWidth = 290;
+                const visibleItems = 5;
+                const totalItems = document.querySelectorAll('.popular-item').length;
+                const totalScrollWidth = totalItems * itemWidth;
+                let scrollPosition = 0;
+                
+                const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
+
+                if (leftArrowPopular && rightArrowPopular) {
+                    leftArrowPopular.addEventListener("click", () => {
+                        if (scrollPosition > 0) {
+                            scrollPosition -= itemWidth;
+                            indexItemsPopular.style.transform = `translateX(-${scrollPosition}px)`;
+                        }
+                    });
+
+                    rightArrowPopular.addEventListener("click", () => {
+                        if (scrollPosition < maxScrollPosition) {
+                            scrollPosition += itemWidth;
+                            indexItemsPopular.style.transform = `translateX(-${scrollPosition}px)`;
+                        }
+                    });
+                }
+            }
         });
     </script>
 {% endblock %}

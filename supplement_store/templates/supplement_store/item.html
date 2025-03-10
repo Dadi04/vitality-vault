@@ -9,15 +9,15 @@
 {% block body %}
     <div id="item">
         <div id="slide-images">
-            <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.main_image.name|filename }}" alt="{{ item_chosen.main_image.name }}" id="mainimage" class="images" width="100px">
+            <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.main_image.name|filename }}" alt="{{ item_chosen.main_image.name|filename }}" id="mainimage" class="images" width="100px">
             {% if item_chosen.image1.name %}
-                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image1.name|filename }}" alt="{{ item_chosen.image1.name }}" id="image1" class="images" width="100px">
+                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image1.name|filename }}" alt="{{ item_chosen.image1.name|filename }}" id="image1" class="images" width="100px">
             {% endif %}
             {% if item_chosen.image2.name %}
-                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image2.name|filename }}" alt="{{ item_chosen.image2.name }}" id="image2" class="images" width="100px">
+                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image2.name|filename }}" alt="{{ item_chosen.image2.name|filename }}" id="image2" class="images" width="100px">
             {% endif %}
             {% if item_chosen.image3.name %}
-                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image3.name|filename }}" alt="{{ item_chosen.image3.name }}" id="image3" class="images" width="100px">
+                <img src="{% static '/supplement_store/images/product_images/' %}{{ item_chosen.fullname }}/{{ item_chosen.image3.name|filename }}" alt="{{ item_chosen.image3.name|filename }}" id="image3" class="images" width="100px">
             {% endif %}
         </div>
         <div id="main-image">
@@ -26,7 +26,7 @@
             {% else %}
                 <img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" id="is_new" width="100px" style="display: none;">
             {% endif %}
-            <img src="{% static '/supplement_store/images/product_images/' %}{{item_chosen.fullname}}/{{item_chosen.main_image.name|filename}}" alt="item.image3.name" id="image-slide" width="400px">
+            <img src="{% static '/supplement_store/images/product_images/' %}{{item_chosen.fullname}}/{{item_chosen.main_image.name|filename}}" alt="{{item_chosen.main_image.name|filename}}" id="image-slide" width="400px">
         </div>
         <div id="other">
             <h1>{{ item_chosen.fullname }}</h1>
@@ -116,28 +116,28 @@
     {% if similar_items %}
         <div id="similar">
             <h1>Similar</h1>
-                <div id="similar-items">
-                    {% for item in similar_items %}
-                        <div class="similar-item">
-                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">
-                                <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}">
-                                <div class="desc">
-                                    <h4>{{ item.name }}</h4>
-                                    {% if item.sale_price %}
-                                        <h4 class="price">
-                                            <span class="new_price price">${{ item.price }}</span>
-                                            <span class="old_price price">${{item.sale_price}}</span>
-                                        </h4>
-                                    {% else %}
-                                        <h4 class="price">${{ item.price }}</h4>    
-                                    {% endif %}
-                                </div>
-                            </a>
-                        </div>
-                    {% endfor %}
-                </div>
-                <img src="{% static '/supplement_store/images/left.svg' %}" alt="left1" width="50px" id="left-arrow">
-                <img src="{% static '/supplement_store/images/right.svg' %}" alt="right1" width="50px" id="right-arrow">
+            <div id="similar-items">
+                {% for item in similar_items %}
+                    <div class="similar-item">
+                        <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}">
+                            <div class="desc">
+                                <h4>{{ item.name }}</h4>
+                                {% if item.sale_price %}
+                                    <h4 class="price">
+                                        <span class="new_price price">${{ item.price }}</span>
+                                        <span class="old_price price">${{item.sale_price}}</span>
+                                    </h4>
+                                {% else %}
+                                    <h4 class="price">${{ item.price }}</h4>    
+                                {% endif %}
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
+            </div>
+            <img src="{% static '/supplement_store/images/left.svg' %}" alt="left1" width="50px" id="left-arrow">
+            <img src="{% static '/supplement_store/images/right.svg' %}" alt="right1" width="50px" id="right-arrow">
             <hr>
         </div>
     {% endif %}
@@ -210,14 +210,10 @@
 
 {% block script %}
     <script>
-        const imageSlide = document.getElementById('image-slide');
-        const imageLeft = document.querySelectorAll('.images');
         const stars = document.querySelectorAll('.stars');
         const ratingInput = document.getElementById('rating');
         
         let selectedStars = 0;
-        let currentSelectedImage = null;
-        let firstImage = null;
 
         stars.forEach((star, index) => {
             star.addEventListener("click", () => {
@@ -240,6 +236,12 @@
                 ratingInput.value = selectedStars;
             });
         });
+        
+        const imageSlide = document.getElementById('image-slide');
+        const imageLeft = document.querySelectorAll('.images');
+
+        let currentSelectedImage = null;
+        let firstImage = null;
 
         imageLeft.forEach(image => {
             if (!firstImage) {

@@ -58,7 +58,7 @@
                     </div>
                 {% endif %}
             </div>
-            <div id="search-results" style="visibility: hidden;">
+            <div id="search-results">
 
             </div>
             <div id="bottom">
@@ -108,9 +108,9 @@
                                 <button type="submit" class="fa-solid fa-x show_cart_button_remove"></button>
                             </form>
                             {% if item.item__sale_price %}
-                                <h4 id="show-cart-price">{{ item.item__sale_price|multiply:item.total_quantity }}$</h4>
+                                <h4 id="show-cart-price">${{ item.item__sale_price|multiply:item.total_quantity }}</h4>
                             {% else %}
-                                <h4 id="show-cart-price">{{ item.item__price|multiply:item.total_quantity }}$</h4>
+                                <h4 id="show-cart-price">${{ item.item__price|multiply:item.total_quantity }}</h4>
                             {% endif %}
                         </div>
                     {% endfor %}
@@ -280,7 +280,7 @@
                             <button type="submit" class="fa fa-solid fa-arrow-right"></button>
                         </form>
                     {% else %}
-                        <input type="text" name="text-field" id="text-field" placeholder="Type message here" autocomplete="off">
+                        <input type="text" name="text-field" id="text-field" placeholder="Type message here" autocomplete="off" disabled>
                         <input type="hidden" name="message" id="message-input">
                         <button type="submit" class="fa fa-solid fa-arrow-right"></button>
                     {% endif %}
@@ -294,14 +294,10 @@
             const showCartDiv = document.getElementById('show_cart');
             const counter = document.getElementById('counting');
             document.addEventListener('click', function(event) {
-                if (event.target == cartIcon || event.target == cartParagraph || event.target == counter) {
-                    showCartDiv.style.visibility = (showCartDiv.style.visibility == 'visible') ? 'hidden' : 'visible';
+                if (event.target === cartIcon || event.target === cartParagraph || event.target === counter) {
+                    showCartDiv.classList.toggle('active');
                 } else if (!showCartDiv.contains(event.target)) {
-
-                    if (showCartDiv.style.visibility == 'visible') {
-
-                        showCartDiv.style.visibility = 'hidden';
-                    }
+                    showCartDiv.classList.remove('active');
                 }
             });
 
@@ -317,7 +313,6 @@
 
                         data.items.forEach(item => {
                             var baseImageName = item.main_image.split('/').pop();
-                            console.log(baseImageName)
 
                             let itemImage = document.createElement('img');
                             itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
@@ -340,9 +335,9 @@
                             resultsContainer.appendChild(itemDiv);
                         });
                         if (resultsContainer.innerHTML.trim() === '') {
-                            resultsContainer.style.visibility = 'hidden';
+                            resultsContainer.classList.remove('active');
                         } else {
-                            resultsContainer.style.visibility = 'visible';
+                            resultsContainer.classList.add('active');
                         }
                     })
                     .catch(error => {
@@ -354,10 +349,10 @@
                 const clickedInside = searchInput.contains(event.target) || resultsContainer.contains(event.target);
 
                 if (!clickedInside) {
-                    resultsContainer.style.visibility = 'hidden';
+                    resultsContainer.classList.remove('active');
                 } else if (searchInput.contains(event.target)) {
                     if (resultsContainer.innerHTML.trim() !== '') {
-                        resultsContainer.style.visibility = 'visible';
+                        resultsContainer.classList.add('active');
                     }
                 }
             });
@@ -366,10 +361,11 @@
                 const supportChat = document.getElementById('support-chat');
                 const supportIcon = document.getElementById('support-icon');
                 let messagesLoaded = false;
+
                 supportIcon.addEventListener('click', () => {
-                    supportChat.style.display = 'block';
-                    document.getElementById('text-field').focus();
+                    supportChat.classList.add('active');
                     supportIcon.style.display = 'none';
+                    document.getElementById('text-field').focus();
 
                     if (!messagesLoaded) {
                         loadMessages();
@@ -380,7 +376,7 @@
             
                 const minimize = document.getElementById('minimize');    
                 minimize.addEventListener('click', () => {
-                    supportChat.style.display = 'none';
+                    supportChat.classList.remove('active');
                     supportIcon.style.display = 'block';
                 });
 

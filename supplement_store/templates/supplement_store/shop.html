@@ -81,7 +81,7 @@
                         {% if item.is_new %}
                             <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/new-item.png' %}" alt="new-item" class="new" width="70px"></a>
                         {% endif %}
-                        <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name }}" height="200px"></a>
+                        <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
                         <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
                         {% for i in 5|star_range %}
                             {% if i < item.average_rating %}

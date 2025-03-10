@@ -34,6 +34,9 @@ from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, 
 def index(request):
     return render(request, "supplement_store/index.html", {
         "images": SlideShowImage.objects.all().order_by('-order'),
+        "items_on_sale": Item.objects.filter(sale_price__isnull=False),
+        "new_items": Item.objects.filter(is_new=True),
+        "popular_items": Item.objects.all().order_by('-popularity')[:10],
     })
 
 def about(request):

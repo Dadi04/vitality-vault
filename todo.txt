@@ -1,6 +1,4 @@
 -- Dizajniranje stvari --
 
-index
-staviti da cart, search-bar i chatting ima neku tranziciju
 responsive
 dodati milion itema
