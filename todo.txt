@@ -17,13 +17,13 @@ responsive:
 item
 layout
 ----loading
-++++login
+----login
 ----newsletter
 ----payment_canceled
 ----payment_done
 ----process_payment
-++++register
-shop
+----register
+----shop
 ----summary
 ----wishlist
 

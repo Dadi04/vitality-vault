@@ -404,7 +404,7 @@ footer #third #third-third #payment-third-third {
 }
 @media (max-width: 375px) {
   footer #third #third-second div #email {
-    width: 200px;
+    width: 55%;
   }
 }
 
@@ -997,6 +997,9 @@ footer #third #third-third #payment-third-third {
 .index-section .index-items-main h1 {
   text-align: center;
 }
+.index-section .index-items-main #similar-header {
+  text-align: left;
+}
 .index-section .index-items-main .index-items {
   margin-left: 10px;
   display: flex;
@@ -1028,6 +1031,10 @@ footer #third #third-third #payment-third-third {
   margin-top: 2px;
   font-size: 15px;
 }
+.index-section .index-items-main .index-items .index-item .desc h4 {
+  padding: 0;
+  margin: 0 0 5px 0;
+}
 .index-section .left-arrow {
   position: absolute;
   top: 50%;
@@ -1045,6 +1052,11 @@ footer #third #third-third #payment-third-third {
   border: 0;
   z-index: 100;
   cursor: pointer;
+}
+@media (max-width: 768px) {
+  .index-section .index-items-main #similar-header {
+    text-align: center;
+  }
 }
 
 #shop-all-supplements h1 {
@@ -1372,33 +1384,29 @@ footer #third #third-third #payment-third-third {
 
 #shop {
   display: flex;
-  width: 1600px;
+  max-width: 1600px;
+  width: 100%;
   margin: 0 auto;
+  padding: 0 10px;
+}
+#shop #open-filter-button-responsive {
+  display: none;
+  visibility: hidden;
+}
+#shop #open-filter-button-responsive p {
+  margin: 0 0 0 5px;
+  font-size: 18px;
 }
 #shop .shop-filter {
-  width: 350px;
-  display: flex;
-  flex-direction: column;
+  width: 100%;
+  max-width: 250px;
   background-color: #ddd;
-  padding-left: 10px;
-  padding-bottom: 20px;
-  border-radius: 5px;
-}
-#shop .shop-filter #filter-sumbit {
-  display: inline;
-  float: right;
-  margin: 20px;
-  background-color: transparent;
-  color: black;
-  border: 2px solid black;
   padding: 10px;
-  cursor: pointer;
   border-radius: 5px;
-  transition: 1s all;
+  margin-bottom: 20px;
 }
-#shop .shop-filter #filter-sumbit:hover {
-  transform: scale(1.1);
-  background-color: #aaa;
+#shop .shop-filter #filter-title {
+  margin-bottom: 0;
 }
 #shop #right-side {
   width: 100%;
@@ -1410,12 +1418,9 @@ footer #third #third-third #payment-third-third {
   margin-bottom: 20px;
 }
 #shop #right-side .shop-right {
-  max-width: 1300px;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  column-gap: 40px;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  gap: 20px;
 }
 #shop #right-side .shop-right .yellow-review {
   color: yellow;
@@ -1430,8 +1435,8 @@ footer #third #third-third #payment-third-third {
   opacity: 0.5;
 }
 #shop #right-side .shop-right .item {
-  max-width: calc(25% - 30px);
-  width: 100%;
+  flex: 1 1 calc(25% - 30px);
+  min-width: 250px;
   height: 350px;
   text-align: center;
   position: relative;
@@ -1522,13 +1527,13 @@ footer #third #third-third #payment-third-third {
   width: 100%;
   justify-content: center;
   margin-top: 20px;
+  margin-bottom: 15px;
 }
 #shop #right-side #pagination .page-item {
   display: inline-block;
   margin: 0 4px;
 }
 #shop #right-side #pagination .page-link {
-  display: inline-block;
   padding: 8px 12px;
   text-decoration: none;
   color: orange;
@@ -1550,6 +1555,75 @@ footer #third #third-third #payment-third-third {
   border-color: #CCC;
   cursor: not-allowed;
 }
+@media (max-width: 1440px) {
+  #shop {
+    max-width: none;
+    width: auto;
+  }
+}
+@media (max-width: 1024px) {
+  #shop #right-side {
+    width: 100%;
+  }
+  #shop #right-side .shop-right {
+    grid-template-columns: repeat(2, minmax(250px, 1fr));
+    gap: 10px;
+  }
+}
+@media (max-width: 768px) {
+  #shop {
+    flex-direction: column;
+  }
+  #shop #open-filter-button-responsive {
+    width: fit-content;
+    display: flex;
+    visibility: visible;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  #shop .shop-filter {
+    display: none;
+    visibility: hidden;
+    width: 100%;
+    max-width: none;
+    padding: 0;
+  }
+  #shop .shop-filter #filter-title {
+    text-align: center;
+  }
+  #shop .shop-filter h3 {
+    font-size: 20px;
+  }
+  #shop .shop-filter form {
+    display: flex;
+    flex-wrap: nowrap;
+    padding-left: 10px;
+    padding-bottom: 10px;
+  }
+  #shop .shop-filter form div {
+    width: 25%;
+    margin-right: 5px;
+  }
+  #shop .shop-filter form div label {
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    margin: 2px 0;
+  }
+}
+@media (max-width: 480px) {
+  #shop .shop-filter form {
+    flex-wrap: wrap;
+  }
+  #shop .shop-filter form div {
+    width: 50%;
+    margin-right: 0;
+  }
+  #shop #right-side .shop-right {
+    grid-template-columns: repeat(1, minmax(250px, 1fr));
+    gap: 10px;
+  }
+}
 
 #item {
   width: 100%;
@@ -1558,6 +1632,10 @@ footer #third #third-third #payment-third-third {
   display: flex;
   flex-direction: row;
   gap: 30px;
+}
+#item #item-header-responsive {
+  display: none;
+  visibility: hidden;
 }
 #item #slide-images {
   width: 100px;
@@ -1576,6 +1654,9 @@ footer #third #third-third #payment-third-third {
 #item #other {
   width: auto;
   flex: 1;
+}
+#item #other #item-header-div h1 {
+  text-align: center;
 }
 #item #other #item-content {
   display: flex;
@@ -1726,89 +1807,116 @@ footer #third #third-third #payment-third-third {
 #item #other #item-content #item-right #wishlist:hover {
   background-color: #bbb;
 }
+@media (max-width: 1024px) {
+  #item {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    align-items: center;
+  }
+  #item #item-header-responsive {
+    display: block;
+    visibility: visible;
+    width: 100%;
+    text-align: center;
+  }
+  #item #other {
+    flex: none;
+  }
+  #item #other #item-header-div {
+    display: none;
+    visibility: hidden;
+  }
+}
+@media (max-width: 480px) {
+  #item {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  #item #slide-images {
+    width: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    overflow-x: auto;
+    justify-content: center;
+  }
+  #item #slide-images .only-image {
+    display: none;
+  }
+  #item #slide-images img {
+    border-left: none !important;
+  }
+  #item #main-image {
+    width: 100%;
+  }
+  #item #main-image #is_new {
+    width: 30% !important;
+  }
+  #item #main-image #image-slide {
+    width: 100% !important;
+  }
+  #item #other {
+    width: 100%;
+  }
+  #item #other h1 {
+    text-align: center;
+    padding: 0 5px;
+  }
+  #item #other #item-content {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+    padding: 0 10px;
+  }
+  #item #other #item-content #item-left {
+    width: auto;
+    border-right: none;
+    height: auto;
+  }
+  #item #other #item-content #item-left p {
+    margin-bottom: 5px;
+  }
+  #item #other #item-content #item-right {
+    margin-left: 0;
+    padding-top: 0;
+  }
+  #item #other #item-content #item-right #select-menu {
+    width: auto;
+  }
+  #item #other #item-content #item-right #select-menu #flavor-select {
+    margin-left: 5px;
+  }
+  #item #other #item-content #item-right #quantity-menu {
+    gap: 0;
+  }
+  #item #other #item-content #item-right #quantity-menu div {
+    margin-left: 5px;
+  }
+  #item #other #item-content #item-right #quantity-menu div #quantity {
+    width: 50%;
+  }
+  #item #other #item-content #item-right #div-price {
+    flex-direction: row-reverse;
+  }
+}
 
-#similar {
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-}
-#similar h1 {
-  align-self: flex-start;
-}
-#similar #similar-items {
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  width: 1400px;
-}
-#similar #similar-items .similar-item {
-  min-width: 300px;
-  text-align: center;
-  box-sizing: border-box;
-  margin-right: 20px;
-  transition: 0.25s box-shadow ease-in-out;
-  padding: 10px 0;
-}
-#similar #similar-items .similar-item:hover {
-  box-shadow: 0 6px 20px -5px rgba(0, 0, 0, 0.4);
-}
-#similar #similar-items .similar-item a {
-  text-decoration: none;
-}
-#similar #similar-items .similar-item a img {
-  width: 300px;
-  height: 300px;
-}
-#similar #similar-items .similar-item a .desc {
-  color: #000;
-  display: flex;
-  font-size: 16px;
-  flex-direction: column;
-}
-#similar #similar-items .similar-item a .desc h4 {
-  margin: 0;
-}
-#similar #similar-items .similar-item a .desc .price {
-  padding-top: 3px;
-}
-#similar #similar-items .similar-item a .desc .new_price {
-  color: red;
-}
-#similar #similar-items .similar-item a .desc .old_price {
-  text-decoration: line-through;
-}
-#similar #left-arrow {
-  position: absolute;
-  top: 50%;
-  left: 1%;
-  outline: 0;
-  border: 0;
-  z-index: 100;
-  cursor: pointer;
-}
-#similar #right-arrow {
-  position: absolute;
-  top: 50%;
-  right: 1%;
-  outline: 0;
-  border: 0;
-  z-index: 100;
-  cursor: pointer;
-}
-
-#similar, #description, #reviews {
+#description, #reviews {
   max-width: 1600px;
   width: 100%;
   margin: 0 auto;
   font-size: 18px;
 }
-#similar #stars-div, #description #stars-div, #reviews #stars-div {
+#description #stars-div, #reviews #stars-div {
   width: 100%;
   display: flex;
   align-items: center;
 }
-#similar #stars-div #comment-submit, #description #stars-div #comment-submit, #reviews #stars-div #comment-submit {
+#description #stars-div #comment-submit, #reviews #stars-div #comment-submit {
   align-items: center;
   background-color: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1835,58 +1943,59 @@ footer #third #third-third #payment-third-third {
   vertical-align: baseline;
   width: auto;
 }
-#similar #stars-div #comment-submit:hover, #similar #stars-div #comment-submit:focus, #description #stars-div #comment-submit:hover, #description #stars-div #comment-submit:focus, #reviews #stars-div #comment-submit:hover, #reviews #stars-div #comment-submit:focus {
+#description #stars-div #comment-submit:hover, #description #stars-div #comment-submit:focus, #reviews #stars-div #comment-submit:hover, #reviews #stars-div #comment-submit:focus {
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
   color: rgba(0, 0, 0, 0.65);
 }
-#similar #stars-div #comment-submit:hover, #description #stars-div #comment-submit:hover, #reviews #stars-div #comment-submit:hover {
+#description #stars-div #comment-submit:hover, #reviews #stars-div #comment-submit:hover {
   transform: translateY(-1px);
 }
-#similar #stars-div #comment-submit:active, #description #stars-div #comment-submit:active, #reviews #stars-div #comment-submit:active {
+#description #stars-div #comment-submit:active, #reviews #stars-div #comment-submit:active {
   background-color: #F0F0F1;
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
   color: rgba(0, 0, 0, 0.65);
   transform: translateY(0);
 }
-#similar .fa-star, #description .fa-star, #reviews .fa-star {
+#description .fa-star, #reviews .fa-star {
   font-size: 24px;
   color: gray;
   transition: color 0.1s;
 }
-#similar .stars, #description .stars, #reviews .stars {
+#description .stars, #reviews .stars {
   cursor: pointer;
 }
-#similar .yellow, #description .yellow, #reviews .yellow {
+#description .yellow, #reviews .yellow {
   color: yellow;
 }
-#similar #comments .yellow-review, #description #comments .yellow-review, #reviews #comments .yellow-review {
+#description #comments .yellow-review, #reviews #comments .yellow-review {
   color: yellow;
 }
-#similar #comments .gray-review, #description #comments .gray-review, #reviews #comments .gray-review {
+#description #comments .gray-review, #reviews #comments .gray-review {
   color: grey;
 }
-#similar #comments .each-review, #description #comments .each-review, #reviews #comments .each-review {
-  margin: 0 10px;
+#description #comments .each-review, #reviews #comments .each-review {
+  display: flex;
+  justify-content: space-between;
+  padding: 0 10px;
 }
-#similar #comments .each-review #review-username, #description #comments .each-review #review-username, #reviews #comments .each-review #review-username {
-  margin: 0 10px 0 0;
-  width: fit-content;
-  display: inline-block;
+#description #comments .each-review .each-review-main, #reviews #comments .each-review .each-review-main {
+  display: flex;
+  align-items: center;
 }
-#similar #comments .each-review #review-timestamp, #description #comments .each-review #review-timestamp, #reviews #comments .each-review #review-timestamp {
-  display: inline;
-  float: right;
-  width: fit-content;
-  margin: 0;
+#description #comments .each-review .each-review-main #review-username, #reviews #comments .each-review .each-review-main #review-username {
+  margin-right: 10px;
 }
-#similar #comments #load-more-comments, #description #comments #load-more-comments, #reviews #comments #load-more-comments {
+#description #comments #review-comment, #reviews #comments #review-comment {
+  margin: 2px 0 0 10px;
+}
+#description #comments #load-more-comments, #reviews #comments #load-more-comments {
   display: flex;
   width: 100%;
   justify-content: center;
 }
-#similar #comments #load-more-comments #load-more-comments-button, #description #comments #load-more-comments #load-more-comments-button, #reviews #comments #load-more-comments #load-more-comments-button {
+#description #comments #load-more-comments #load-more-comments-button, #reviews #comments #load-more-comments #load-more-comments-button {
   align-items: center;
   background-color: #FFFFFF;
   border: 1px solid rgba(0, 0, 0, 0.1);
@@ -1912,22 +2021,22 @@ footer #third #third-third #payment-third-third {
   vertical-align: baseline;
   width: auto;
 }
-#similar #comments #load-more-comments #load-more-comments-button:hover, #similar #comments #load-more-comments #load-more-comments-button:focus, #description #comments #load-more-comments #load-more-comments-button:hover, #description #comments #load-more-comments #load-more-comments-button:focus, #reviews #comments #load-more-comments #load-more-comments-button:hover, #reviews #comments #load-more-comments #load-more-comments-button:focus {
+#description #comments #load-more-comments #load-more-comments-button:hover, #description #comments #load-more-comments #load-more-comments-button:focus, #reviews #comments #load-more-comments #load-more-comments-button:hover, #reviews #comments #load-more-comments #load-more-comments-button:focus {
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: rgba(0, 0, 0, 0.1) 0 4px 12px;
   color: rgba(0, 0, 0, 0.65);
 }
-#similar #comments #load-more-comments #load-more-comments-button:hover, #description #comments #load-more-comments #load-more-comments-button:hover, #reviews #comments #load-more-comments #load-more-comments-button:hover {
+#description #comments #load-more-comments #load-more-comments-button:hover, #reviews #comments #load-more-comments #load-more-comments-button:hover {
   transform: translateY(-1px);
 }
-#similar #comments #load-more-comments #load-more-comments-button:active, #description #comments #load-more-comments #load-more-comments-button:active, #reviews #comments #load-more-comments #load-more-comments-button:active {
+#description #comments #load-more-comments #load-more-comments-button:active, #reviews #comments #load-more-comments #load-more-comments-button:active {
   background-color: #F0F0F1;
   border-color: rgba(0, 0, 0, 0.15);
   box-shadow: rgba(0, 0, 0, 0.06) 0 2px 4px;
   color: rgba(0, 0, 0, 0.65);
   transform: translateY(0);
 }
-#similar textarea, #description textarea, #reviews textarea {
+#description textarea, #reviews textarea {
   width: 100%;
   height: 150px;
   padding: 12px 20px;
@@ -1937,6 +2046,44 @@ footer #third #third-third #payment-third-third {
   background-color: #f8f8f8;
   font-size: 16px;
   resize: none;
+}
+@media (max-width: 1024px) {
+  #description, #reviews {
+    width: 90%;
+  }
+}
+@media (max-width: 480px) {
+  #description p, #reviews p {
+    padding: 0 10px;
+  }
+  #description h1, #reviews h1 {
+    width: 100%;
+    padding: 0 10px;
+    text-align: center;
+  }
+  #description textarea, #reviews textarea {
+    width: 90%;
+    margin: 0 5%;
+  }
+  #description #comments .each-review, #reviews #comments .each-review {
+    flex-direction: column;
+  }
+  #description #comments .each-review .each-review-main #review-username, #reviews #comments .each-review .each-review-main #review-username {
+    margin-right: 0;
+  }
+  #description #comments .each-review #review-timestamp, #reviews #comments .each-review #review-timestamp {
+    margin-top: 2px;
+  }
+  #description #comments #nocomments, #reviews #comments #nocomments {
+    text-align: center;
+  }
+  #description #stars-div, #reviews #stars-div {
+    flex-direction: column;
+  }
+  #description #stars-div #comment-submit, #reviews #stars-div #comment-submit {
+    margin-top: 10px;
+    width: 100%;
+  }
 }
 
 #heading {
