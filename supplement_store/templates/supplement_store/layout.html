@@ -289,37 +289,6 @@
             <img src="{% static 'supplement_store/images/support.png' %}" alt="support" width="80px" id="support-icon">
         {% endif %}
         <script>
-            function initMobileSubmenus() {
-                if (window.innerWidth < 768) {
-                    const brandsLi = document.getElementById("brands");
-                    if (brandsLi) {
-                        const brandsLink = brandsLi.querySelector("a");
-                        const brandsSubmenu = brandsLi.querySelector(".second");
-                        if (brandsLink && brandsSubmenu) {
-                            brandsLink.addEventListener("click", function (e) {
-                                e.preventDefault();
-                                brandsSubmenu.classList.toggle("open");
-                            });
-                        }
-                    }
-
-                    const categoriesLi = document.getElementById("categories");
-                    if (categoriesLi) {
-                        const categoriesLink = categoriesLi.querySelector("a");
-                        const categoriesSubmenu = categoriesLi.querySelector(".second");
-                        if (categoriesLink && categoriesSubmenu) {
-                            categoriesLink.addEventListener("click", function (e) {
-                                e.preventDefault();
-                                categoriesSubmenu.classList.toggle("open");
-                            });
-                        }
-                    }
-                }
-            }
-        
-            initMobileSubmenus();
-            window.addEventListener("resize", initMobileSubmenus);
-
             const cartIcon = document.getElementById('shopping_cart_icon')
             const cartParagraph = document.getElementById('shopping_cart_text')
             const showCartDiv = document.getElementById('show_cart');
@@ -334,8 +303,8 @@
 
             const searchInput = document.getElementById('search-bar');
             const resultsContainer = document.getElementById('search-results');
-            searchInput.addEventListener('input', () => {
-                const query = this.value;
+            searchInput.addEventListener('input', (event) => {
+                const query = event.target.value;
 
                 fetch(`/search_items?q=${encodeURIComponent(query)}`)
                     .then(response => response.json())
@@ -403,6 +372,37 @@
             window.addEventListener("scroll", () => {
                 bottomMenu.classList.remove("open");
             });
+
+            function initMobileSubmenus() {
+                if (window.innerWidth < 768) {
+                    const brandsLi = document.getElementById("brands");
+                    if (brandsLi) {
+                        const brandsLink = brandsLi.querySelector("a");
+                        const brandsSubmenu = brandsLi.querySelector(".second");
+                        if (brandsLink && brandsSubmenu) {
+                            brandsLink.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                brandsSubmenu.classList.toggle("open");
+                            });
+                        }
+                    }
+
+                    const categoriesLi = document.getElementById("categories");
+                    if (categoriesLi) {
+                        const categoriesLink = categoriesLi.querySelector("a");
+                        const categoriesSubmenu = categoriesLi.querySelector(".second");
+                        if (categoriesLink && categoriesSubmenu) {
+                            categoriesLink.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                categoriesSubmenu.classList.toggle("open");
+                            });
+                        }
+                    }
+                }
+            }
+        
+            initMobileSubmenus();
+            window.addEventListener("resize", initMobileSubmenus);
 
             {% if not user.is_superuser %}
                 const supportChat = document.getElementById('support-chat');

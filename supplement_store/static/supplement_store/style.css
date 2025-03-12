@@ -1983,6 +1983,7 @@ footer #third #third-third #payment-third-third {
     gap: 10px;
     overflow-x: auto;
     justify-content: center;
+    flex-wrap: wrap;
   }
   #item #slide-images .only-image {
     display: none;

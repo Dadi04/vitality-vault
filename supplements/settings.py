@@ -56,6 +56,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.facebook',
     'paypal.standard.ipn',
+    # 'django_crontab', kada se postavi na server
 ]
 
 SOCIALACCOUNT_PROVIDERS = {
@@ -219,3 +220,10 @@ STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 28
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
+
+# kada se postavi na server
+# CRONJOBS = [
+#     ('0 0 * * *', 'django.core.management.call_command', ['update_items_status']),
+# ]
+# python manage.py crontab add
+# python manage.py crontab show

@@ -2366,6 +2366,7 @@ footer {
             gap: 10px;
             overflow-x: auto;
             justify-content: center;
+            flex-wrap: wrap;
             
             .only-image {
                 display: none;

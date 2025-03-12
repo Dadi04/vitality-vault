@@ -42,7 +42,7 @@ class Item(models.Model):
         ('AmiX','AmiX'),
         ('Myprotein','Myprotein'),
         ('BSN','BSN'),
-        ('Optinum Nutrition','Optinum Nutrition'),
+        ('Optimum Nutrition','Optimum Nutrition'),
         ('Scitec Nutrition','Scitec Nutrition'),
         ('Gorilla Mind','Gorilla Mind'),
         ('HTLT','HTLT'),

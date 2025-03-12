@@ -901,9 +901,6 @@ def bulk_add_items(request):
                     sale_end_date = sale_end_date,
                     weight = row['Weight'],
                     flavor = row['Flavor'],
-                    gender = row['Gender'],
-                    size = row['Size'],
-                    color = row['Color'],
                     is_new = row['Is New?'],
                     popularity = row['Popularity']
                 )
