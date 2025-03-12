@@ -110,32 +110,15 @@
 
 {% block script %}
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const images = document.querySelectorAll(".slides");
-            const rightBtn = document.querySelector("#right-arrow");
-            const leftBtn = document.querySelector("#left-arrow");
-            const dots = document.querySelectorAll(".dot");
-            let index = 0;
-            let intervalId;
-            
-            function startSlideShow() {
-                intervalId = setInterval(() => {
-                    if (index >= images.length - 1) {
-                        index = 0;
-                        images.forEach((image) => {
-                            image.style.left = "0";
-                        });
-                    } else {
-                        images[index].style.left = "-100%";
-                        index += 1;
-                    }
-                    updateDotStyles();
-                }, 3000);
-            }
-            startSlideShow();
-
-            rightBtn.addEventListener("click", () => {
-                clearInterval(intervalId);
+        const images = document.querySelectorAll(".slides");
+        const rightBtn = document.querySelector("#right-arrow");
+        const leftBtn = document.querySelector("#left-arrow");
+        const dots = document.querySelectorAll(".dot");
+        let index = 0;
+        let intervalId;
+        
+        function startSlideShow() {
+            intervalId = setInterval(() => {
                 if (index >= images.length - 1) {
                     index = 0;
                     images.forEach((image) => {
@@ -146,151 +129,149 @@
                     index += 1;
                 }
                 updateDotStyles();
-                startSlideShow();
-            });
+            }, 3000);
+        }
+        startSlideShow();
 
-            leftBtn.addEventListener("click", () => {
-                clearInterval(intervalId);
-                if (index <= 0) {
-                    index = images.length - 1;
-                    for (let i = 0; i < images.length - 1; i++) {
-                        images[i].style.left = "-100%";
-                    }
-                } else {
-                    index -= 1;
-                    images[index].style.left = "0";
-                }
-                updateDotStyles();
-                startSlideShow();
-            });
-
-            dots.forEach((dot, dotIndex) => {
-                dot.addEventListener("click", () => {
-                    clearInterval(intervalId);
-                    index = dotIndex;
-
-                    dots.forEach((eachDot) => {
-                        eachDot.classList.remove("is_active");
-                    });
-
-                    images.forEach(image => {
-                        if (index <= 0) {
-                            dot.classList.add("is_active");
-                            index = images.length - 1;
-                            for (let i = 0; i < images.length - 1; i++) {
-                                images[i].style.left = "-100%";
-                            }
-                        } else {
-                            dot.classList.add("is_active");
-                            index -= 1;
-                            images[index].style.left = "0";
-                        }
-                        updateDotStyles();
-                    });
-                    startSlideShow();
+        rightBtn.addEventListener("click", () => {
+            clearInterval(intervalId);
+            if (index >= images.length - 1) {
+                index = 0;
+                images.forEach((image) => {
+                    image.style.left = "0";
                 });
-            });
-
-            function updateDotStyles() {
-                dots.forEach((dot, dotIndex) => {
-                    if (dotIndex === index) {
-                        dot.classList.add("is_active");
-                    } else {
-                        dot.classList.remove("is_active");
-                    }
-                });
+            } else {
+                images[index].style.left = "-100%";
+                index += 1;
             }
             updateDotStyles();
-
-            const leftArrowNew = document.getElementById('left-arrow-new');
-            const rightArrowNew = document.getElementById('right-arrow-new');
-            const indexItemsNew = document.getElementById('new-items');
-
-            if (indexItemsNew) {
-                const itemWidth = 290;
-                const visibleItems = 5;
-                const totalItems = document.querySelectorAll('.new-item').length;
-                const totalScrollWidth = totalItems * itemWidth;
-                let scrollPosition = 0;
-                
-                const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
-
-                if (leftArrowNew && rightArrowNew) {
-                    leftArrowNew.addEventListener("click", () => {
-                        if (scrollPosition > 0) {
-                            scrollPosition -= itemWidth;
-                            indexItemsNew.style.transform = `translateX(-${scrollPosition}px)`;
-                        }
-                    });
-
-                    rightArrowNew.addEventListener("click", () => {
-                        if (scrollPosition < maxScrollPosition) {
-                            scrollPosition += itemWidth;
-                            indexItemsNew.style.transform = `translateX(-${scrollPosition}px)`;
-                        }
-                    });
-                }
-            }
-
-            const leftArrowSale = document.getElementById('left-arrow-sale');
-            const rightArrowSale = document.getElementById('right-arrow-sale');
-            const indexItemsSale = document.getElementById('sale-items');
-
-            if (indexItemsSale) {
-                const itemWidth = 290;
-                const visibleItems = 5;
-                const totalItems = document.querySelectorAll('.sale-item').length;
-                const totalScrollWidth = totalItems * itemWidth;
-                let scrollPosition = 0;
-                
-                const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
-
-                if (leftArrowSale && rightArrowSale) {
-                    leftArrowSale.addEventListener("click", () => {
-                        if (scrollPosition > 0) {
-                            scrollPosition -= itemWidth;
-                            indexItemsSale.style.transform = `translateX(-${scrollPosition}px)`;
-                        }
-                    });
-
-                    rightArrowSale.addEventListener("click", () => {
-                        if (scrollPosition < maxScrollPosition) {
-                            scrollPosition += itemWidth;
-                            indexItemsSale.style.transform = `translateX(-${scrollPosition}px)`;
-                        }
-                    });
-                }
-            }
-
-            const leftArrowPopular = document.getElementById('left-arrow-popular');
-            const rightArrowPopular = document.getElementById('right-arrow-popular');
-            const indexItemsPopular = document.getElementById('popular-items');
-
-            if (indexItemsPopular) {
-                const itemWidth = 290;
-                const visibleItems = 5;
-                const totalItems = document.querySelectorAll('.popular-item').length;
-                const totalScrollWidth = totalItems * itemWidth;
-                let scrollPosition = 0;
-                
-                const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
-
-                if (leftArrowPopular && rightArrowPopular) {
-                    leftArrowPopular.addEventListener("click", () => {
-                        if (scrollPosition > 0) {
-                            scrollPosition -= itemWidth;
-                            indexItemsPopular.style.transform = `translateX(-${scrollPosition}px)`;
-                        }
-                    });
-
-                    rightArrowPopular.addEventListener("click", () => {
-                        if (scrollPosition < maxScrollPosition) {
-                            scrollPosition += itemWidth;
-                            indexItemsPopular.style.transform = `translateX(-${scrollPosition}px)`;
-                        }
-                    });
-                }
-            }
+            startSlideShow();
         });
+
+        leftBtn.addEventListener("click", () => {
+            clearInterval(intervalId);
+            if (index <= 0) {
+                index = images.length - 1;
+                for (let i = 0; i < images.length - 1; i++) {
+                    images[i].style.left = "-100%";
+                }
+            } else {
+                index -= 1;
+                images[index].style.left = "0";
+            }
+            updateDotStyles();
+            startSlideShow();
+        });
+
+        dots.forEach((dot, dotIndex) => {
+            dot.addEventListener("click", () => {
+                clearInterval(intervalId);
+                index = dotIndex;
+
+                dots.forEach((eachDot) => {
+                    eachDot.classList.remove("is_active");
+                });
+
+                images.forEach(image => {
+                    if (index <= 0) {
+                        dot.classList.add("is_active");
+                        index = images.length - 1;
+                        for (let i = 0; i < images.length - 1; i++) {
+                            images[i].style.left = "-100%";
+                        }
+                    } else {
+                        dot.classList.add("is_active");
+                        index -= 1;
+                        images[index].style.left = "0";
+                    }
+                    updateDotStyles();
+                });
+                startSlideShow();
+            });
+        });
+
+        function updateDotStyles() {
+            dots.forEach((dot, dotIndex) => {
+                if (dotIndex === index) {
+                    dot.classList.add("is_active");
+                } else {
+                    dot.classList.remove("is_active");
+                }
+            });
+        }
+        updateDotStyles();
+
+        function setupResponsiveCarousel(container, leftArrow, rightArrow, itemSelector) {
+            let scrollPosition = 0;
+
+            function updateCarouselSettings() {
+                const containerWidth = container.parentElement.offsetWidth;
+                const item = container.querySelector(itemSelector);
+                const itemWidth = item ? item.offsetWidth : 290;
+                const totalItems = container.querySelectorAll(itemSelector).length;
+                const totalScrollWidth = totalItems * itemWidth;
+                const visibleItems = Math.floor(containerWidth / itemWidth);
+                const maxScrollPosition = Math.max(totalScrollWidth - (visibleItems * itemWidth), 0);
+                
+                return { itemWidth, visibleItems, totalItems, totalScrollWidth, maxScrollPosition };
+            }
+
+            let { itemWidth, visibleItems, totalItems, totalScrollWidth, maxScrollPosition } = updateCarouselSettings();
+
+            window.addEventListener('resize', () => {
+                const settings = updateCarouselSettings();
+                itemWidth = settings.itemWidth;
+                visibleItems = settings.visibleItems;
+                totalItems = settings.totalItems;
+                totalScrollWidth = settings.totalScrollWidth;
+                maxScrollPosition = settings.maxScrollPosition;
+                
+                if (scrollPosition > maxScrollPosition) {
+                    scrollPosition = maxScrollPosition;
+                    container.style.transform = `translateX(-${scrollPosition}px)`;
+                }
+            });
+
+            if (leftArrow && rightArrow) {
+                leftArrow.addEventListener('click', () => {
+                    if (scrollPosition > 0) {
+                        scrollPosition = Math.max(scrollPosition - itemWidth, 0);
+                        container.style.transform = `translateX(-${scrollPosition}px)`;
+                    }
+                });
+
+                rightArrow.addEventListener('click', () => {
+                    if (scrollPosition < maxScrollPosition) {
+                        scrollPosition = Math.min(scrollPosition + itemWidth, maxScrollPosition);
+                        container.style.transform = `translateX(-${scrollPosition}px)`;
+                    }
+                });
+            }
+        }
+
+
+        const leftArrowNew = document.getElementById('left-arrow-new');
+        const rightArrowNew = document.getElementById('right-arrow-new');
+        const indexItemsNew = document.getElementById('new-items');
+
+        if (indexItemsNew) {
+            setupResponsiveCarousel(indexItemsNew, leftArrowNew, rightArrowNew, '.new-item');
+        }
+
+        const leftArrowSale = document.getElementById('left-arrow-sale');
+        const rightArrowSale = document.getElementById('right-arrow-sale');
+        const indexItemsSale = document.getElementById('sale-items');
+
+        if (indexItemsSale) {
+            setupResponsiveCarousel(indexItemsSale, leftArrowSale, rightArrowSale, '.sale-item');
+        }
+
+        const leftArrowPopular = document.getElementById('left-arrow-popular');
+        const rightArrowPopular = document.getElementById('right-arrow-popular');
+        const indexItemsPopular = document.getElementById('popular-items');
+
+        if (indexItemsPopular) {
+            setupResponsiveCarousel(indexItemsPopular, leftArrowPopular, rightArrowPopular, '.popular-item');
+        }
     </script>
 {% endblock %}

@@ -25,12 +25,11 @@ nav {
     #top {
         display: flex;
         flex-direction: row;
-        justify-content: center;
+        justify-content: space-evenly;
         align-items: center;
         height: 100px;
         background-color: #111;
         width: 100%;
-        gap: 35px;
         color: white;
 
         #search-div {
@@ -65,36 +64,48 @@ nav {
             cursor: pointer;
         }
 
-        .right {
-            display: inline-block;
-            margin-left: 25px;
-            text-align: center;
-            transition: transform 0.3s ease;
-            
-            &:hover {
-                transform: scale(1.05);
-            }
+        #nav-icons {
+            display: flex;
+            width: 100%;
+            max-width: 350px;
+            justify-content: space-between;
 
-            p {
-                margin: 0;
+            .right {
+                display: inline-block;
                 text-align: center;
-                font-size: 13px;
-                color: white;
+                transition: transform 0.3s ease;
+                width: 20%;
+                
+                &:hover {
+                    transform: scale(1.05);
+                }
+    
+                p {
+                    margin: 0;
+                    text-align: center;
+                    font-size: 13px;
+                    color: white;
+                }
+    
+                a {
+                    text-decoration: none;
+                    color: #333;
+                }
+    
+                .counter {
+                    width: 20px;
+                    height: 20px;
+                    background-color: darkred;
+                    color: white;
+                    border-radius: 100%;
+                    position: absolute;
+                    font-size: 15px;
+                }
             }
 
-            a {
-                text-decoration: none;
-                color: #333;
-            }
-
-            .counter {
-                width: 20px;
-                height: 20px;
-                background-color: darkred;
-                color: white;
-                border-radius: 100%;
-                position: absolute;
-                font-size: 15px;
+            .hamburger-menu {
+                visibility: hidden;
+                display: none;
             }
         }
     }
@@ -143,6 +154,12 @@ nav {
 
         #first {
             display: inline-block;
+            padding-left: 0px;
+
+            .responsive-li {
+                visibility: hidden;
+                display: none;
+            }
 
             li {
                 list-style: none;
@@ -179,6 +196,120 @@ nav {
         #brands:hover .second, #categories:hover .second, #clothing:hover .second, .second:hover {
             opacity: 1;
             visibility: visible;
+        }
+    }
+
+    @media (max-width: 1440px) {
+        #top {
+            #nav-icons {
+                
+                justify-content: space-around;
+            }
+        }
+
+        #search-results {
+            width: 75%;
+            left: 5%;
+            margin: 0 auto;
+        }
+    }
+
+    @media (max-width: 768px) {
+        margin-bottom: 20px;
+
+        #top {
+            flex-direction: column;
+            height: auto;
+            padding: 0 0 20px 0;
+            gap: 10px;
+            justify-content: center;
+
+            #search-div {
+                width: 90%;
+                margin: 0 auto;
+            }
+
+            #nav-icons {
+                max-width: 500px;
+                margin-top: 10px;
+                    
+                .right {
+                    margin-left: 0;
+                    
+                }
+
+                .hamburger-menu {
+                    display: block;
+                    visibility: visible;
+                }
+            }
+        }
+
+        #search-results {
+            width: 90%;
+        }
+
+        #bottom {
+            margin-top: 10px;
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100vh;
+            background-color: #111;
+            transition: left 0.3s ease-in-out;
+            display: flex;
+            flex-direction: column;
+            z-index: 1000;
+
+            #first {
+                padding-bottom: 10px;
+                border-bottom: #fff 1px solid;
+
+                .responsive-li {
+                    visibility: visible;
+                    display: inline;
+                    color: #fff;
+                }
+
+                li {
+
+                    a {
+                        
+                        color: #fff;
+                    }
+                }
+            }
+
+            .second {
+                top: 61px;
+                display: flex;
+                flex-direction: column;
+
+                .responsive-hr {
+                    visibility: hidden;
+                    display: none;
+                }
+            }
+
+            &.open {
+                left: 0;
+            }
+        }
+    }
+
+    @media (max-width: 550px) {
+        #bottom {
+            
+            #first {
+                display: flex;
+                flex-direction: column;
+                margin-bottom: 0;
+            }
+
+            .second {
+                top: 266px;
+            }
         }
     }
 }
@@ -286,6 +417,13 @@ nav {
                 transform: translateY(0);
             }
         }
+    }
+
+    @media (max-width: 768px) {
+        width: 90%;
+        right: 5%;
+        top: 250px;
+        margin: 0 auto;
     }
 }
 
@@ -1148,6 +1286,7 @@ footer {
     }
 
     @media (max-width: 768px) {
+        height: 250px;
 
         #image-slider {
             height: 200px;
@@ -1155,7 +1294,7 @@ footer {
 
         #left-arrow, #right-arrow {
             width: 40px;
-            top: 35%;
+            top: 350px;
         }
 
         #under-slide-show ul {
@@ -1672,6 +1811,10 @@ footer {
             flex-direction: row-reverse;
             padding-right: 5%;
             margin-bottom: 20px;
+
+            #sort {
+                padding: 3px;
+            }
         }
 
         .shop-right {
@@ -2152,12 +2295,12 @@ footer {
         }
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1270px) {
         flex-direction: row;
         flex-wrap: wrap;
         justify-content: space-around;
         align-items: center;
-
+        
         #item-header-responsive {
             display: block;
             visibility: visible;
@@ -2172,10 +2315,43 @@ footer {
                 display: none;
                 visibility: hidden;
             }
+
+            #item-content {
+                flex-direction: column;
+                margin-right: 10px;
+
+                #item-left {
+                    width: 100%;
+                    border-right: none;
+                }
+            }
         }
     }
 
-    @media (max-width: 480px) {
+    @media (max-width: 1024px) {
+
+        #item-header-responsive {
+            display: block;
+            visibility: visible;
+            width: 100%;
+            text-align: center;
+        }
+
+        #other {
+
+            #item-content {
+                flex-direction: row;
+                margin-right: 0;
+
+                #item-left {
+                    width: auto;
+                    border-right: 1px solid gray;
+                }
+            }
+        }
+    }
+
+    @media (max-width: 650px) {
         width: 100%;
         max-width: 1500px;
         margin: 0 auto;
@@ -2435,7 +2611,7 @@ footer {
         resize: none;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: 1620px) {
         width: 90%;
     }
 
@@ -3019,6 +3195,7 @@ footer {
         #wishlist-items {
     
             #item-in-wishlist {
+                flex-wrap: nowrap;
 
                 #img-name-delete {
                     margin-top: 10px;   
@@ -3041,6 +3218,15 @@ footer {
             
             #empty-wishlist-button {
                 width: auto;
+            }
+        }
+    }
+
+    @media (max-width: 425px) {
+        #wishlist-items {
+
+            #item-in-wishlist {
+                flex-direction: column;
             }
         }
     }

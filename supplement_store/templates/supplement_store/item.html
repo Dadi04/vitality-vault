@@ -82,15 +82,17 @@
                             </div>
                         </div>
                         <input type="hidden" value="{{ item_chosen.id }}" name="id" id="item_id">
-                        <div id="div-price" class="{% if item_chosen.sale_price %}is_on_sale{% endif %}">
-                            <h1 id="item-price" class="{% if item_chosen.sale_price %}on_sale{% endif %}">${{item_chosen.price}}</h1>
-                            {% if item_chosen.sale_price %}
+                        <div id="div-price" class="{% if item_chosen.sale_price and item_chosen.sale_start_date and item_chosen.sale_end_date and today >= item_chosen.sale_start_date and today <= item_chosen.sale_end_date %}is_on_sale{% endif %}">
+                            <h1 id="item-price" class="{% if item_chosen.sale_price and item_chosen.sale_start_date and item_chosen.sale_end_date and today >= item_chosen.sale_start_date and today <= item_chosen.sale_end_date %}on_sale{% endif %}">
+                                ${{ item_chosen.price }}
+                            </h1>
+                            {% if item_chosen.sale_price and item_chosen.sale_start_date and item_chosen.sale_end_date and today >= item_chosen.sale_start_date and today <= item_chosen.sale_end_date %}
                                 <h1 id="new_price">${{item_chosen.sale_price}}</h1>
                             {% else %}
                                 <h1 id="new_price" style="display: none;">${{item_chosen.sale_price}}</h1>
                             {% endif %}
                         </div>
-                        {% if item_chosen.sale_price%}
+                        {% if item_chosen.sale_price and item_chosen.sale_start_date and item_chosen.sale_end_date and today >= item_chosen.sale_start_date and today <= item_chosen.sale_end_date %}
                             <p id="from-to-date">On Sale from {{item_chosen.sale_start_date}} to {{item_chosen.sale_end_date}}</p>
                         {% else %}
                             <p id="from-to-date" style="display: none;">On Sale from {{item_chosen.sale_start_date}} to {{item_chosen.sale_end_date}}</p>
@@ -131,7 +133,7 @@
                                 <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}">
                                 <div class="desc">
                                     <h4>{{ item.name }} {{ item.flavor }}</h4>
-                                    {% if item.sale_price %}
+                                    {% if item.sale_price and item.sale_start_date and item.sale_end_date and today >= item.sale_start_date and today <= item.sale_end_date %}
                                         <h4 class="price">
                                             <span class="new_price price">${{ item.price }}</span>
                                             <span class="old_price price">${{item.sale_price}}</span>
@@ -219,6 +221,10 @@
 
 {% block script %}
     <script>
+        if (window.location.hash === '#description') {
+            history.replaceState(null, null, window.location.pathname);
+        }
+
         const stars = document.querySelectorAll('.stars');
         const ratingInput = document.getElementById('rating');
         
@@ -297,38 +303,54 @@
             }
         });
 
-        const leftArrowNew = document.getElementById('left-arrow');
-        const rightArrowNew = document.getElementById('right-arrow');
+        const leftArrow = document.getElementById('left-arrow');
+        const rightArrow = document.getElementById('right-arrow');
         const similarItems = document.getElementById('similar-items');
 
-        if (similarItems) {
-            const itemWidth = 290;
-            const visibleItems = 5;
-            const totalItems = document.querySelectorAll('.new-item').length;
-            const totalScrollWidth = totalItems * itemWidth;
+        if (similarItems && leftArrow && rightArrow) {
             let scrollPosition = 0;
-            
-            const maxScrollPosition = totalScrollWidth - (visibleItems * itemWidth);
 
-            if (leftArrowNew && rightArrowNew) {
-                leftArrowNew.addEventListener("click", () => {
-                    if (scrollPosition > 0) {
-                        scrollPosition -= itemWidth;
-                        similarItems.style.transform = `translateX(-${scrollPosition}px)`;
-                    }
-                });
-
-                rightArrowNew.addEventListener("click", () => {
-                    if (scrollPosition < maxScrollPosition) {
-                        scrollPosition += itemWidth;
-                        similarItems.style.transform = `translateX(-${scrollPosition}px)`;
-                    }
-                });
+            function updateCarouselSettings() {
+                const containerWidth = similarItems.parentElement.offsetWidth;
+                const item = similarItems.querySelector('.index-item');
+                const itemWidth = item ? item.offsetWidth : 290;
+                const visibleItems = Math.floor(containerWidth / itemWidth);
+                const totalItems = similarItems.querySelectorAll('.index-item').length;
+                const totalScrollWidth = totalItems * itemWidth;
+                const maxScrollPosition = Math.max(totalScrollWidth - (visibleItems * itemWidth), 0);
+                
+                return { itemWidth, visibleItems, totalItems, totalScrollWidth, maxScrollPosition };
             }
-        }
 
-        if (window.location.hash === '#description') {
-            history.replaceState(null, null, window.location.pathname);
+            let { itemWidth, visibleItems, totalItems, totalScrollWidth, maxScrollPosition } = updateCarouselSettings();
+
+            window.addEventListener('resize', () => {
+                const settings = updateCarouselSettings();
+                itemWidth = settings.itemWidth;
+                visibleItems = settings.visibleItems;
+                totalItems = settings.totalItems;
+                totalScrollWidth = settings.totalScrollWidth;
+                maxScrollPosition = settings.maxScrollPosition;
+                
+                if (scrollPosition > maxScrollPosition) {
+                    scrollPosition = maxScrollPosition;
+                    similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+                }
+            });
+
+            leftArrow.addEventListener("click", () => {
+                if (scrollPosition > 0) {
+                    scrollPosition = Math.max(scrollPosition - itemWidth, 0);
+                    similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+                }
+            });
+
+            rightArrow.addEventListener("click", () => {
+                if (scrollPosition < maxScrollPosition) {
+                    scrollPosition = Math.min(scrollPosition + itemWidth, maxScrollPosition);
+                    similarItems.style.transform = `translateX(-${scrollPosition}px)`;
+                }
+            });
         }
     </script>
 {% endblock %}

@@ -26,10 +26,15 @@ class Command(BaseCommand):
                         item.save(update_fields=['is_new'])
 
             if item.sale_start_date and item.sale_end_date:
-                if not (item.sale_start_date <= today <= item.sale_end_date):
+                if today < item.sale_start_date:
+                    self.stdout.write(f'Item {item.id} sale is scheduled to start on {item.sale_start_date}')
+                elif item.sale_start_date <= today <= item.sale_end_date:
+                    self.stdout.write(f'Item {item.id} is currently on sale')
+                elif today > item.sale_end_date:
                     if item.sale_price is not None:
                         item.sale_price = None
                         item.sale_start_date = None
                         item.sale_end_date = None
-                        self.stdout.write(f'Item {item.id} sale is removed')
+                        self.stdout.write(f'Item {item.id} sale has ended and is removed')
                         item.save(update_fields=['sale_price', 'sale_start_date', 'sale_end_date'])
+

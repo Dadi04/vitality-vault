@@ -22,41 +22,47 @@
                         <input type="text" placeholder="Search Product Name / Type or Brand" size="120" id="search-bar" autocomplete="off">
                     </div>
                 </div>
-                {% if user.is_authenticated  %}
-                    <div class="right">
-                        <a href="{% url 'account' %}">
-                            <img src="{% static 'supplement_store/images/account.png' %}" alt="account" width="32px">
-                            <p>Account</p>
-                        </a>
+                <div id="nav-icons">
+                    <div class="right hamburger-menu" id="hamburger-menu-div">
+                        <img src="{% static 'supplement_store/images/hamburger-menu.png' %}" alt="menu" width="32px">
+                        <p>Menu</p>
                     </div> 
-                {% endif %}
-                <div class="right" id="shopping_cart_div">  
-                    <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
-                    <span class="counter" id="counting">{{ items_in_cart|total_items }}</span>
-                    <p id="shopping_cart_text">Cart</p>
-                </div>
-                <div class="right">
-                    <a href="{% url 'wishlist' %}">
-                        <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
-                        <span class="counter">{{ items_in_wishlist|total_items }}</span>
-                        <p>Wishlist</p>
-                    </a>
-                </div>
-                {% if user.is_authenticated  %}
+                    {% if user.is_authenticated  %}
+                        <div class="right">
+                            <a href="{% url 'account' %}">
+                                <img src="{% static 'supplement_store/images/account.png' %}" alt="account" width="32px">
+                                <p>Account</p>
+                            </a>
+                        </div> 
+                    {% endif %}
+                    <div class="right" id="shopping_cart_div">  
+                        <img src="{% static 'supplement_store/images/cart.png' %}" alt="cart" width="32px" id="shopping_cart_icon">
+                        <span class="counter" id="counting">{{ items_in_cart|total_items }}</span>
+                        <p id="shopping_cart_text">Cart</p>
+                    </div>
                     <div class="right">
-                        <a href="{% url 'logout_view' %}">
-                            <img src="{% static 'supplement_store/images/logout.png' %}" alt="logout" width="32px">
-                            <p>Log out</p>
+                        <a href="{% url 'wishlist' %}">
+                            <img src="{% static 'supplement_store/images/wishlist.png' %}" alt="wishlist" width="32px">
+                            <span class="counter">{{ items_in_wishlist|total_items }}</span>
+                            <p>Wishlist</p>
                         </a>
                     </div>
-                {% else %}
-                    <div class="right">
-                        <a href="{% url 'login_view' %}">
-                            <img src="{% static 'supplement_store/images/account.png' %}" alt="sign-in" width="32px">
-                            <p>Sign In</p>
-                        </a>
-                    </div>
-                {% endif %}
+                    {% if user.is_authenticated  %}
+                        <div class="right">
+                            <a href="{% url 'logout_view' %}">
+                                <img src="{% static 'supplement_store/images/logout.png' %}" alt="logout" width="32px">
+                                <p>Log out</p>
+                            </a>
+                        </div>
+                    {% else %}
+                        <div class="right">
+                            <a href="{% url 'login_view' %}">
+                                <img src="{% static 'supplement_store/images/account.png' %}" alt="sign-in" width="32px">
+                                <p>Sign In</p>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
             <div id="search-results">
 
@@ -69,26 +75,20 @@
                             {% for brand_key, brand_value in brands_list %}
                                 <li><a href="{% url 'shop_by_brand' brand=brand_key %}">{{brand_key}}</a></li>    
                             {% endfor %}
-                            <hr>
+                            <hr class="responsive-hr">
                         </ul>
                     </li>
                     <li id="categories"><a href="{% url 'supplements' %}">Supplements</a>
                         <ul class="second">
-                            <li><a href="{% url 'shop_by_category' category='Protein powders' %}">Protein powders</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Creatine' %}">Creatine</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Amino Acids' %}">Amino Acids</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Pre-Workouts' %}">Pre-Workouts</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Post-Workouts' %}">Post-Workouts</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Test Boosters' %}">Test Boosters</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Mass Gainers' %}">Mass Gainers</a></li>                            
-                            <li><a href="{% url 'shop_by_category' category='Weight Loss' %}">Weight Loss</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Vitamins and Minerals' %}">Vitamins and Minerals</a></li>
-                            <li><a href="{% url 'shop_by_category' category='Meal Replacements' %}">Meal Replacements</a></li>
-                            <hr>
+                            {% for category_key, category_value in categories_list %}
+                                <li><a href="{% url 'shop_by_category' category=category_key %}">{{category_key}}</a></li>
+                            {% endfor %}
+                            <hr class="responsive-hr">
                         </ul>
                     </li>
                     <li><a href="{% url 'about' %}">About</a></li>
                     <li><a href="{% url 'contact' %}">Contact</a></li>
+                    <li id="close-menu"><i class="fa fa-x responsive-li"></i></li>
                 </ul>
             </div>
         </nav>
@@ -289,6 +289,37 @@
             <img src="{% static 'supplement_store/images/support.png' %}" alt="support" width="80px" id="support-icon">
         {% endif %}
         <script>
+            function initMobileSubmenus() {
+                if (window.innerWidth < 768) {
+                    const brandsLi = document.getElementById("brands");
+                    if (brandsLi) {
+                        const brandsLink = brandsLi.querySelector("a");
+                        const brandsSubmenu = brandsLi.querySelector(".second");
+                        if (brandsLink && brandsSubmenu) {
+                            brandsLink.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                brandsSubmenu.classList.toggle("open");
+                            });
+                        }
+                    }
+
+                    const categoriesLi = document.getElementById("categories");
+                    if (categoriesLi) {
+                        const categoriesLink = categoriesLi.querySelector("a");
+                        const categoriesSubmenu = categoriesLi.querySelector(".second");
+                        if (categoriesLink && categoriesSubmenu) {
+                            categoriesLink.addEventListener("click", function (e) {
+                                e.preventDefault();
+                                categoriesSubmenu.classList.toggle("open");
+                            });
+                        }
+                    }
+                }
+            }
+        
+            initMobileSubmenus();
+            window.addEventListener("resize", initMobileSubmenus);
+
             const cartIcon = document.getElementById('shopping_cart_icon')
             const cartParagraph = document.getElementById('shopping_cart_text')
             const showCartDiv = document.getElementById('show_cart');
@@ -303,7 +334,7 @@
 
             const searchInput = document.getElementById('search-bar');
             const resultsContainer = document.getElementById('search-results');
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('input', () => {
                 const query = this.value;
 
                 fetch(`/search_items?q=${encodeURIComponent(query)}`)
@@ -355,6 +386,22 @@
                         resultsContainer.classList.add('active');
                     }
                 }
+            });
+
+            const menuIcon = document.getElementById("hamburger-menu-div");
+            const bottomMenu = document.getElementById("bottom");
+            const closeMenu = document.getElementById("close-menu")
+
+            menuIcon.addEventListener("click", () => {
+                bottomMenu.classList.toggle("open");
+            });
+
+            closeMenu.addEventListener("click", function (event) {
+                bottomMenu.classList.remove("open");
+            });
+
+            window.addEventListener("scroll", () => {
+                bottomMenu.classList.remove("open");
             });
 
             {% if not user.is_superuser %}

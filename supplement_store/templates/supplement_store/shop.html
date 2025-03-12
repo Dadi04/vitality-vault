@@ -96,8 +96,8 @@
                         {% endfor %}
                         <span id="total-reviews">({{ item.total_reviews }})</span>
                         <div class="price">
-                            <h3 class="{% if item.sale_price %}on_sale{% endif %}">${{ item.price }}</h3>
-                            {% if item.sale_price %}
+                            <h3 class="{% if item.sale_price and item.sale_start_date and item.sale_end_date and today >= item.sale_start_date and today <= item.sale_end_date %}on_sale{% endif %}">${{ item.price }}</h3>
+                            {% if item.sale_price and item.sale_start_date and item.sale_end_date and today >= item.sale_start_date and today <= item.sale_end_date %}
                                 <h3 class="new_price">${{item.sale_price}}</h3>
                             {% endif %}
                         </div>

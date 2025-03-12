@@ -34,7 +34,13 @@ from .models import User, SlideShowImage, Support, SupportAnswer, Item, Review, 
 def index(request):
     return render(request, "supplement_store/index.html", {
         "images": SlideShowImage.objects.all().order_by('-order'),
-        "items_on_sale": Item.objects.filter(sale_price__isnull=False),
+        "items_on_sale": Item.objects.filter(
+            sale_price__isnull=False,
+            sale_start_date__isnull=False,
+            sale_end_date__isnull=False,
+            sale_start_date__lte=datetime.now().date(),
+            sale_end_date__gte=datetime.now().date(),
+        ),
         "new_items": Item.objects.filter(is_new=True),
         "popular_items": Item.objects.all().order_by('-popularity')[:10],
     })
@@ -220,6 +226,7 @@ def supplements(request):
         "brands": Item.objects.filter().values_list('brand', flat=True).distinct(),
         "current_sort": sort_option,
         "query_params": query_params,
+        "today": datetime.now().date(),
     })
 
 def shop_by_category(request, category):
@@ -256,6 +263,7 @@ def shop_by_category(request, category):
         "brands": Item.objects.filter(category=category).values_list('brand', flat=True).distinct(),
         "current_sort": sort_option,
         "query_params": query_params,
+        "today": datetime.now().date(),
     })
 
 def shop_by_brand(request, brand):
@@ -292,6 +300,7 @@ def shop_by_brand(request, brand):
         "brands": Item.objects.filter(brand=brand).values_list('brand', flat=True).distinct(),
         "current_sort": sort_option,
         "query_params": query_params,
+        "today": datetime.now().date(),
     })
 
 def shop_by_itemname(request, itemname):
@@ -378,6 +387,7 @@ def shop_by_itemname(request, itemname):
         "similar_items": similar_items,
         "count": count,
         "total_reviews": all_reviews.count(),
+        "today": datetime.now().date(),
     })
 
 def search_items(request):
