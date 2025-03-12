@@ -1,1 +1,1 @@
-web: gunicorn supplements.wsgi
+web gunicorn supplements.wsgi:application --log-file -
