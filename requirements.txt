@@ -14,3 +14,4 @@ django-crontab==0.7.1
 dj_database_url==2.3.0
 cryptography==44.0.1
 django_heroku==0.3.1
+gunicorn==23.0.0
