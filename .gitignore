@@ -7,3 +7,5 @@ client_secret_199511182280-1r750bf7m0ku1e9ifkdj175ju2605qsd.apps.googleuserconte
 server.csr
 server.key
 server.pass.key
+supplements_db.dump
+supplements_db.sql
