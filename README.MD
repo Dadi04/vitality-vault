@@ -63,7 +63,7 @@ The `supplement_store/` folder contains the main Django application code respons
 ### 📂 `supplements/`
 
 1. **settings.py**  
-   Configures the global settings for Vitality Vault. Sets up environment variables, database connections, installed applications, middleware, and static files. Uses the `environ` package to load sensitive values (e.g., `SECRET_KEY`, reCAPTCHA keys, database credentials, email settings) from a `.env` file. More details are provided in the [Environment Configuration](#environment-configuration) section.
+   Configures the global settings for Vitality Vault. Sets up environment variables, database connections, installed applications, middleware, and static files. Uses the `environ` package to load sensitive values (e.g., `SECRET_KEY`, reCAPTCHA keys, database credentials, email settings) from a `.env` file. More details are provided in the [Environment Configuration](#environment-configuration-env) section.
 
 2. **urls.py**  
    Defines the root URL configuration for the project. Maps URL patterns to view functions and includes URL configurations from installed apps to ensure proper request routing.
@@ -73,7 +73,7 @@ The `supplement_store/` folder contains the main Django application code respons
 Follow these steps to set up and run Vitality Vault locally:
 
 1. **Clone the Repository**
-    `bash
+    ```bash
         git clone https://github.com/Dadi04/vitality-vault.git
         cd vitality-vault
     ```
