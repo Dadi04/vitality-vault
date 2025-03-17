@@ -35,7 +35,7 @@ RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['vitality-vault-048b9a26d0f5.herokuapp.com', 'vitality-vault.live', 'www.vitality-vault.live']
+ALLOWED_HOSTS = ['vitality-vault.live', 'www.vitality-vault.live', '16.171.225.244:8000', '0.0.0.0:8000']
 
 # Application definition
 
