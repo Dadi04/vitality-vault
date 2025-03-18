@@ -13,7 +13,7 @@
             {% csrf_token %}
                 {% for item in items %}
                     <div id="item-sale">
-                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image|filename}}" alt="{{ item.main_image.name|filename }}" width="100px">
+                        <img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname|change}}/{{item.main_image|filename}}" alt="{{ item.main_image.name|filename }}" width="100px">
                         <p>{{ item.id }} {{ item.fullname }} {{ item.flavor }}</p>
                         {% if item.sale_price %}
                             <p>Current price: {{ item.sale_price }}</p>

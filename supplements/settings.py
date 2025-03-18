@@ -187,9 +187,6 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-# STATICFILES_DIRS = [
-#     os.path.join(BASE_DIR, 'supplement_store', 'static'),
-# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
@@ -220,8 +217,6 @@ STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 28
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 SESSION_SAVE_EVERY_REQUEST = True
-
-
 
 # kada se postavi na server
 # CRONJOBS = [

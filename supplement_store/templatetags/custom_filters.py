@@ -9,6 +9,12 @@ def filename(value):
     return basename(str(value))
 
 @register.filter
+def change(value):
+    if isinstance(value, str):
+        return value.replace('%', '_')
+    return value
+
+@register.filter
 def star_range(value):
     return range(value)
 

@@ -100,7 +100,7 @@
                 <div>
                     {% for item in items_in_cart %}
                         <div class="show_cart_div_nav">
-                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="75px">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname|change}}/{{item.item__main_image|filename}}" alt="{{ item.item.item__main_image.name }}" width="75px">
                             <h4>{{ item.item__name }} {{ item.item__weight }}g x {{item.total_quantity}}</h4>
                             <form action="{% url 'remove_cart' %}" method="post">
                                 {% csrf_token %}

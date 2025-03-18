@@ -22,7 +22,7 @@
             </div>
             {% for item in items %} 
                 <div id="item-summary">
-                    <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name|filename }}" width="150px">
+                    <img src="{% static '/supplement_store/images/product_images/' %}{{item.item.fullname|change}}/{{item.item.main_image|filename}}" alt="{{ item.item.main_image.name|filename }}" width="150px">
                     <div id="summary-paragraphs">
                         <div id="summary-paragraphs-top">
                             <p>{{item.item.fullname}} x {{item.quantity}}</p>

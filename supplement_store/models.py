@@ -7,7 +7,8 @@ from decimal import Decimal
 from .countries import COUNTRIES
 
 def item_image_upload_path(instance, filename):
-    return f'supplement_store/static/supplement_store/images/product_images/{instance.fullname}/{instance.id}_{filename}'
+    sanitized_fullname = instance.fullname.replace('%', '_')
+    return f'supplement_store/static/supplement_store/images/product_images/{sanitized_fullname}/{instance.id}_{filename}'
 
 def slide_show_upload_path(instance, filename):
     return f'supplement_store/static/supplement_store/images/slide_show_images/{timezone.now().strftime("%Y-%m-%d_%H-%M-%S")}_{filename}'

@@ -28,7 +28,7 @@
                 {% for item in items %}
                     <div id="item-in-cart">
                         <div id="main-left">
-                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname}}/{{item.item__main_image|filename}}" alt="{{ item.item__main_image.name|filename }}" width="100px">
+                            <img src="{% static '/supplement_store/images/product_images/' %}{{item.item__fullname|change}}/{{item.item__main_image|filename}}" alt="{{ item.item__main_image.name|filename }}" width="100px">
                             <h4 id="item-name">{{ item.item__name }} {{ item.item__weight }}g</h4>
                             <form action="{% url 'remove_cart' %}" method="post">
                                 {% csrf_token %}

@@ -2,39 +2,70 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 from datetime import timedelta
 from supplement_store.models import Item
+from supplement_store.models import Item
+import os
+import re
+from django.conf import settings
 
 class Command(BaseCommand):
     help = 'Mark items as not new after 30 days and remove sale after that sale ends'
 
+    # def handle(self, *args, **options):
+    #     today = timezone.now().date()
+    #     items = Item.objects.all()
+    #     for item in items:
+    #         if item.created_at:
+    #             expiry_date = item.created_at.date() + timedelta(days=30)
+    #             if today < expiry_date:
+    #                 remaining_days = (expiry_date - today).days
+    #                 self.stdout.write(
+    #                     f'Item {item.id} will have "is_new" removed in {remaining_days} days'
+    #                 )
+    #             else:
+    #                 if item.is_new:
+    #                     item.is_new = False
+    #                     self.stdout.write(
+    #                         f'Item {item.id} status "new" is removed'
+    #                     )
+    #                     item.save(update_fields=['is_new'])
+
+    #         if item.sale_start_date and item.sale_end_date:
+    #             if today < item.sale_start_date:
+    #                 self.stdout.write(f'Item {item.id} sale is scheduled to start on {item.sale_start_date}')
+    #             elif item.sale_start_date <= today <= item.sale_end_date:
+    #                 self.stdout.write(f'Item {item.id} is currently on sale')
+    #             elif today > item.sale_end_date:
+    #                 if item.sale_price is not None:
+    #                     item.sale_price = None
+    #                     item.sale_start_date = None
+    #                     item.sale_end_date = None
+    #                     self.stdout.write(f'Item {item.id} sale has ended and is removed')
+    #                     item.save(update_fields=['sale_price', 'sale_start_date', 'sale_end_date'])
     def handle(self, *args, **options):
-        today = timezone.now().date()
         items = Item.objects.all()
+        image_fields = ["main_image", "image1", "image2", "image3"]
+
         for item in items:
-            if item.created_at:
-                expiry_date = item.created_at.date() + timedelta(days=30)
-                if today < expiry_date:
-                    remaining_days = (expiry_date - today).days
-                    self.stdout.write(
-                        f'Item {item.id} will have "is_new" removed in {remaining_days} days'
-                    )
-                else:
-                    if item.is_new:
-                        item.is_new = False
-                        self.stdout.write(
-                            f'Item {item.id} status "new" is removed'
-                        )
-                        item.save(update_fields=['is_new'])
+            updated = False
 
-            if item.sale_start_date and item.sale_end_date:
-                if today < item.sale_start_date:
-                    self.stdout.write(f'Item {item.id} sale is scheduled to start on {item.sale_start_date}')
-                elif item.sale_start_date <= today <= item.sale_end_date:
-                    self.stdout.write(f'Item {item.id} is currently on sale')
-                elif today > item.sale_end_date:
-                    if item.sale_price is not None:
-                        item.sale_price = None
-                        item.sale_start_date = None
-                        item.sale_end_date = None
-                        self.stdout.write(f'Item {item.id} sale has ended and is removed')
-                        item.save(update_fields=['sale_price', 'sale_start_date', 'sale_end_date'])
+            for field in image_fields:
+                image = getattr(item, field)
+                if image:
+                    path_parts = image.name.rsplit('/', 1)
+                    folder_path = path_parts[0]
+                    filename = path_parts[1] if len(path_parts) > 1 else ''
 
+                    base_folder = folder_path.split('/')[-1]
+
+                    sanitized_folder = base_folder.replace('%', '_')
+
+                    new_folder_path = folder_path.rsplit('/', 1)[0] + '/' + sanitized_folder
+                    new_full_path = new_folder_path + '/' + filename
+
+                    if new_full_path != image.name:
+                        setattr(item, field, new_full_path)
+                        updated = True
+                        print(f"Updated {field}: {new_full_path}")
+
+            if updated:
+                item.save()

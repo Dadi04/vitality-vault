@@ -33,7 +33,7 @@
                 <div class="index-items" id="new-items">
                     {% for item in new_items %}
                         <div class="index-item new-item">
-                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname|change}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
                             <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
                             <p><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">Flavor: {{ item.flavor }}</a></p>
                         </div>
@@ -51,7 +51,7 @@
                 <div class="index-items" id="sale-items">
                     {% for item in items_on_sale %}
                         <div class="index-item sale-item">
-                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname|change}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
                             <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
                             <p><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">Flavor: {{ item.flavor }}</a></p>
                         </div>
@@ -79,7 +79,7 @@
                 <div class="index-items" id="popular-items">
                     {% for item in popular_items %}
                         <div class="index-item popular-item">
-                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
+                            <a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}"><img src="{% static '/supplement_store/images/product_images/' %}{{item.fullname|change}}/{{item.main_image.name|filename}}" alt="{{ item.main_image.name|filename }}" height="200px"></a>
                             <h5><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">{{ item.name }} {{ item.weight }}g</a></h5>
                             <p><a href="{% url 'shop_by_itemname' itemname=item.fullname %}?flavor={{ item.flavor|urlencode }}">Flavor: {{ item.flavor }}</a></p>
                         </div>
