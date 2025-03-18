@@ -4,3 +4,4 @@ supplements/__pycache__/
 supplement_store/migrations/__pycache__
 .env
 hosting/
+staticfiles/

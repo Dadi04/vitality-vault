@@ -46,8 +46,11 @@ def give_items(request):
             })
         wishlist_session = request.session.get("wishlist", [])
         wishlist_items = Item.objects.filter(id__in=wishlist_session)    
+
+    brands_list = [(key.lower().replace(" ", "_"), value) for key, value in Item.BRANDS]
+    
     return {
-        "brands_list": Item.BRANDS,
+        "brands_list": brands_list,
         "categories_list": Item.CATEGORIES,
         "countries_list": COUNTRIES.items(),
         "items_in_cart": cart_items,

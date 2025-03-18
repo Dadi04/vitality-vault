@@ -13,8 +13,6 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 import os
 import environ
-# import dj_database_url
-# import django_heroku
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -35,7 +33,7 @@ RECAPTCHA_PRIVATE_KEY = env("RECAPTCHA_PRIVATE_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = ['vitality-vault.live', 'www.vitality-vault.live', '16.171.225.244']
+ALLOWED_HOSTS = ['vitality-vault.live', 'www.vitality-vault.live', '16.171.225.244', '127.0.0.1', 'localhost']
 
 # Application definition
 
@@ -134,7 +132,6 @@ DATABASES = {
         'HOST': env('DB_HOST'),
         'PORT': env('DB_PORT'),
     },
-    # 'default': dj_database_url.config(default=env('DATABASE_URL'))
 }
 
 # Email configuration 
@@ -190,10 +187,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'supplement_store', 'static'),
-]
-# django_heroku.settings(locals())
+# STATICFILES_DIRS = [
+#     os.path.join(BASE_DIR, 'supplement_store', 'static'),
+# ]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

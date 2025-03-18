@@ -73,7 +73,7 @@
                     <li id="brands"><a href="{% url 'brands' %}">Brands</a>
                         <ul class="second">
                             {% for brand_key, brand_value in brands_list %}
-                                <li><a href="{% url 'shop_by_brand' brand=brand_key %}">{{brand_key}}</a></li>    
+                                <li><a href="{% url 'shop_by_brand' brand=brand_value %}">{{brand_value}}</a></li>    
                             {% endfor %}
                             <hr class="responsive-hr">
                         </ul>
@@ -209,7 +209,7 @@
             <div id="second">
                 <h3>Featured brands</h3>
                 {% for brand_key, brand_value in brands_list %}
-                    <img src="{% static 'supplement_store/images/' %}{{brand_value}}.png" alt="{{brand_value}}" width="100px">
+                    <img src="{% static 'supplement_store/images/' %}{{brand_key}}.png" alt="{{brand_key}}" width="100px">
                 {% endfor %}
             </div>
             <div id="third">
