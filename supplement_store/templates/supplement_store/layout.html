@@ -315,7 +315,8 @@
                             var baseImageName = item.main_image.split('/').pop();
 
                             let itemImage = document.createElement('img');
-                            itemImage.src = `{% static 'supplement_store/images/product_images/' %}${item.fullname}/${baseImageName}`;
+                            let sanitizedFullname = item.fullname.replace(/%/g, '_');
+                            itemImage.src = `{% static 'supplement_store/images/product_images/' %}${sanitizedFullname}/${baseImageName}`;
                             itemImage.alt = `${baseImageName}`;
                             itemImage.style.height = '100px';
                             itemImage.style.width = '100px';
@@ -324,7 +325,7 @@
                             itemSpan.textContent = `${item.fullname}, Flavor: ${item.flavor}`;
 
                             let itemLink = document.createElement('a');
-                            itemLink.href = `/${item.fullname}?flavor=${item.flavor}`;
+                            itemLink.href = `/${encodeURIComponent(item.fullname)}?flavor=${encodeURIComponent(item.flavor)}`;
                             itemLink.appendChild(itemImage);
                             itemLink.appendChild(itemSpan);
                             itemLink.classList.add('item-link');
