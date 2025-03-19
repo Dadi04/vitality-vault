@@ -79,7 +79,7 @@ def login_view(request):
                 request.session.set_expiry(0)
                 request.session.modified = True
             
-            login(request, user)
+            login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             merge_carts(request, user)
             merge_wishlists(request, user)
             return redirect('index')
@@ -103,7 +103,7 @@ def register_view(request):
             address = form.cleaned_data["address"]
             city = form.cleaned_data["city"]
             state = form.cleaned_data["state"]
-            country = request.POST["country"]
+            country = request.POST.get("country", "")
             zipcode = form.cleaned_data["zipcode"]
             password = form.cleaned_data["password"]
             confirm_password = form.cleaned_data["confirm_password"]
@@ -142,7 +142,7 @@ def activate_email(request, uidb64, token):
         user.is_active = True
         user.save()
         
-        login(request, user)
+        login(request, user, backend='django.contrib.auth.backends.ModelBackend')
         merge_carts(request, user)
         merge_wishlists(request, user)
         return redirect('index')
@@ -186,10 +186,11 @@ def edit_profile(request):
         user.country = request.POST.get('country', '')
         user.zipcode = request.POST.get('zipcode', '')
         user.phone = request.POST.get('phone', '')
-        user.birth = request.POST.get('birth', '')
+        birth_input = request.POST.get('birth', '').strip()
+        user.birth = birth_input if birth_input else None
         user.save()
-
     return redirect('account')
+
 """ End of Account logic """
 
 """ Filtering logic """
