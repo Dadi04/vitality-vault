@@ -10,6 +10,25 @@ This project integrates a full-stack solution with Django, featuring user authen
 
 Rather than being a static site, Vitality Vault is a functional e-commerce application with complex business logic, secure authentication, and multi-layered configuration. The project demonstrates robust coordination between back-end processes (views, models, and migrations) and front-end design (templates and SCSS styling), fulfilling the distinctiveness and complexity requirements.
 
+## 🚀 Unique Features
+
+Vitality Vault introduces several features that extend beyond the scope of the CS50W Project 2 (Commerce):
+
+- **Advanced Search and Filtering:** Users can search for supplements based on various criteria such as brand, category and flavor, enabling a more personalized shopping experience.
+
+- **User Reviews and Ratings:** Implements a system where customers can leave reviews and rate products, fostering a community-driven platform and aiding new customers in making informed decisions.
+
+- **Comprehensive Customer Support System:** Implements a customer support system.
+
+- **Social Media Authentication:** Allows users to register and log in using their Google or Facebook accounts, streamlining the authentication process and enhancing user convenience.
+
+- **Enhanced Security with reCAPTCHA:** Integrates Google reCAPTCHA to protect the platform from spam and abuse, ensuring that interactions are performed by real users.
+
+- **Multiple Payment Gateways:** Supports both PayPal and Stripe for payment processing, offering users flexibility in choosing their preferred payment method and ensuring secure transactions.
+
+
+These features demonstrate the additional complexity and functionality of Vitality Vault, distinguishing it from the foundational e-commerce structure of Project 2.
+
 ## 🗃️ File Structure and Contents
 
 Below is an overview of the key files and directories:

@@ -37,7 +37,7 @@ ALLOWED_HOSTS = ['vitality-vault.live', 'www.vitality-vault.live', '16.171.225.2
 
 # Application definition
 
-SITE_ID=2
+SITE_ID=5
 
 INSTALLED_APPS = [
     'supplement_store',
