@@ -41,7 +41,7 @@ The `supplement_store/` folder contains the main Django application code respons
    Registers the models from the supplement_store app with Django’s admin interface. Configures how the supplement-related models are displayed and managed in the admin panel.
 
 2. **apps.py**  
-   Contains the configuration for the supplement_store application. Defines the application’s name and any application-specific settings or initialization code.
+   Configures the supplement_store application and ensures that signal handlers are connected when the application is ready.
 
 3. **context_processors.py**  
    Defines a custom context processor that enriches the template context with commonly needed data, such as cart items, wishlist items, brand and category lists, and available countries.
@@ -59,7 +59,7 @@ The `supplement_store/` folder contains the main Django application code respons
    Provides utility functions that assist in processing data for the e-commerce store. Used in views to handle filtering, sorting, image processing, and merging session-based cart or wishlist data with the database.
 
 8. **signals.py**  
-   Listens for PayPal IPN (Instant Payment Notification) signals to update transaction statuses in the database, ensuring payments processed through PayPal are properly recorded.
+   Contains signal handlers that perform specific actions in response to certain signals.
 
 9. **urls.py**  
    Maps URL patterns to the corresponding view functions within the supplement_store app. Essential for routing incoming requests to the appropriate views based on URL paths.
