@@ -541,6 +541,7 @@ footer {
             }
 
             #social {
+                padding: 5px 10px;
                 display: flex;
                 justify-content: space-evenly;
             }
@@ -550,12 +551,14 @@ footer {
                 margin-bottom: 0;
             }
 
-            div {
+            #newsletter-div {
                 padding: 5px 10px;
 
-                img {
-                    margin-right: 10px;
+                form {
+                    display: flex;
+                    justify-content: center;
                 }
+
                 #email {
                     width: 250px;
                     padding: 10px;
@@ -606,16 +609,20 @@ footer {
         }
     }
 
-    @media (max-width: 375px) {
-
+    @media (max-width: 425px) {
         #third {
             
             #third-second {
 
-                div {
+                #newsletter-div {
     
+                    form {
+                        flex-direction: column;
+                    }
+
                     #email {
-                        width: 55%;
+                        margin-right: 0;
+                        width: 95%;
                     }
                 }
             }
@@ -1045,6 +1052,7 @@ footer {
     }
 
     @media (max-width: 600px) {
+        width: auto;
         padding: 0 10px;
 
         header {
@@ -1099,6 +1107,10 @@ footer {
     width: 100%;
     max-width: 1000px;
     margin: 20px auto;
+
+    @media (max-width: 768px) {
+        width: auto;
+    }
 }
 
 .google-facebook {
@@ -1150,6 +1162,10 @@ footer {
             font-size: 20px;
             color: #ccc;
         }
+    }
+
+    @media (max-width: 768px) {
+        padding: 0;
     }
 
     @media (max-width: 600px) {
