@@ -551,55 +551,45 @@ Below is a detailed explanation of all the files created for this project and wh
    - User registration signals for welcome emails
    - Inventory update signals when orders are placed
    - Review moderation signals for admin notifications
-   - Custom signal handlers for third-party integrations
+   - Custom signal handlers for third-party integrations like PayPal IPN
 
-9. **middleware.py**  
-   Custom middleware components:
-   - Shopping cart middleware for session management
-   - Region detection middleware for localized pricing
-   - Performance monitoring middleware
-   - Security headers middleware
-   - Referral tracking middleware
+9. **apps.py**  
+   Django application configuration:
+   - Defines the application configuration class SupplementStoreConfig
+   - Implements the ready() method to register signal handlers when the app initializes
+   - Ensures signals.py module is properly loaded and connected
 
-10. **apps.py**  
-   Application configuration:
-   - Signal connection setup
-   - App configuration settings
-   - App-specific settings initialization
-   - Plugin registration
+10. **countries.py**  
+   Comprehensive internationalization utility that provides:
+   - Complete dictionary of country codes and names with 199 countries
+   - Integration with Django's translation system (gettext_lazy)
+   - Used throughout the application for address forms and shipping options
 
-11. **countries.py**  
-   Utility file containing:
-   - Comprehensive country code mappings for address forms
-   - Region groupings for shipping calculations
-   - Country-specific validation rules
-   - Currency mappings by country
+11. **management/commands/update_items_status.py**  
+   Custom Django management command for product lifecycle automation:
+   - Automatically removes "is_new" flag from products after 30 days
+   - Handles product sale periods by managing start and end dates
+   - Cleans up expired sales by removing sale prices when sales end
+   - Can be scheduled via cron jobs for regular maintenance
+   - Provides informative console output for tracking changes
 
-12. **management/commands/update_items_status.py**  
-   Custom management command to:
-   - Automatically update product availability based on inventory
-   - Flag low-stock items
-   - Update featured product rotations
-   - Generate inventory reports
-   - Send notifications for out-of-stock items
+12. **templatetags/custom_filters.py**  
+   Collection of specialized template filters that extend Django's template language:
+   - `filename`: Extracts filenames from file paths
+   - `change`: Replaces '%' characters with '_' for URL safety
+   - `star_range`: Generates numeric ranges for star rating displays
+   - `total_price`: Calculates cart totals across multiple items
+   - `total_items`: Counts items with different data structures
+   - `multiply`: Performs multiplication in templates
+   - `filter`, `urlencode`: Utilities for URL handling
 
-13. **templatetags/custom_filters.py**  
-   Custom template filters and tags:
-   - Currency formatting with proper symbols
-   - Date formatting for orders and reviews
-   - Star rating rendering
-   - Text truncation with HTML awareness
-   - URL generation with query parameters
-   - Image processing tags
-
-14. **static/supplement_store/**  
-   Frontend assets:
+13. **static/supplement_store/**  
    - **style.scss**: Main stylesheet with SCSS variables, mixins and responsive design rules
    - **style.css**: Compiled CSS from the SCSS source files with all styling rules
    - **style.css.map**: Source map file that connects the compiled CSS to the original SCSS for debugging
    - **images/**: Collection of product images, brand logos, UI elements, and icons optimized for web display
 
-15. **templates/supplement_store/**  
+14. **templates/supplement_store/**  
    HTML templates for the application:
    - **layout.html**: Base template containing the site structure, navigation, footer, and common elements
    - **index.html**: Homepage template with featured products, categories, and promotional content
@@ -631,7 +621,6 @@ Below is a detailed explanation of all the files created for this project and wh
 1. **settings.py**  
    Core Django settings configuration that includes:
    - Environment variable management using django-environ
-   - Security settings including SECRET_KEY and reCAPTCHA keys
    - Database configuration for PostgreSQL 
    - Authentication backends including social auth providers (Google, Facebook)
    - PayPal and Stripe payment gateway configuration
@@ -664,7 +653,6 @@ Below is a detailed explanation of all the files created for this project and wh
    - Payment processing libraries
    - Image processing libraries
    - Security packages
-   - Performance optimization tools
 
 2. **.gitignore**  
    Version control exclusions to prevent sensitive and unnecessary files from being committed:
